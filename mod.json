@@ -1,0 +1,43 @@
+{
+	"geode": "4.6.3",
+	"gd": {
+		"win": "2.2074",
+		"android": "2.2074",
+		"mac": "2.2074",
+		"ios": "2.2074"
+	},
+	"id": "cheeseworks.speedruntimer",
+	"name": "Speedrun Timer",
+	"version": "1.0.0",
+	"developer": "Cheeseworks",
+	"description": "Just a speedrun timer for platformer levels.",
+	"dependencies": {
+		"geode.node-ids": {
+			"importance": "required",
+			"version": ">=1.21.0"
+		},
+		"geode.custom-keybinds": {
+			"importance": "required",
+			"version": ">=1.10.0",
+			"platforms": [
+				"win",
+				"mac",
+				"android"
+			]
+		}
+	},
+	"links": {
+		"source": "https://github.com/BlueWitherer/SpeedrunTimer",
+		"homepage": "https://avalanche.cubicstudios.xyz/",
+		"community": "https://www.dsc.gg/cubic"
+	},
+	"issues": {
+		"info": "Report any issues to our repository!",
+		"url": "https://www.github.com/BlueWitherer/SpeedrunTimer/issues/"
+	},
+	"tags": [
+		"joke",
+		"offline",
+		"gameplay"
+	]
+}
