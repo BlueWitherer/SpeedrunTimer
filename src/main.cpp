@@ -8,9 +8,11 @@ class $modify(MyPlayLayer, PlayLayer) {
     struct Fields {
         float m_speedTime = 0.f; // Current time
         bool m_speedtimerOn = false; // If the speedrun is active
-        CCLabelBMFont* m_speedtimer = nullptr; // The text label for the time
 
-        CCMenuItemSpriteExtra* mobileToggle = nullptr;
+        CCLabelBMFont* m_speedtimer = nullptr; // The text label for the time
+        CCLabelBMFont* m_speedtimerMs = nullptr; // The text label for the time in milliseconds
+
+        CCMenuItemSpriteExtra* mobileToggle = nullptr; // The toggle button for mobile players
     };
 
     bool init(GJGameLevel * level, bool useReplay, bool dontCreateObjects) {
