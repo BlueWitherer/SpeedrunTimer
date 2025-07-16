@@ -7,7 +7,7 @@ Just a speedrun timer for platformer levels.
 >  
 > [<img alt="Downloads" src="https://img.shields.io/github/downloads/BlueWitherer/SpeedrunTimer/total?style=for-the-badge&logo=geode&logoColor=ffffff&label=Downloads">](https://www.geode-sdk.org/mods/cheeseworks.speedruntimer)
 
-Find your favorite icons even quicker than ever.
+Speedrun that level!
 
 ---
 
@@ -18,7 +18,3 @@ Find your favorite icons even quicker than ever.
 ### Issues
 ###### What's wrong?!
 **[⚠️ Report a problem with the mod](../../issues/)**
-
-### Development
-###### Work with the mod directly.
-**[⌨️ Check the API out](./incl/)**

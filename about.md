@@ -5,4 +5,4 @@
 
 ---
 
-Find your favorite icons even quicker than ever.
+Speedrun that level!
