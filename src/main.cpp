@@ -1,4 +1,8 @@
+#include "./headers/SpeedrunNode.hpp"
+
 #include <Geode/Geode.hpp>
+
+#include <Geode/utils/terminate.hpp>
 
 #include <Geode/modify/PlayLayer.hpp>
 
@@ -6,41 +10,34 @@ using namespace geode::prelude;
 
 class $modify(MyPlayLayer, PlayLayer) {
     struct Fields {
-        float m_speedTime = 0.f; // Current time
-        bool m_speedtimerOn = false; // If the speedrun is active
+        SpeedrunNode* m_speedrunNode = nullptr; // The speedrun node for the timer
 
-        CCLabelBMFont* m_speedtimer = nullptr; // The text label for the time
-        CCLabelBMFont* m_speedtimerMs = nullptr; // The text label for the time in milliseconds
-
-        CCMenuItemSpriteExtra* mobileToggle = nullptr; // The toggle button for mobile players
+        CCMenuItemSpriteExtra* m_mobileToggle = nullptr; // The toggle button for mobile players
     };
 
     bool init(GJGameLevel * level, bool useReplay, bool dontCreateObjects) {
         if (PlayLayer::init(level, useReplay, dontCreateObjects)) {
             log::info("Hooked play layer!");
 
-            // code soon :3
+            if (getMod()->getSettingValue<bool>("platformer-only") || level->isPlatformer()) {
+                auto [widthCS, heightCS] = getScaledContentSize();
+
+                if (m_fields->m_speedrunNode = SpeedrunNode::create()) {
+                    m_fields->m_speedrunNode->setZOrder(101);
+                    m_fields->m_speedrunNode->setAnchorPoint({ 1, 1 });
+                    m_fields->m_speedrunNode->setPosition({ widthCS - 20.f, heightCS - 30.f });
+
+                    addChild(m_fields->m_speedrunNode);
+                } else {
+                    log::error("Failed to create timer!");
+                };
+            } else {
+                log::error("Level is not a platformer");
+            };
 
             return true;
         } else {
             return false;
         };
-    };
-
-    void update(float p0) {
-        PlayLayer::update(p0);
-
-        if (m_fields->m_speedtimerOn) m_fields->m_speedTime += p0;
-        updateSpeedrunLabel(p0);
-    };
-
-    void toggleSpeedrun() {
-        m_fields->m_speedtimerOn = !m_fields->m_speedtimerOn;
-        log::info("{} speedrun timer", m_fields->m_speedtimerOn ? "Started" : "Stopped");
-    };
-
-    void updateSpeedrunLabel(float time) {
-        log::info("timer {}", time);
-        if (m_fields->m_speedtimer) m_fields->m_speedtimer->setCString("blep");
     };
 };

@@ -39,5 +39,30 @@
 		"joke",
 		"offline",
 		"gameplay"
-	]
+	],
+	"settings": {
+		"color": {
+			"type": "rgb",
+			"name": "Timer Color",
+			"description": "The color of the speedrun timer.",
+			"default": [
+				25,
+				255,
+				75
+			]
+		},
+		"format-minutes": {
+			"type": "bool",
+			"name": "Format Minutes",
+			"description": "Whether to format the timer label to include minutes.",
+			"default": true
+		},
+		"platformer-only": {
+			"type": "bool",
+			"name": "Platformer Only",
+			"description": "Only allow use of the timer in platformer levels.",
+			"default": true
+		}
+	},
+	"early-load": false
 }
