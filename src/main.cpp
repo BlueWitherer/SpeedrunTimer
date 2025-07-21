@@ -23,6 +23,7 @@ class $modify(MyPlayLayer, PlayLayer) {
             if (srt->getSettingValue<bool>("platformer-only") ? level->isPlatformer() : true) {
                 auto [widthCS, heightCS] = getScaledContentSize();
 
+                // create speedrun timer label
                 if (auto sr = SpeedrunNode::create()) {
                     m_fields->m_speedrunNode = sr;
                     m_fields->m_speedrunNode->setZOrder(101);

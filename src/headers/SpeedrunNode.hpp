@@ -36,7 +36,5 @@ public:
     // Reset everything
     void resetAll();
 
-    void onExit();
-
     static SpeedrunNode* create();
 };

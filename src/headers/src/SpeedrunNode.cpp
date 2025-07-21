@@ -185,11 +185,6 @@ void SpeedrunNode::resetAll() {
     log::info("Speedrun timer reset");
 };
 
-void SpeedrunNode::onExit() {
-    if (m_scheduler) m_scheduler->unscheduleUpdateForTarget(this);
-    CCNode::onExit();
-};
-
 SpeedrunNode* SpeedrunNode::create() {
     SpeedrunNode* ret = new SpeedrunNode();
 
