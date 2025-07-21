@@ -10,10 +10,28 @@ using namespace keybinds;
 
 $execute
 {
-    BindManager::get()->registerBindable({
-        "toggle-timer"_spr,
-        "Timer", "Toggle the speedrun timer.",
-        { Keybind::create(KEY_NumPad1, Modifier::None)},
-        "Speedrun/Tools"
-    });
+    if (auto bm = BindManager::get()) {
+        bm->registerBindable({
+            "pause-timer"_spr,
+            "Pause Timer", "Pause or resume the speedrun timer.",
+            { Keybind::create(KEY_NumPad1, Modifier::None)},
+            "Speedrun"
+                             });
+
+        bm->registerBindable({
+            "split-timer"_spr,
+            "Split Timer", "Create a timer split.",
+            { Keybind::create(KEY_NumPad2, Modifier::None)},
+            "Speedrun"
+                             });
+
+        bm->registerBindable({
+            "reset-timer"_spr,
+            "Reset Timer", "Reset the speedrun timer and all splits.",
+            { Keybind::create(KEY_NumPad3, Modifier::None)},
+            "Speedrun"
+                             });
+    } else {
+        log::error("Failed to get keybind manager");
+    };
 };

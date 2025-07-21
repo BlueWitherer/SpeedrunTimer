@@ -4,15 +4,10 @@
 
 #include <Geode/cocos/CCScheduler.h>
 
-#include <Geode/utils/terminate.hpp>
-
 #include <geode.custom-keybinds/include/Keybinds.hpp>
 
 using namespace geode::prelude;
 using namespace keybinds;
-
-// it's modding time :3
-auto getThisMod = getMod();
 
 bool SpeedrunNode::init() {
     if (CCNode::init()) {
@@ -34,12 +29,14 @@ bool SpeedrunNode::init() {
         setLayout(layout);
 
         m_speedtimer = CCLabelBMFont::create("0", "gjFont17.fnt");
-        m_speedtimer->setColor(getThisMod->getSettingValue<ccColor3B>("color"));
+        m_speedtimer->setColor(m_srtMod->getSettingValue<ccColor3B>("color"));
+        m_speedtimer->setAlignment(CCTextAlignment::kCCTextAlignmentRight);
         m_speedtimer->setAnchorPoint({ 1, 0 });
         m_speedtimer->setScale(0.875f);
 
         m_speedtimerMs = CCLabelBMFont::create(".0", "gjFont17.fnt");
-        m_speedtimerMs->setColor(getThisMod->getSettingValue<ccColor3B>("color"));
+        m_speedtimerMs->setColor(m_srtMod->getSettingValue<ccColor3B>("color"));
+        m_speedtimerMs->setAlignment(CCTextAlignment::kCCTextAlignmentLeft);
         m_speedtimerMs->setAnchorPoint({ 0, 0 });
         m_speedtimerMs->setScale(0.625f);
 
@@ -50,12 +47,28 @@ bool SpeedrunNode::init() {
 
         m_scheduler->scheduleUpdateForTarget(this, 0, false);
 
+        // toggle timer
         this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
-            if (event->isDown()) toggle(!m_speedtimerOn); // toggle the timer on or off
-            log::info("Speedrun timer state set to {}", m_speedtimerOn ? "on" : "off");
+            if (event->isDown()) pauseTimer(!m_speedtimerPaused); // toggle the timer on or off
+            log::info("Speedrun timer set to {}", m_speedtimerPaused ? "paused" : "resumed");
 
             return ListenerResult::Propagate;
-                                                          }, "toggle-timer"_spr);
+                                                          }, "pause-timer"_spr);
+
+        // create a split
+        this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
+            if (event->isDown()) log::info("Speedrun split created at {} seconds", m_speedTime);
+
+            return ListenerResult::Propagate;
+                                                          }, "split-timer"_spr);
+
+        // reset everything
+        this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
+            if (event->isDown()) resetAll(); // reset the entire speedrun
+            log::info("Speedrun fully reset");
+
+            return ListenerResult::Propagate;
+                                                          }, "reset-timer"_spr);
 
         return true;
     } else {
@@ -65,11 +78,11 @@ bool SpeedrunNode::init() {
 
 void SpeedrunNode::update(float dt) {
     auto current = as<int>(m_speedTime);
-    if (m_speedtimerOn) m_speedTime += dt;
+    if (m_speedtimerOn) m_speedTime += m_speedtimerPaused ? 0.f : dt;
 
     std::string secStr = std::to_string(as<int>(m_speedTime));
 
-    if (getThisMod->getSettingValue<bool>("format-minutes")) {
+    if (m_srtMod->getSettingValue<bool>("format-minutes")) {
         int minutes = as<int>(m_speedTime / 60);
         int seconds = as<int>(m_speedTime) % 60;
 
@@ -92,22 +105,36 @@ void SpeedrunNode::update(float dt) {
     };
 };
 
-bool SpeedrunNode::toggle(bool on) {
-    if (m_speedtimerOn == on) {
-        log::info("Speedrun timer is already {}", on ? "on" : "off");
-        return m_speedtimerOn;
+void SpeedrunNode::pauseTimer(bool pause) {
+    if (m_speedtimerPaused == pause) {
+        log::info("Speedrun timer is already {}", pause ? "paused" : "unpaused");
     } else {
-        m_speedtimerOn = on;
+        m_speedtimerPaused = pause;
 
-        if (m_speedtimerOn) {
-            log::info("Speedrun timer started");
-            m_speedTime = 0.f; // reset the timer
+        if (m_speedtimerPaused) {
+            log::info("Speedrun timer paused at {} seconds", m_speedTime);
         } else {
-            log::info("Speedrun timer stopped at {} seconds", m_speedTime);
+            m_speedtimerOn = true;
+            log::info("Speedrun timer unpaused");
         };
-
-        return m_speedtimerOn;
     };
+};
+
+void SpeedrunNode::resetAll() {
+    m_speedTime = 0.f;
+
+    m_speedtimerOn = false;
+    m_speedtimerPaused = true;
+
+    if (m_speedtimer) m_speedtimer->setCString("0");
+    if (m_speedtimerMs) m_speedtimerMs->setCString(".0");
+
+    if (m_splitList) {
+        m_splitList->removeAllChildren();
+        m_splitList->updateLayout(true);
+    };
+
+    log::info("Speedrun timer reset");
 };
 
 SpeedrunNode* SpeedrunNode::create() {

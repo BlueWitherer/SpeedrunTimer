@@ -62,6 +62,12 @@
 			"name": "Platformer Only",
 			"description": "Only allow use of the timer in platformer levels.",
 			"default": true
+		},
+		"reset-death": {
+			"type": "bool",
+			"name": "Reset on Death",
+			"description": "Reset the speedrun timer when the player dies.",
+			"default": true
 		}
 	},
 	"early-load": false

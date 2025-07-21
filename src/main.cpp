@@ -8,6 +8,8 @@
 
 using namespace geode::prelude;
 
+auto srt = getMod();
+
 class $modify(MyPlayLayer, PlayLayer) {
     struct Fields {
         SpeedrunNode* m_speedrunNode = nullptr; // The speedrun node for the timer
@@ -19,7 +21,7 @@ class $modify(MyPlayLayer, PlayLayer) {
         if (PlayLayer::init(level, useReplay, dontCreateObjects)) {
             log::info("Hooked play layer!");
 
-            if (getMod()->getSettingValue<bool>("platformer-only") || level->isPlatformer()) {
+            if (srt->getSettingValue<bool>("platformer-only") ? level->isPlatformer() : true) {
                 auto [widthCS, heightCS] = getScaledContentSize();
 
                 if (m_fields->m_speedrunNode = SpeedrunNode::create()) {
@@ -40,4 +42,14 @@ class $modify(MyPlayLayer, PlayLayer) {
             return false;
         };
     };
+
+    void destroyPlayer(PlayerObject * p0, GameObject * p1) {
+        if (srt->getSettingValue<bool>("reset-death")) {
+            if (m_fields->m_speedrunNode) m_fields->m_speedrunNode->resetAll();
+        } else {
+            log::info("Speedrun timer will not reset on death");
+        };
+
+        PlayLayer::destroyPlayer(p0, p1);
+    }
 };

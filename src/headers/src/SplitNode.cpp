@@ -6,18 +6,20 @@
 
 using namespace geode::prelude;
 
-bool SplitNode::init() {
+bool SplitNode::init(float time) {
     if (CCNode::init()) {
+        m_splitTime = time;
+
         return true;
     } else {
         return false;
     };
 };
 
-SplitNode* SplitNode::create() {
+SplitNode* SplitNode::create(float time) {
     SplitNode* ret = new SplitNode();
 
-    if (ret && ret->init()) {
+    if (ret && ret->init(time)) {
         ret->autorelease();
         return ret;
     };
