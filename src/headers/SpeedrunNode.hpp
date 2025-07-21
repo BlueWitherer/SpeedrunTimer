@@ -30,8 +30,13 @@ public:
     // Pause the timer
     void pauseTimer(bool pause = true);
 
+    // Create a split
+    void createSplit();
+
     // Reset everything
     void resetAll();
+
+    void onExit();
 
     static SpeedrunNode* create();
 };

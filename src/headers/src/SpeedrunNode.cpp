@@ -1,6 +1,10 @@
 #include "../SpeedrunNode.hpp"
 
+#include "../SplitNode.hpp"
+
 #include <Geode/Geode.hpp>
+
+#include <Geode/utils/terminate.hpp>
 
 #include <Geode/cocos/CCScheduler.h>
 
@@ -11,7 +15,13 @@ using namespace keybinds;
 
 bool SpeedrunNode::init() {
     if (CCNode::init()) {
+        m_srtMod = getMod();
         m_scheduler = CCDirector::get()->getScheduler();
+
+        if (!m_srtMod) {
+            log::error("Couldn't load self mod");
+            return false;
+        };
 
         auto layout = AxisLayout::create(Axis::Row)
             ->setDefaultScaleLimits(0.625f, 0.875f)
@@ -29,12 +39,14 @@ bool SpeedrunNode::init() {
         setLayout(layout);
 
         m_speedtimer = CCLabelBMFont::create("0", "gjFont17.fnt");
+        m_speedtimer->setID("timer-seconds");
         m_speedtimer->setColor(m_srtMod->getSettingValue<ccColor3B>("color"));
         m_speedtimer->setAlignment(CCTextAlignment::kCCTextAlignmentRight);
         m_speedtimer->setAnchorPoint({ 1, 0 });
         m_speedtimer->setScale(0.875f);
 
         m_speedtimerMs = CCLabelBMFont::create(".0", "gjFont17.fnt");
+        m_speedtimerMs->setID("timer-milliseconds");
         m_speedtimerMs->setColor(m_srtMod->getSettingValue<ccColor3B>("color"));
         m_speedtimerMs->setAlignment(CCTextAlignment::kCCTextAlignmentLeft);
         m_speedtimerMs->setAnchorPoint({ 0, 0 });
@@ -44,6 +56,23 @@ bool SpeedrunNode::init() {
         addChild(m_speedtimer);
 
         updateLayout(true);
+
+        // Create layout for scroll layer
+        auto scrollLayerLayout = ColumnLayout::create()
+            ->setAxisAlignment(AxisAlignment::End)
+            ->setAxisReverse(true)
+            ->setAutoGrowAxis(0.f)
+            ->setGrowCrossAxis(false)
+            ->setGap(5.f);
+
+        m_splitList = ScrollLayer::create({ getContentSize().width, 625.f });
+        m_splitList->setID("split-list");
+        m_splitList->setAnchorPoint({ 0, 1 });
+        m_splitList->setPosition({ 0.f, 0.f });
+        m_splitList->setLayout(scrollLayerLayout);
+
+        m_splitList->updateLayout(true);
+        addChild(m_splitList);
 
         m_scheduler->scheduleUpdateForTarget(this, 0, false);
 
@@ -77,31 +106,35 @@ bool SpeedrunNode::init() {
 };
 
 void SpeedrunNode::update(float dt) {
-    auto current = as<int>(m_speedTime);
-    if (m_speedtimerOn) m_speedTime += m_speedtimerPaused ? 0.f : dt;
+    if (m_srtMod && m_speedtimer && m_speedtimerMs && m_splitList) {
+        auto current = as<int>(m_speedTime);
+        if (m_speedtimerOn) m_speedTime += m_speedtimerPaused ? 0.f : dt;
 
-    std::string secStr = std::to_string(as<int>(m_speedTime));
+        std::string secStr = std::to_string(as<int>(m_speedTime));
 
-    if (m_srtMod->getSettingValue<bool>("format-minutes")) {
-        int minutes = as<int>(m_speedTime / 60);
-        int seconds = as<int>(m_speedTime) % 60;
+        if (m_srtMod->getSettingValue<bool>("format-minutes")) {
+            int minutes = as<int>(m_speedTime / 60);
+            int seconds = as<int>(m_speedTime) % 60;
 
-        if (minutes > 0) {
-            char buf[8];
-            snprintf(buf, sizeof(buf), "%d:%02d", minutes, seconds);
-            secStr = buf;
+            if (minutes > 0) {
+                char buf[8];
+                snprintf(buf, sizeof(buf), "%d:%02d", minutes, seconds);
+                secStr = buf;
+            } else {
+                secStr = std::to_string(seconds);
+            };
         } else {
-            secStr = std::to_string(seconds);
+            secStr = std::to_string(as<int>(m_speedTime));
+        };
+
+        if (m_speedtimer) m_speedtimer->setCString(secStr.c_str()); // seconds
+
+        if (m_speedtimerMs) { // ms
+            std::string msStr = "." + std::to_string(as<int>(m_speedTime * 100) % 100);
+            m_speedtimerMs->setCString(msStr.c_str());
         };
     } else {
-        secStr = std::to_string(as<int>(m_speedTime));
-    };
-
-    if (m_speedtimer) m_speedtimer->setCString(secStr.c_str()); // seconds
-
-    if (m_speedtimerMs) { // ms
-        std::string msStr = "." + std::to_string(as<int>(m_speedTime * 100) % 100);
-        m_speedtimerMs->setCString(msStr.c_str());
+        log::error("Couldn't load self");
     };
 };
 
@@ -120,6 +153,21 @@ void SpeedrunNode::pauseTimer(bool pause) {
     };
 };
 
+void SpeedrunNode::createSplit() {
+    if (m_speedtimerOn) {
+        if (auto splitNode = SplitNode::create(m_speedTime)) {
+            m_splitList->addChild(splitNode);
+            m_splitList->updateLayout(true);
+
+            log::info("Speedrun split created at {} seconds", m_speedTime);
+        } else {
+            log::error("Failed to create speedrun split node");
+        };
+    } else {
+        log::error("Speedrun timer is not active");
+    };
+};
+
 void SpeedrunNode::resetAll() {
     m_speedTime = 0.f;
 
@@ -135,6 +183,11 @@ void SpeedrunNode::resetAll() {
     };
 
     log::info("Speedrun timer reset");
+};
+
+void SpeedrunNode::onExit() {
+    if (m_scheduler) m_scheduler->unscheduleUpdateForTarget(this);
+    CCNode::onExit();
 };
 
 SpeedrunNode* SpeedrunNode::create() {

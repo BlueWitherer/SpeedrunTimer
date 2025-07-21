@@ -19,8 +19,6 @@ class $modify(MyPlayLayer, PlayLayer) {
 
     bool init(GJGameLevel * level, bool useReplay, bool dontCreateObjects) {
         if (PlayLayer::init(level, useReplay, dontCreateObjects)) {
-            log::info("Hooked play layer!");
-
             if (srt->getSettingValue<bool>("platformer-only") ? level->isPlatformer() : true) {
                 auto [widthCS, heightCS] = getScaledContentSize();
 
@@ -51,5 +49,5 @@ class $modify(MyPlayLayer, PlayLayer) {
         };
 
         PlayLayer::destroyPlayer(p0, p1);
-    }
+    };
 };
