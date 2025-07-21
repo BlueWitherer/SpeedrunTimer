@@ -53,4 +53,14 @@ class $modify(MyPlayLayer, PlayLayer) {
 
         PlayLayer::destroyPlayer(p0, p1);
     };
+
+    void checkpointActivated(CheckpointGameObject * p0) {
+        if (srt->getSettingValue<bool>("checkpoint-split")) {
+            if (m_fields->m_speedrunNode) m_fields->m_speedrunNode->createSplit();
+        } else {
+            log::info("Speedrun split creation on checkpoint is disabled");
+        };
+
+        PlayLayer::checkpointActivated(p0);
+    };
 };

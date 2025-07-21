@@ -15,12 +15,12 @@ protected:
     float m_speedTime = 0.f; // Current time
 
     bool m_speedtimerOn = false; // If the speedrun is active
-    bool m_speedtimerPaused = false; // If the speedrun is paused
+    bool m_speedtimerPaused = true; // If the speedrun is paused
 
     CCLabelBMFont* m_speedtimer = nullptr; // The text label for the time
     CCLabelBMFont* m_speedtimerMs = nullptr; // The text label for the time in milliseconds
 
-    ScrollLayer* m_splitList = nullptr;
+    ScrollLayer* m_splitList = nullptr; // The scrolling list of timer splits
 
     void update(float dt);
 

@@ -1,3 +1,4 @@
+#ifndef GEODE_IS_IOS
 #include <Geode/Geode.hpp>
 #include <Geode/DefaultInclude.hpp>
 
@@ -35,3 +36,4 @@ $execute
         log::error("Failed to get keybind manager");
     };
 };
+#endif

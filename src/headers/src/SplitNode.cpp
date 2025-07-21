@@ -2,22 +2,14 @@
 
 #include <Geode/Geode.hpp>
 
-#include <Geode/utils/terminate.hpp>
-
 #include <Geode/cocos/CCScheduler.h>
 
 using namespace geode::prelude;
 
 bool SplitNode::init(float time) {
+    m_splitTime = time;
+
     if (CCNode::init()) {
-        m_srtMod = getMod();
-        m_splitTime = time;
-
-        if (!m_srtMod) {
-            log::error("Couldn't load self mod");
-            return false;
-        };
-
         setID("split"_spr);
         setContentSize({ 125.f, 2.5f });
         setAnchorPoint({ 0, 1 });

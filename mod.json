@@ -63,6 +63,14 @@
 			"description": "Only allow use of the timer in platformer levels.",
 			"default": true
 		},
+		"checkpoint-split": {
+			"type": "bool",
+			"name": "Checkpoint Split",
+			"description": "Create a split when the player activates a checkpoint.",
+			"default": true,
+			"enable-if": "platformer-only",
+			"enable-if-description": "This setting is only available in platformer levels."
+		},
 		"reset-death": {
 			"type": "bool",
 			"name": "Reset on Death",
