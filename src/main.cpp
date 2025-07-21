@@ -8,6 +8,7 @@
 
 using namespace geode::prelude;
 
+// it's modding time :3
 auto srt = getMod();
 
 class $modify(MyPlayLayer, PlayLayer) {
@@ -22,7 +23,8 @@ class $modify(MyPlayLayer, PlayLayer) {
             if (srt->getSettingValue<bool>("platformer-only") ? level->isPlatformer() : true) {
                 auto [widthCS, heightCS] = getScaledContentSize();
 
-                if (m_fields->m_speedrunNode = SpeedrunNode::create()) {
+                if (auto sr = SpeedrunNode::create()) {
+                    m_fields->m_speedrunNode = sr;
                     m_fields->m_speedrunNode->setZOrder(101);
                     m_fields->m_speedrunNode->setAnchorPoint({ 1, 1 });
                     m_fields->m_speedrunNode->setPosition({ widthCS - 20.f, heightCS - 30.f });
