@@ -23,6 +23,7 @@ bool SpeedrunNode::init() {
             ->setAxisAlignment(AxisAlignment::End)
             ->setCrossAxisAlignment(AxisAlignment::Start)
             ->setCrossAxisLineAlignment(AxisAlignment::Start)
+            ->setCrossAxisReverse(true)
             ->setGrowCrossAxis(false)
             ->setAutoGrowAxis(125.f)
             ->setAxisReverse(true)
@@ -65,23 +66,23 @@ bool SpeedrunNode::init() {
             ->setGrowCrossAxis(false)
             ->setGap(5.f);
 
-        m_splitList = ScrollLayer::create({ getContentSize().width, 625.f });
-        m_splitList->setID("split-list");
-        m_splitList->setAnchorPoint({ 0, 1 });
-        m_splitList->setPosition({ 0.f, 0.f });
+        // m_splitList = ScrollLayer::create({ getContentSize().width, 625.f });
+        // m_splitList->setID("split-list");
+        // m_splitList->setAnchorPoint({ 0, 1 });
+        // m_splitList->setPosition({ 0.f, 0.f });
 
-        m_splitList->m_contentLayer->setLayout(scrollLayerLayout);
-        m_splitList->m_contentLayer->updateLayout(true);
+        // m_splitList->m_contentLayer->setLayout(scrollLayerLayout);
+        // m_splitList->m_contentLayer->updateLayout(true);
 
-        addChild(m_splitList);
+        // addChild(m_splitList);
 
         m_scheduler->scheduleUpdateForTarget(this, 0, false);
 
         auto bg = CCLayerColor::create({ 0,0,0,255 });
         bg->setID("timer-bg");
-        bg->setAnchorPoint({ 0, 0 });
-        bg->setPosition({ 0.f, 0.f });
-        bg->setScaledContentSize(getScaledContentSize());
+        bg->setAnchorPoint(menu->getAnchorPoint());
+        bg->setPosition(menu->getPosition());
+        bg->setScaledContentSize(menu->getScaledContentSize());
         bg->setZOrder(1);
 
         addChild(bg);

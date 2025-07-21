@@ -15,7 +15,9 @@ class $modify(MyPlayLayer, PlayLayer) {
     struct Fields {
         SpeedrunNode* m_speedrunNode = nullptr; // The speedrun node for the timer
 
-        CCMenuItemSpriteExtra* m_mobileToggle = nullptr; // The toggle button for mobile players
+        CCMenuItemSpriteExtra* m_mobilePause = nullptr; // The toggle button for mobile players
+        CCMenuItemSpriteExtra* m_mobileSplit = nullptr; // The split button for mobile players
+        CCMenuItemSpriteExtra* m_mobileReset = nullptr; // The reset button for mobile players
     };
 
     bool init(GJGameLevel * level, bool useReplay, bool dontCreateObjects) {

@@ -1,4 +1,4 @@
-#ifndef GEODE_IS_IOS
+#if !defined(GEODE_IS_IOS) 
 #include <Geode/Geode.hpp>
 #include <Geode/DefaultInclude.hpp>
 
