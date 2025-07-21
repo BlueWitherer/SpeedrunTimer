@@ -17,6 +17,8 @@ protected:
     bool m_speedtimerOn = false; // If the speedrun is active
     bool m_speedtimerPaused = true; // If the speedrun is paused
 
+    CCMenu* m_timeMenu = nullptr; // The menu that contains the timers
+
     CCLabelBMFont* m_speedtimer = nullptr; // The text label for the time
     CCLabelBMFont* m_speedtimerMs = nullptr; // The text label for the time in milliseconds
 

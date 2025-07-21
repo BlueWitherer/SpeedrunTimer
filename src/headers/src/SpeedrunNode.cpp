@@ -30,14 +30,14 @@ bool SpeedrunNode::init() {
             ->setAutoScale(false)
             ->setGap(0.f);
 
-        auto menu = CCMenu::create();
-        menu->setID("timer-menu");
-        menu->setAnchorPoint({ 0, 0 });
-        menu->setPosition({ 0.f, 0.f });
-        menu->setZOrder(2);
-        menu->setLayout(layout);
+        m_timeMenu = CCMenu::create();
+        m_timeMenu->setID("timer-menu");
+        m_timeMenu->setAnchorPoint({ 0, 0 });
+        m_timeMenu->setPosition({ 0.f, 0.f });
+        m_timeMenu->setZOrder(2);
+        m_timeMenu->setLayout(layout);
 
-        addChild(menu);
+        addChild(m_timeMenu);
 
         m_speedtimer = CCLabelBMFont::create("0", "gjFont17.fnt");
         m_speedtimer->setID("timer-seconds");
@@ -53,10 +53,10 @@ bool SpeedrunNode::init() {
         m_speedtimerMs->setAnchorPoint({ 1, 0 });
         m_speedtimerMs->setScale(0.5f);
 
-        menu->addChild(m_speedtimerMs);
-        menu->addChild(m_speedtimer);
+        m_timeMenu->addChild(m_speedtimerMs);
+        m_timeMenu->addChild(m_speedtimer);
 
-        menu->updateLayout(true);
+        m_timeMenu->updateLayout(true);
 
         // Create layout for scroll layer
         auto scrollLayerLayout = ColumnLayout::create()
@@ -80,14 +80,14 @@ bool SpeedrunNode::init() {
 
         auto bg = CCLayerColor::create({ 0,0,0,255 });
         bg->setID("background");
-        bg->setAnchorPoint(menu->getAnchorPoint());
-        bg->setPosition(menu->getPosition());
-        bg->setScaledContentSize(menu->getScaledContentSize());
+        bg->setAnchorPoint(m_timeMenu->getAnchorPoint());
+        bg->setPosition(m_timeMenu->getPosition());
+        bg->setScaledContentSize(m_timeMenu->getScaledContentSize());
         bg->setZOrder(1);
 
         addChild(bg);
 
-        menu->setScale(0.875f);
+        m_timeMenu->setScale(0.875f);
 
         // toggle timer
         this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
@@ -122,11 +122,12 @@ void SpeedrunNode::update(float dt) {
     auto current = as<int>(m_speedTime);
     if (m_speedtimerOn) m_speedTime += m_speedtimerPaused ? 0.f : dt;
 
-    std::string secStr = std::to_string(as<int>(m_speedTime));
+    auto newTime = as<int>(m_speedTime);
+    std::string secStr = std::to_string(newTime);
 
     if (m_srtMod->getSettingValue<bool>("format-minutes")) {
         int minutes = as<int>(m_speedTime / 60.f);
-        int seconds = as<int>(m_speedTime) % 60;
+        int seconds = newTime % 60;
 
         if (minutes > 0) {
             std::ostringstream oss;
@@ -136,7 +137,7 @@ void SpeedrunNode::update(float dt) {
             secStr = std::to_string(seconds);
         };
     } else {
-        secStr = std::to_string(as<int>(m_speedTime));
+        secStr = std::to_string(newTime);
     };
 
     if (m_speedtimer) m_speedtimer->setCString(secStr.c_str()); // seconds
@@ -144,6 +145,12 @@ void SpeedrunNode::update(float dt) {
     if (m_speedtimerMs) { // ms
         std::string msStr = "." + std::to_string(as<int>(m_speedTime * 100) % 100);
         m_speedtimerMs->setCString(msStr.c_str());
+    };
+
+    if (m_timeMenu) {
+        if (current < newTime) m_timeMenu->updateLayout(true);
+    } else {
+        log::error("Speedrun menu not found");
     };
 };
 
