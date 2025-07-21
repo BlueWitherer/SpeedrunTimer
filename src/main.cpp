@@ -65,4 +65,14 @@ class $modify(MyPlayLayer, PlayLayer) {
 
         PlayLayer::checkpointActivated(p0);
     };
+
+    void levelComplete() {
+        if (srt->getSettingValue<bool>("pause-complete")) {
+            if (m_fields->m_speedrunNode) m_fields->m_speedrunNode->pauseTimer();
+        } else {
+            log::info("Speedrun timer will not pause on level completion");
+        };
+
+        PlayLayer::levelComplete();
+    }
 };

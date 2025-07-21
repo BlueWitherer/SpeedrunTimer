@@ -76,6 +76,12 @@
 			"name": "Reset on Death",
 			"description": "Reset the speedrun timer when the player dies.",
 			"default": true
+		},
+		"pause-complete": {
+			"type": "bool",
+			"name": "Pause on Complete",
+			"description": "Pause the speedrun timer when the player completes the level.",
+			"default": true
 		}
 	},
 	"early-load": false

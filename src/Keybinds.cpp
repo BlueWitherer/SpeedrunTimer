@@ -1,12 +1,13 @@
-#if !defined(GEODE_IS_IOS) 
 #include <Geode/Geode.hpp>
-#include <Geode/DefaultInclude.hpp>
 
 #include <Geode/utils/cocos.hpp>
 
+using namespace geode::prelude;
+
+#if !defined(GEODE_IS_IOS)
+
 #include <geode.custom-keybinds/include/Keybinds.hpp>
 
-using namespace geode::prelude;
 using namespace keybinds;
 
 $execute
@@ -36,4 +37,5 @@ $execute
         log::error("Failed to get keybind manager");
     };
 };
+
 #endif

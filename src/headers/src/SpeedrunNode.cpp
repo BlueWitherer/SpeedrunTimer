@@ -19,7 +19,7 @@ bool SpeedrunNode::init() {
         setContentSize({ 125.f, 10.f });
 
         auto layout = AxisLayout::create(Axis::Row)
-            ->setDefaultScaleLimits(0.625f, 0.875f)
+            ->setDefaultScaleLimits(0.5f, 0.875f)
             ->setAxisAlignment(AxisAlignment::End)
             ->setCrossAxisAlignment(AxisAlignment::Start)
             ->setCrossAxisLineAlignment(AxisAlignment::Start)
@@ -50,8 +50,8 @@ bool SpeedrunNode::init() {
         m_speedtimerMs->setID("timer-milliseconds");
         m_speedtimerMs->setColor(m_srtMod->getSettingValue<ccColor3B>("color"));
         m_speedtimerMs->setAlignment(CCTextAlignment::kCCTextAlignmentLeft);
-        m_speedtimerMs->setAnchorPoint({ 0, 0 });
-        m_speedtimerMs->setScale(0.625f);
+        m_speedtimerMs->setAnchorPoint({ 1, 0 });
+        m_speedtimerMs->setScale(0.5f);
 
         menu->addChild(m_speedtimerMs);
         menu->addChild(m_speedtimer);
@@ -79,13 +79,15 @@ bool SpeedrunNode::init() {
         m_scheduler->scheduleUpdateForTarget(this, 0, false);
 
         auto bg = CCLayerColor::create({ 0,0,0,255 });
-        bg->setID("timer-bg");
+        bg->setID("background");
         bg->setAnchorPoint(menu->getAnchorPoint());
         bg->setPosition(menu->getPosition());
         bg->setScaledContentSize(menu->getScaledContentSize());
         bg->setZOrder(1);
 
         addChild(bg);
+
+        menu->setScale(0.875f);
 
         // toggle timer
         this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
