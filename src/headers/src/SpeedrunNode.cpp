@@ -6,10 +6,12 @@
 
 #include <Geode/Geode.hpp>
 
-#include <geode.custom-keybinds/include/Keybinds.hpp>
-
 using namespace geode::prelude;
+
+#ifndef GEODE_IS_IOS
+#include <geode.custom-keybinds/include/Keybinds.hpp>
 using namespace keybinds;
+#endif
 
 bool SpeedrunNode::init() {
     m_scheduler = CCDirector::get()->getScheduler();
@@ -99,6 +101,7 @@ bool SpeedrunNode::init() {
 
         m_timeMenu->setScale(0.875f);
 
+#ifndef GEODE_IS_IOS
         // toggle timer
         this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
             if (event->isDown()) pauseTimer(!m_speedtimerPaused); // toggle the timer on or off
@@ -122,6 +125,7 @@ bool SpeedrunNode::init() {
 
             return ListenerResult::Propagate;
                                                           }, "reset-timer"_spr);
+#endif
 
         return true;
     } else {

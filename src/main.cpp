@@ -6,10 +6,12 @@
 
 #include <Geode/modify/PlayLayer.hpp>
 
-#include <geode.custom-keybinds/include/Keybinds.hpp>
-
 using namespace geode::prelude;
+
+#ifndef GEODE_IS_IOS
+#include <geode.custom-keybinds/include/Keybinds.hpp>
 using namespace keybinds;
+#endif
 
 // it's modding time :3
 auto srt = getMod();
@@ -43,6 +45,7 @@ class $modify(MyPlayLayer, PlayLayer) {
 
                     addChild(m_fields->m_speedrunNode);
 
+#ifndef GEODE_IS_IOS
                     // delete timer
                     this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
                         if (event->isDown()) m_fields->m_speedrunNode->removeMeAndCleanup();
@@ -52,6 +55,7 @@ class $modify(MyPlayLayer, PlayLayer) {
 
                         return ListenerResult::Propagate;
                                                                       }, "remove-timer"_spr);
+#endif
                 } else {
                     log::error("Failed to create timer!");
                 };
