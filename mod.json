@@ -8,7 +8,7 @@
 	},
 	"id": "cheeseworks.speedruntimer",
 	"name": "Speedrun Timer",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"developer": "Cheeseworks",
 	"description": "Just a speedrun timer for platformer levels.",
 	"dependencies": {

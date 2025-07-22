@@ -43,6 +43,7 @@ When reaching checkpoints, splits may be generated automatically. This can be ch
 ![preview](previews/preview-2.png)
 ![preview](previews/preview-3.png)
 ![preview](previews/preview-4.png)
+![preview](previews/preview-5.png)
 
 ---
 
