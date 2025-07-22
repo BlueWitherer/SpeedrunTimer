@@ -57,18 +57,18 @@ class $modify(MyPlayLayer, PlayLayer) {
 #endif
 
                     // create mobile controls
-                    if (srt->getSettingValue<bool>("mobile-controls")) {
+                    if (srt->getSettingValue<bool>("mobile-btns")) {
                         auto btnMenuLayout = AxisLayout::create(Axis::Row)
                             ->setDefaultScaleLimits(0.5f, 0.875f)
-                            ->setAxisAlignment(AxisAlignment::End)
+                            ->setAxisAlignment(AxisAlignment::Start)
                             ->setCrossAxisAlignment(AxisAlignment::Start)
                             ->setCrossAxisLineAlignment(AxisAlignment::Start)
                             ->setCrossAxisReverse(true)
                             ->setGrowCrossAxis(false)
                             ->setAutoGrowAxis(125.f)
-                            ->setAxisReverse(true)
+                            ->setAxisReverse(false)
                             ->setAutoScale(false)
-                            ->setGap(0.f);
+                            ->setGap(2.5f);
 
                         auto btnMenu = CCMenu::create();
                         btnMenu->setID("mobile-controls"_spr);
@@ -77,7 +77,8 @@ class $modify(MyPlayLayer, PlayLayer) {
                         btnMenu->setZOrder(102);
                         btnMenu->setLayout(btnMenuLayout);
 
-                        auto pauseTimerBtnSprite = CCSprite::create("GJ_pauseBtn_001.png");
+                        auto pauseTimerBtnSprite = CCSprite::createWithSpriteFrameName("GJ_pauseBtn_001.png");
+                        pauseTimerBtnSprite->setScale(1.f);
 
                         // create the pause button
                         auto pauseTimerBtn = CCMenuItemSpriteExtra::create(
@@ -87,17 +88,19 @@ class $modify(MyPlayLayer, PlayLayer) {
                         );
                         pauseTimerBtn->setID("mobile-pause");
 
-                        auto splitTimerBtnSprite = CCSprite::create("GJ_practiceBtn_001.png");
+                        auto splitTimerBtnSprite = CCSprite::createWithSpriteFrameName("GJ_practiceBtn_001.png");
+                        splitTimerBtnSprite->setScale(0.5f);
 
                         // create the split button
                         auto splitTimerBtn = CCMenuItemSpriteExtra::create(
-                            CCSprite::create("GJ_buttonSplit_001.png"),
+                            splitTimerBtnSprite,
                             this,
                             menu_selector(MyPlayLayer::createSplit)
                         );
                         splitTimerBtn->setID("mobile-split");
 
-                        auto resetTimerBtnSprite = CCSprite::create("GJ_replayBtn_001.png");
+                        auto resetTimerBtnSprite = CCSprite::createWithSpriteFrameName("GJ_replayBtn_001.png");
+                        resetTimerBtnSprite->setScale(0.5f);
 
                         // create the reset button
                         auto resetTimerBtn = CCMenuItemSpriteExtra::create(
@@ -111,9 +114,9 @@ class $modify(MyPlayLayer, PlayLayer) {
                         btnMenu->addChild(splitTimerBtn);
                         btnMenu->addChild(resetTimerBtn);
 
-                        btnMenu->updateLayout();
-
                         addChild(btnMenu);
+
+                        btnMenu->updateLayout();
                     } else {
                         log::warn("Mobile controls are disabled");
                     };
@@ -132,7 +135,7 @@ class $modify(MyPlayLayer, PlayLayer) {
 
     void pauseTimer(CCObject*) {
         if (m_fields->m_speedrunNode) {
-            m_fields->m_speedrunNode->pauseTimer();
+            m_fields->m_speedrunNode->pauseTimer(!m_fields->m_speedrunNode->m_speedtimerPaused);
         } else {
             log::error("Speedrun node is not initialized");
         };

@@ -32,11 +32,10 @@
 		"community": "https://www.dsc.gg/cubic"
 	},
 	"issues": {
-		"info": "Report any issues to our repository!",
+		"info": "Report any issues to my repository!",
 		"url": "https://www.github.com/BlueWitherer/SpeedrunTimer/issues/"
 	},
 	"tags": [
-		"joke",
 		"offline",
 		"gameplay"
 	],
@@ -114,13 +113,30 @@
 		},
 		"color-start": {
 			"type": "rgb",
-			"name": "Starting Timer Color",
-			"description": "The color of the speedrun timer before starting.",
+			"name": "Disabled Timer Color",
+			"description": "The color of the speedrun timer before starting or after stopping.",
 			"default": [
 				125,
 				125,
 				125
 			]
+		},
+		"split-limit": {
+			"type": "int",
+			"name": "Split Limit",
+			"description": "The maximum number of splits that can be created.",
+			"default": 20,
+			"min": 1,
+			"max": 100,
+			"control": {
+				"input": true,
+				"slider": true,
+				"slider-step": 1,
+				"arrows": true,
+				"arrow-step": 10,
+				"big-arrows": true,
+				"big-arrow-step": 25
+			}
 		},
 		"mobile-btns": {
 			"type": "bool",

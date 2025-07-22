@@ -37,8 +37,8 @@ bool SpeedrunNode::init() {
 
         m_timeMenu = CCMenu::create();
         m_timeMenu->setID("timer-menu");
-        m_timeMenu->setAnchorPoint({ 0, 0 });
-        m_timeMenu->setPosition({ 0.f, 0.f });
+        m_timeMenu->setAnchorPoint({ 1, 1 });
+        m_timeMenu->setPosition({ getScaledContentWidth(), 0.f });
         m_timeMenu->setZOrder(2);
         m_timeMenu->setLayout(layout);
 
@@ -77,7 +77,7 @@ bool SpeedrunNode::init() {
             scroll->setID("split-list");
             scroll->ignoreAnchorPointForPosition(false);
             scroll->setAnchorPoint({ 0, 1 });
-            scroll->setPosition({ 0.f, -1.25f });
+            scroll->setPosition({ 15.f, -0.625f - m_timeMenu->getScaledContentHeight() });
             scroll->setTouchEnabled(false);
 
             scroll->m_contentLayer->setAnchorPoint({ 0, 1 });
@@ -100,8 +100,7 @@ bool SpeedrunNode::init() {
         auto bg = CCLayerColor::create({ 0, 0, 0, 255 });
         bg->setID("background");
         bg->setOpacity(bgOpacity);
-        bg->setAnchorPoint(m_timeMenu->getAnchorPoint());
-        bg->setPosition(m_timeMenu->getPosition());
+        bg->setPosition({ 15.f, 2.5f - m_timeMenu->getScaledContentHeight() });
         bg->setScaledContentSize(m_timeMenu->getScaledContentSize());
         bg->setZOrder(1);
 
@@ -169,8 +168,6 @@ void SpeedrunNode::update(float dt) {
         std::string msStr = "." + std::to_string(as<int>(m_speedTime * 100) % 100);
         m_speedtimerMs->setCString(msStr.c_str());
     };
-
-    if (m_timeMenu) m_timeMenu->updateLayout(true);
 };
 
 void SpeedrunNode::toggleTimer(bool toggle) {
@@ -218,10 +215,17 @@ void SpeedrunNode::pauseTimer(bool pause) {
 void SpeedrunNode::createSplit() {
     if (m_speedtimerOn) {
         if (auto splitNode = SplitNode::create(m_speedTime)) {
-            if (m_splitList) m_splitList->m_contentLayer->addChild(splitNode);
-            if (m_splitList) m_splitList->m_contentLayer->updateLayout(true);
+            auto limit = as<int>(m_srtMod->getSettingValue<int64_t>("split-limit"));
+            auto withinLimit = limit < m_splitList->m_contentLayer->getChildrenCount();
 
-            log::info("Speedrun split created at {} seconds", m_speedTime);
+            if (m_splitList) {
+                if (withinLimit) m_splitList->m_contentLayer->addChild(splitNode);
+                m_splitList->m_contentLayer->updateLayout(true);
+            } else {
+                log::error("Split list not found");
+            };
+
+            log::info("Speedrun split created at {} seconds{}", m_speedTime, withinLimit ? "" : " (limit reached, node not added)");
         } else {
             log::error("Failed to create speedrun split node");
         };

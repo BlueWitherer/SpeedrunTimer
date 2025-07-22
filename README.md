@@ -17,12 +17,12 @@ Speedrun that level!
 ---
 
 ## About
-This mod adds a speedrun timer in the style of the *[LiveSplit](https://www.livesplit.org/)* interface to the player's UI when playing a platformer level. Controller bindings supported.
+This mod adds a speedrun timer in the style of the *[LiveSplit](https://www.livesplit.org/)* interface to the player's UI when playing a platformer level.
 
 ---
 
 ### Timer
-A timer will appear on the top-right corner of the screen. It can be started and stopped via the `NumPad 1` key, and can be fully reset with `NumPad 3`. You can customize the keybinds via the *[Custom Keybinds](https://www.geode-sdk.org/mods/geode.custom-keybinds)* mod.
+A timer will appear on the top-right corner of the screen. It can be started and stopped via the `NumPad 1` key, and can be fully reset with `NumPad 3`. You can customize the keybinds via the *[Custom Keybinds](https://www.geode-sdk.org/mods/geode.custom-keybinds)* mod. Controller bindings supported.
 
 By default, the timer will only appear when the player is playing on a platformer level. However, this can be changed in the settings.
 
