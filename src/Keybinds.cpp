@@ -4,7 +4,7 @@
 
 using namespace geode::prelude;
 
-#if !defined(GEODE_IS_IOS)
+#ifndef GEODE_IS_IOS
 
 #include <geode.custom-keybinds/include/Keybinds.hpp>
 

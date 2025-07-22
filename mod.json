@@ -3,7 +3,8 @@
 	"gd": {
 		"win": "2.2074",
 		"android": "2.2074",
-		"mac": "2.2074"
+		"mac": "2.2074",
+		"ios": "2.2074"
 	},
 	"id": "cheeseworks.speedruntimer",
 	"name": "Speedrun Timer",
@@ -64,12 +65,12 @@
 		"format-minutes": {
 			"type": "bool",
 			"name": "Format Minutes",
-			"description": "Whether to format the timer label to include minutes.",
+			"description": "Format the timer label to include minutes alongside seconds.",
 			"default": true
 		},
-		"functions": {
+		"conditions": {
 			"type": "title",
-			"name": "Functions",
+			"name": "Conditions",
 			"description": "The speedrun timer's functionality."
 		},
 		"platformer-only": {
@@ -84,7 +85,7 @@
 			"description": "Create a split when the player activates a checkpoint.",
 			"default": true,
 			"enable-if": "platformer-only",
-			"enable-if-description": "This setting is only available in platformer levels."
+			"enable-if-description": "This setting is only available for platformer levels."
 		},
 		"reset-death": {
 			"type": "bool",
