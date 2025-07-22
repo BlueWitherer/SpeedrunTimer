@@ -33,6 +33,13 @@ $execute
             { Keybind::create(KEY_NumPad3, Modifier::None)},
             "Speedrun"
                              });
+
+        bm->registerBindable({
+            "remove-timer"_spr,
+            "Remove Timer", "Remove the speedrun timer from the screen until rejoining the level.",
+            { Keybind::create(KEY_Delete, Modifier::None)},
+            "Speedrun"
+                             });
     } else {
         log::error("Failed to get keybind manager");
     };

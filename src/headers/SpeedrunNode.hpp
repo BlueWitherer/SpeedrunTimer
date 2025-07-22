@@ -29,6 +29,9 @@ protected:
     bool init();
 
 public:
+    // Toggle the timer, must be done manually at first
+    void toggleTimer(bool toggle = false);
+
     // Pause the timer
     void pauseTimer(bool pause = true);
 

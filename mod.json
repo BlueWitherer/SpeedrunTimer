@@ -41,6 +41,17 @@
 		"gameplay"
 	],
 	"settings": {
+		"enabled": {
+			"type": "bool",
+			"name": "Enabled",
+			"description": "Whether the speedrun timer is enabled.",
+			"default": true
+		},
+		"ui": {
+			"type": "title",
+			"name": "Interface",
+			"description": "Settings related to the interface."
+		},
 		"color": {
 			"type": "rgb",
 			"name": "Timer Color",
@@ -48,7 +59,7 @@
 			"default": [
 				25,
 				255,
-				75
+				125
 			]
 		},
 		"format-minutes": {
@@ -56,6 +67,11 @@
 			"name": "Format Minutes",
 			"description": "Whether to format the timer label to include minutes.",
 			"default": true
+		},
+		"functions": {
+			"type": "title",
+			"name": "Functions",
+			"description": "The speedrun timer's functionality."
 		},
 		"platformer-only": {
 			"type": "bool",
@@ -75,12 +91,12 @@
 			"type": "bool",
 			"name": "Reset on Death",
 			"description": "Reset the speedrun timer when the player dies.",
-			"default": true
+			"default": false
 		},
-		"pause-complete": {
+		"stop-complete": {
 			"type": "bool",
-			"name": "Pause on Complete",
-			"description": "Pause the speedrun timer when the player completes the level.",
+			"name": "Stop on Complete",
+			"description": "Stop the speedrun timer when the player completes the level.",
 			"default": true
 		}
 	},

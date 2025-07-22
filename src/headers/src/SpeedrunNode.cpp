@@ -39,18 +39,18 @@ bool SpeedrunNode::init() {
 
         addChild(m_timeMenu);
 
-        m_speedtimer = CCLabelBMFont::create("0", "gjFont17.fnt");
+        m_speedtimer = CCLabelBMFont::create("0", "gjFont16.fnt");
         m_speedtimer->setID("timer-seconds");
         m_speedtimer->setColor(m_srtMod->getSettingValue<ccColor3B>("color"));
         m_speedtimer->setAlignment(CCTextAlignment::kCCTextAlignmentRight);
         m_speedtimer->setAnchorPoint({ 1, 0 });
         m_speedtimer->setScale(0.875f);
 
-        m_speedtimerMs = CCLabelBMFont::create(".0", "gjFont17.fnt");
+        m_speedtimerMs = CCLabelBMFont::create(".0", "gjFont16.fnt");
         m_speedtimerMs->setID("timer-milliseconds");
         m_speedtimerMs->setColor(m_srtMod->getSettingValue<ccColor3B>("color"));
         m_speedtimerMs->setAlignment(CCTextAlignment::kCCTextAlignmentLeft);
-        m_speedtimerMs->setAnchorPoint({ 1, 0 });
+        m_speedtimerMs->setAnchorPoint({ 0, 0 });
         m_speedtimerMs->setScale(0.5f);
 
         m_timeMenu->addChild(m_speedtimerMs);
@@ -61,24 +61,34 @@ bool SpeedrunNode::init() {
         // Create layout for scroll layer
         auto scrollLayerLayout = ColumnLayout::create()
             ->setAxisAlignment(AxisAlignment::End)
+            ->setCrossAxisAlignment(AxisAlignment::End)
+            ->setCrossAxisLineAlignment(AxisAlignment::End)
+            ->setGrowCrossAxis(false)
             ->setAxisReverse(true)
             ->setAutoGrowAxis(0.f)
-            ->setGrowCrossAxis(false)
-            ->setGap(5.f);
+            ->setGap(1.25f);
 
-        // m_splitList = ScrollLayer::create({ getContentSize().width, 625.f });
-        // m_splitList->setID("split-list");
-        // m_splitList->setAnchorPoint({ 0, 1 });
-        // m_splitList->setPosition({ 0.f, 0.f });
+        if (auto scroll = ScrollLayer::create({ getContentSize().width, 250.f })) {
+            scroll->setID("split-list");
+            scroll->ignoreAnchorPointForPosition(false);
+            scroll->setAnchorPoint({ 0, 1 });
+            scroll->setPosition({ 0.f, 0.f });
 
-        // m_splitList->m_contentLayer->setLayout(scrollLayerLayout);
-        // m_splitList->m_contentLayer->updateLayout(true);
+            scroll->m_contentLayer->setAnchorPoint({ 0, 1 });
+            scroll->m_contentLayer->setLayout(scrollLayerLayout);
 
-        // addChild(m_splitList);
+            m_splitList = scroll;
+            addChild(m_splitList);
+
+            m_splitList->m_contentLayer->updateLayout(true);
+            m_splitList->scrollToTop();
+        } else {
+            log::error("Failed to create scroll layer for speedrun splits");
+        };
 
         m_scheduler->scheduleUpdateForTarget(this, 0, false);
 
-        auto bg = CCLayerColor::create({ 0,0,0,255 });
+        auto bg = CCLayerColor::create({ 0, 0,0,255 });
         bg->setID("background");
         bg->setAnchorPoint(m_timeMenu->getAnchorPoint());
         bg->setPosition(m_timeMenu->getPosition());
@@ -99,7 +109,8 @@ bool SpeedrunNode::init() {
 
         // create a split
         this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
-            if (event->isDown()) log::info("Speedrun split created at {} seconds", m_speedTime);
+            if (event->isDown()) createSplit(); // create a split at the current time
+            log::info("Speedrun split created at {} seconds", m_speedTime);
 
             return ListenerResult::Propagate;
                                                           }, "split-timer"_spr);
@@ -147,10 +158,20 @@ void SpeedrunNode::update(float dt) {
         m_speedtimerMs->setCString(msStr.c_str());
     };
 
-    if (m_timeMenu) {
-        if (current < newTime) m_timeMenu->updateLayout(true);
+    if (m_timeMenu) m_timeMenu->updateLayout(true);
+};
+
+void SpeedrunNode::toggleTimer(bool toggle) {
+    if (m_speedtimerOn == toggle) {
+        log::info("Speedrun timer is already {}", toggle ? "on" : "off");
     } else {
-        log::error("Speedrun menu not found");
+        m_speedtimerOn = toggle;
+
+        if (m_speedtimerOn) {
+            log::info("Speedrun timer started");
+        } else {
+            log::info("Speedrun timer stopped at {} seconds", m_speedTime);
+        };
     };
 };
 
@@ -163,7 +184,6 @@ void SpeedrunNode::pauseTimer(bool pause) {
         if (m_speedtimerPaused) {
             log::info("Speedrun timer paused at {} seconds", m_speedTime);
         } else {
-            m_speedtimerOn = true;
             log::info("Speedrun timer unpaused");
         };
     };
@@ -187,15 +207,14 @@ void SpeedrunNode::createSplit() {
 void SpeedrunNode::resetAll() {
     m_speedTime = 0.f;
 
-    m_speedtimerOn = false;
     m_speedtimerPaused = true;
 
     if (m_speedtimer) m_speedtimer->setCString("0");
     if (m_speedtimerMs) m_speedtimerMs->setCString(".0");
 
     if (m_splitList) {
-        m_splitList->removeAllChildren();
-        m_splitList->updateLayout(true);
+        m_splitList->m_contentLayer->removeAllChildren();
+        m_splitList->m_contentLayer->updateLayout(true);
     } else {
         log::error("Split list not found");
     };
