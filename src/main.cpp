@@ -68,13 +68,15 @@ class $modify(MyPlayLayer, PlayLayer) {
     void destroyPlayer(PlayerObject * p0, GameObject * p1) {
         if (srt->getSettingValue<bool>("reset-death")) { // check if reset after death is enabled
             if (p1 == m_fields->m_destroyPlayerObject) {
-                log::warn("Player object is already destroyed");
+                log::warn("Player already destroyed");
             } else {
                 if (m_fields->m_speedrunNode) m_fields->m_speedrunNode->pauseTimer(true);
             };
         } else {
             log::warn("Death reset is disabled");
         };
+
+        m_fields->m_destroyPlayerObject = p1;
 
         PlayLayer::destroyPlayer(p0, p1);
     };
@@ -112,6 +114,12 @@ class $modify(MyPlayLayer, PlayLayer) {
             m_fields->m_checkpointObject = p0;
         } else {
             log::warn("Checkpoint split is disabled");
+        };
+
+        if (srt->getSettingValue<bool>("reset-death")) { // check if reset after death is enabled
+            if (m_fields->m_speedrunNode) m_fields->m_speedrunNode->pauseTimer(false); // force resume
+        } else {
+            log::info("Timer will not resume on checkpoint activation");
         };
 
         PlayLayer::checkpointActivated(p0);
