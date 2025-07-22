@@ -73,11 +73,11 @@ bool SpeedrunNode::init() {
             ->setAutoGrowAxis(0.f)
             ->setGap(0.625f);
 
-        if (auto scroll = ScrollLayer::create({ getContentSize().width, 250.f })) {
+        if (auto scroll = ScrollLayer::create({ getContentSize().width, 275.f })) {
             scroll->setID("split-list");
             scroll->ignoreAnchorPointForPosition(false);
             scroll->setAnchorPoint({ 0, 1 });
-            scroll->setPosition({ 15.f, -0.625f - m_timeMenu->getScaledContentHeight() });
+            scroll->setPosition({ 15.f, -0.25f - m_timeMenu->getScaledContentHeight() });
             scroll->setTouchEnabled(false);
 
             scroll->m_contentLayer->setAnchorPoint({ 0, 1 });
@@ -216,12 +216,13 @@ void SpeedrunNode::createSplit() {
     if (m_speedtimerOn) {
         if (auto splitNode = SplitNode::create(m_speedTime)) {
             auto limit = as<int>(m_srtMod->getSettingValue<int64_t>("split-limit"));
-            auto withinLimit = limit < m_splitList->m_contentLayer->getChildrenCount();
+            auto withinLimit = limit >= m_splitList->m_contentLayer->getChildrenCount();
 
             if (m_splitList) {
                 if (withinLimit) m_splitList->m_contentLayer->addChild(splitNode);
                 m_splitList->m_contentLayer->updateLayout(true);
             } else {
+                splitNode->removeMeAndCleanup();
                 log::error("Split list not found");
             };
 

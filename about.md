@@ -17,7 +17,7 @@ This mod adds a speedrun timer in the style of the *[LiveSplit](https://www.live
 ---
 
 ### Timer
-A timer will appear on the top-right corner of the screen. It can be started and stopped via the `NumPad 1` key, and can be fully reset with `NumPad 3`. You can customize the keybinds via the *[Custom Keybinds](mod:geode.custom-keybinds)* mod. Controller bindings supported.
+A timer will appear on the top-right corner of the screen. It can be started and stopped via the `NumPad 1` key, and can be fully reset with `NumPad 3`. You can customize the keybinds via the *[Custom Keybinds](mod:geode.custom-keybinds)* mod.
 
 By default, the timer will only appear when the player is playing on a platformer level. However, this can be changed in the settings.
 

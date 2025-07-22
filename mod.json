@@ -149,6 +149,23 @@
 				"ios": true
 			}
 		},
+		"mobile-opacity": {
+			"type": "int",
+			"name": "Mobile Button Opacity",
+			"description": "The opacity of the mobile buttons.",
+			"default": 200,
+			"min": 0,
+			"max": 255,
+			"control": {
+				"input": true,
+				"slider": true,
+				"slider-step": 5,
+				"arrows": true,
+				"arrow-step": 25,
+				"big-arrows": true,
+				"big-arrow-step": 50
+			}
+		},
 		"conditions": {
 			"type": "title",
 			"name": "Conditions",

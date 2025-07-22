@@ -23,9 +23,9 @@ class $modify(MyPlayLayer, PlayLayer) {
 
         SpeedrunNode* m_speedrunNode = nullptr; // The speedrun node for the timer
 
-        CCMenuItemSpriteExtra* m_mobilePause = nullptr; // The toggle button for mobile players
-        CCMenuItemSpriteExtra* m_mobileSplit = nullptr; // The split button for mobile players
-        CCMenuItemSpriteExtra* m_mobileReset = nullptr; // The reset button for mobile players
+        CCMenu* m_mobileMenu = nullptr; // Mobile controls menu
+
+        bool m_draggingMobile = false; // If the player is dragging the mobile menu
     };
 
     bool init(GJGameLevel * level, bool useReplay, bool dontCreateObjects) {
@@ -37,7 +37,7 @@ class $modify(MyPlayLayer, PlayLayer) {
                 if (auto sr = SpeedrunNode::create()) {
                     sr->setZOrder(101);
                     sr->setAnchorPoint({ 1, 1 });
-                    sr->setPosition({ widthCS - 25.f, heightCS - 37.5f });
+                    sr->setPosition({ widthCS - 25.f, heightCS - 25.f });
 
                     sr->toggleTimer(true); // enable the timer
 
@@ -68,17 +68,21 @@ class $modify(MyPlayLayer, PlayLayer) {
                             ->setAutoGrowAxis(125.f)
                             ->setAxisReverse(false)
                             ->setAutoScale(false)
-                            ->setGap(2.5f);
+                            ->setGap(3.75f);
 
-                        auto btnMenu = CCMenu::create();
-                        btnMenu->setID("mobile-controls"_spr);
-                        btnMenu->setAnchorPoint({ 0, 1 });
-                        btnMenu->setPosition({ 25.f, getScaledContentHeight() - 25.f });
-                        btnMenu->setZOrder(102);
-                        btnMenu->setLayout(btnMenuLayout);
+                        auto opacity = as<int>(srt->getSettingValue<int64_t>("mobile-opacity"));
+
+                        // menu for mobile controls
+                        m_fields->m_mobileMenu = CCMenu::create();
+                        m_fields->m_mobileMenu->setID("mobile-controls"_spr);
+                        m_fields->m_mobileMenu->setAnchorPoint({ 0, 1 });
+                        m_fields->m_mobileMenu->setPosition({ 25.f, getScaledContentHeight() - 25.f });
+                        m_fields->m_mobileMenu->setZOrder(102);
+                        m_fields->m_mobileMenu->setLayout(btnMenuLayout);
 
                         auto pauseTimerBtnSprite = CCSprite::createWithSpriteFrameName("GJ_pauseBtn_001.png");
-                        pauseTimerBtnSprite->setScale(1.f);
+                        pauseTimerBtnSprite->setScale(0.8f);
+                        pauseTimerBtnSprite->setOpacity(opacity);
 
                         // create the pause button
                         auto pauseTimerBtn = CCMenuItemSpriteExtra::create(
@@ -90,6 +94,7 @@ class $modify(MyPlayLayer, PlayLayer) {
 
                         auto splitTimerBtnSprite = CCSprite::createWithSpriteFrameName("GJ_practiceBtn_001.png");
                         splitTimerBtnSprite->setScale(0.5f);
+                        splitTimerBtnSprite->setOpacity(opacity);
 
                         // create the split button
                         auto splitTimerBtn = CCMenuItemSpriteExtra::create(
@@ -101,6 +106,7 @@ class $modify(MyPlayLayer, PlayLayer) {
 
                         auto resetTimerBtnSprite = CCSprite::createWithSpriteFrameName("GJ_replayBtn_001.png");
                         resetTimerBtnSprite->setScale(0.5f);
+                        resetTimerBtnSprite->setOpacity(opacity);
 
                         // create the reset button
                         auto resetTimerBtn = CCMenuItemSpriteExtra::create(
@@ -110,13 +116,13 @@ class $modify(MyPlayLayer, PlayLayer) {
                         );
                         resetTimerBtn->setID("mobile-reset");
 
-                        btnMenu->addChild(pauseTimerBtn);
-                        btnMenu->addChild(splitTimerBtn);
-                        btnMenu->addChild(resetTimerBtn);
+                        m_fields->m_mobileMenu->addChild(pauseTimerBtn);
+                        m_fields->m_mobileMenu->addChild(splitTimerBtn);
+                        m_fields->m_mobileMenu->addChild(resetTimerBtn);
 
-                        addChild(btnMenu);
+                        addChild(m_fields->m_mobileMenu);
 
-                        btnMenu->updateLayout();
+                        m_fields->m_mobileMenu->updateLayout();
                     } else {
                         log::warn("Mobile controls are disabled");
                     };
@@ -225,5 +231,43 @@ class $modify(MyPlayLayer, PlayLayer) {
         };
 
         PlayLayer::levelComplete();
+    };
+
+    // player starts touching the menu
+    bool ccTouchBegan(CCTouch * touch, CCEvent * event) {
+        if (srt->getSettingValue<bool>("mobile-btns") &&
+            m_fields->m_speedrunNode &&
+            m_fields->m_speedrunNode->isVisible() &&
+            m_fields->m_mobileMenu) {
+
+            auto touchLocation = touch->getLocation();
+            if (m_fields->m_mobileMenu->boundingBox().containsPoint(touchLocation)) m_fields->m_draggingMobile = true;
+        };
+
+        return PlayLayer::ccTouchBegan(touch, event);
+    };
+
+    // player is dragging the menu
+    void ccTouchMoved(CCTouch * touch, CCEvent * event) {
+        if (srt->getSettingValue<bool>("mobile-btns") &&
+            m_fields->m_draggingMobile &&
+            m_fields->m_mobileMenu) {
+
+            auto touchLocation = touch->getLocation();
+            m_fields->m_mobileMenu->setPosition(touchLocation);
+        };
+
+        PlayLayer::ccTouchMoved(touch, event);
+    };
+
+    // player stops touching the menu
+    void ccTouchEnded(CCTouch * touch, CCEvent * event) {
+        if (srt->getSettingValue<bool>("mobile-btns") &&
+            m_fields->m_draggingMobile) {
+
+            m_fields->m_draggingMobile = false;
+        };
+
+        PlayLayer::ccTouchEnded(touch, event);
     };
 };
