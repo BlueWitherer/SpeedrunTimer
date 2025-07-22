@@ -76,7 +76,7 @@ class $modify(MyPlayLayer, PlayLayer) {
                         m_fields->m_mobileMenu = CCMenu::create();
                         m_fields->m_mobileMenu->setID("mobile-controls"_spr);
                         m_fields->m_mobileMenu->setAnchorPoint({ 0, 1 });
-                        m_fields->m_mobileMenu->setPosition({ 25.f, getScaledContentHeight() - 25.f });
+                        m_fields->m_mobileMenu->setPosition({ 20.f, getScaledContentHeight() - 20.f });
                         m_fields->m_mobileMenu->setZOrder(102);
                         m_fields->m_mobileMenu->setLayout(btnMenuLayout);
 
