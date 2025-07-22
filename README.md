@@ -17,7 +17,7 @@ Speedrun that level!
 ---
 
 ## About
-This mod adds a speedrun timer in the style of the *[LiveSplit](https://www.livesplit.org/)* interface to the player's UI when playing a platformer level.
+This mod adds a speedrun timer in the style of the *[LiveSplit](https://www.livesplit.org/)* interface to the player's UI when playing a platformer level. Controller bindings supported.
 
 ---
 
@@ -30,6 +30,12 @@ By default, the timer will only appear when the player is playing on a platforme
 You can split your ongoing run into multiple segments by pressing `NumPad 2` while the timer is running. If the timer gets fully reset, any and all splits will be removed.
 
 When reaching checkpoints, splits may be generated automatically. This can be changed in settings.
+
+---
+
+### Credits
+- **[ArcticWoof](https://www.github.com/DumbCaveSpider/)**: Playtesting & UI suggestions
+- **[LiveSplit](https://www.livesplit.org/)**: Original inspiration
 
 ---
 

@@ -107,8 +107,8 @@
 			"name": "Paused Timer Color",
 			"description": "The color of the speedrun timer when paused.",
 			"default": [
-				25,
-				75,
+				50,
+				125,
 				250
 			]
 		},
@@ -117,9 +117,9 @@
 			"name": "Starting Timer Color",
 			"description": "The color of the speedrun timer before starting.",
 			"default": [
-				75,
-				75,
-				75
+				125,
+				125,
+				125
 			]
 		},
 		"mobile-btns": {

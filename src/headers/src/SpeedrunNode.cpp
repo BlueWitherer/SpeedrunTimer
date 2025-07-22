@@ -71,13 +71,13 @@ bool SpeedrunNode::init() {
             ->setGrowCrossAxis(false)
             ->setAxisReverse(true)
             ->setAutoGrowAxis(0.f)
-            ->setGap(1.25f);
+            ->setGap(0.625f);
 
         if (auto scroll = ScrollLayer::create({ getContentSize().width, 250.f })) {
             scroll->setID("split-list");
             scroll->ignoreAnchorPointForPosition(false);
             scroll->setAnchorPoint({ 0, 1 });
-            scroll->setPosition({ 0.f, 0.f });
+            scroll->setPosition({ 0.f, -1.25f });
             scroll->setTouchEnabled(false);
 
             scroll->m_contentLayer->setAnchorPoint({ 0, 1 });

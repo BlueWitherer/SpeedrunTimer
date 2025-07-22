@@ -112,8 +112,10 @@ class $modify(MyPlayLayer, PlayLayer) {
                         btnMenu->addChild(resetTimerBtn);
 
                         btnMenu->updateLayout();
+
+                        addChild(btnMenu);
                     } else {
-                        log::error("Failed to create speedrun timer!");
+                        log::warn("Mobile controls are disabled");
                     };
                 } else {
                     log::error("Failed to create timer!");
