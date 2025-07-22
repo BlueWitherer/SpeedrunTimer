@@ -21,8 +21,7 @@
 			"version": ">=1.10.0",
 			"platforms": [
 				"win",
-				"mac",
-				"android"
+				"mac"
 			]
 		}
 	},
@@ -43,7 +42,7 @@
 		"enabled": {
 			"type": "bool",
 			"name": "Enabled",
-			"description": "Whether the speedrun timer is enabled.",
+			"description": "Whether the speedrun timer will appear in-game.",
 			"default": true
 		},
 		"ui": {
