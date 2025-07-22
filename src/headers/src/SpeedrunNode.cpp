@@ -8,7 +8,7 @@
 
 using namespace geode::prelude;
 
-#if !defined(GEODE_IS_IOS) && !defined(GEODE_IS_ANDROID)
+#ifndef GEODE_IS_IOS
 #include <geode.custom-keybinds/include/Keybinds.hpp>
 using namespace keybinds;
 #endif
@@ -108,7 +108,7 @@ bool SpeedrunNode::init() {
 
         m_timeMenu->setScale(0.875f);
 
-#if !defined(GEODE_IS_IOS) && !defined(GEODE_IS_ANDROID)
+#ifndef GEODE_IS_IOS
         // toggle timer
         this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
             if (event->isDown()) pauseTimer(!m_speedtimerPaused); // toggle the timer on or off
@@ -280,6 +280,10 @@ void SpeedrunNode::resetAll() {
     };
 
     log::info("Speedrun timer reset");
+};
+
+bool SpeedrunNode::isTimerPaused() {
+    return m_speedtimerPaused;
 };
 
 SpeedrunNode* SpeedrunNode::create() {

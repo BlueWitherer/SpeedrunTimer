@@ -8,7 +8,7 @@
 
 using namespace geode::prelude;
 
-#if !defined(GEODE_IS_IOS) && !defined(GEODE_IS_ANDROID)
+#ifndef GEODE_IS_IOS
 #include <geode.custom-keybinds/include/Keybinds.hpp>
 using namespace keybinds;
 #endif
@@ -25,6 +25,10 @@ class $modify(MyPlayLayer, PlayLayer) {
 
         CCMenu* m_mobileMenu = nullptr; // Mobile controls menu
 
+        CCMenuItemToggler* m_pauseTimerBtn = nullptr; // Pause timer button for mobile controls
+        CCMenuItemSpriteExtra* m_splitTimerBtn = nullptr; // Split timer button for mobile controls
+        CCMenuItemSpriteExtra* m_resetTimerBtn = nullptr; // Reset timer button for mobile controls
+
         bool m_draggingMobile = false; // If the player is dragging the mobile menu
     };
 
@@ -37,7 +41,7 @@ class $modify(MyPlayLayer, PlayLayer) {
                 if (auto sr = SpeedrunNode::create()) {
                     sr->setZOrder(101);
                     sr->setAnchorPoint({ 1, 1 });
-                    sr->setPosition({ widthCS - 25.f, heightCS - 25.f });
+                    sr->setPosition({ widthCS - 37.5f, heightCS - 25.f });
 
                     sr->toggleTimer(true); // enable the timer
 
@@ -45,7 +49,7 @@ class $modify(MyPlayLayer, PlayLayer) {
 
                     addChild(m_fields->m_speedrunNode);
 
-#if !defined(GEODE_IS_IOS) && !defined(GEODE_IS_ANDROID)
+#ifndef GEODE_IS_IOS
                     // remove timer
                     this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
                         if (event->isDown()) m_fields->m_speedrunNode->setVisible(!m_fields->m_speedrunNode->isVisible());
@@ -80,45 +84,52 @@ class $modify(MyPlayLayer, PlayLayer) {
                         m_fields->m_mobileMenu->setZOrder(102);
                         m_fields->m_mobileMenu->setLayout(btnMenuLayout);
 
-                        auto pauseTimerBtnSprite = CCSprite::createWithSpriteFrameName("GJ_pauseBtn_001.png");
-                        pauseTimerBtnSprite->setScale(0.8f);
-                        pauseTimerBtnSprite->setOpacity(opacity);
+                        auto pauseTimerBtnSpriteOn = CCSprite::createWithSpriteFrameName("GJ_stopEditorBtn_001.png");
+                        pauseTimerBtnSpriteOn->setScale(0.8f);
+                        pauseTimerBtnSpriteOn->setOpacity(opacity);
+
+                        auto pauseTimerBtnSpriteOff = CCSprite::createWithSpriteFrameName("GJ_playEditorBtn_001.png");
+                        pauseTimerBtnSpriteOff->setScale(0.8f);
+                        pauseTimerBtnSpriteOff->setOpacity(opacity);
 
                         // create the pause button
-                        auto pauseTimerBtn = CCMenuItemSpriteExtra::create(
-                            pauseTimerBtnSprite,
+                        m_fields->m_pauseTimerBtn = CCMenuItemToggler::create(
+                            pauseTimerBtnSpriteOn,
+                            pauseTimerBtnSpriteOff,
                             this,
                             menu_selector(MyPlayLayer::pauseTimer)
                         );
-                        pauseTimerBtn->setID("mobile-pause");
+                        m_fields->m_pauseTimerBtn->setID("mobile-pause");
 
                         auto splitTimerBtnSprite = CCSprite::createWithSpriteFrameName("GJ_practiceBtn_001.png");
                         splitTimerBtnSprite->setScale(0.5f);
                         splitTimerBtnSprite->setOpacity(opacity);
 
                         // create the split button
-                        auto splitTimerBtn = CCMenuItemSpriteExtra::create(
+                        m_fields->m_splitTimerBtn = CCMenuItemSpriteExtra::create(
                             splitTimerBtnSprite,
                             this,
                             menu_selector(MyPlayLayer::createSplit)
                         );
-                        splitTimerBtn->setID("mobile-split");
+                        m_fields->m_splitTimerBtn->setID("mobile-split");
 
                         auto resetTimerBtnSprite = CCSprite::createWithSpriteFrameName("GJ_replayBtn_001.png");
                         resetTimerBtnSprite->setScale(0.5f);
                         resetTimerBtnSprite->setOpacity(opacity);
 
                         // create the reset button
-                        auto resetTimerBtn = CCMenuItemSpriteExtra::create(
+                        m_fields->m_resetTimerBtn = CCMenuItemSpriteExtra::create(
                             resetTimerBtnSprite,
                             this,
                             menu_selector(MyPlayLayer::resetAll)
                         );
-                        resetTimerBtn->setID("mobile-reset");
+                        m_fields->m_resetTimerBtn->setID("mobile-reset");
 
-                        m_fields->m_mobileMenu->addChild(pauseTimerBtn);
-                        m_fields->m_mobileMenu->addChild(splitTimerBtn);
-                        m_fields->m_mobileMenu->addChild(resetTimerBtn);
+                        m_fields->m_pauseTimerBtn->toggle(m_fields->m_speedrunNode->isTimerPaused()); // set the initial state of the pause button
+
+                        m_fields->m_mobileMenu->addChild(m_fields->m_pauseTimerBtn);
+                        m_fields->m_mobileMenu->addChild(m_fields->m_splitTimerBtn);
+                        m_fields->m_mobileMenu->addChild(m_fields->m_resetTimerBtn);
 
                         addChild(m_fields->m_mobileMenu);
 
@@ -141,7 +152,8 @@ class $modify(MyPlayLayer, PlayLayer) {
 
     void pauseTimer(CCObject*) {
         if (m_fields->m_speedrunNode) {
-            m_fields->m_speedrunNode->pauseTimer(!m_fields->m_speedrunNode->m_speedtimerPaused);
+            m_fields->m_speedrunNode->pauseTimer(!m_fields->m_speedrunNode->isTimerPaused());
+            m_fields->m_pauseTimerBtn->toggle(!m_fields->m_speedrunNode->isTimerPaused()); // update the button state
         } else {
             log::error("Speedrun node is not initialized");
         };
@@ -158,6 +170,7 @@ class $modify(MyPlayLayer, PlayLayer) {
     void resetAll(CCObject*) {
         if (m_fields->m_speedrunNode) {
             m_fields->m_speedrunNode->resetAll();
+            m_fields->m_pauseTimerBtn->toggle(m_fields->m_speedrunNode->isTimerPaused()); // update the button state
         } else {
             log::error("Speedrun node is not initialized");
         };

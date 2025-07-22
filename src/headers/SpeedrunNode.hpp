@@ -19,6 +19,7 @@ protected:
     float m_speedTime = 0.f; // Current time
 
     bool m_speedtimerOn = false; // If the speedrun is active
+    bool m_speedtimerPaused = true; // If the speedrun is paused
 
     CCMenu* m_timeMenu = nullptr; // The menu that contains the timers
 
@@ -32,8 +33,6 @@ protected:
     bool init();
 
 public:
-    bool m_speedtimerPaused = true; // If the speedrun is paused
-
     // Toggle the timer, must be done manually at first
     void toggleTimer(bool toggle = false);
 
@@ -45,6 +44,9 @@ public:
 
     // Reset everything
     void resetAll();
+
+    // Check if timer is paused
+    bool isTimerPaused();
 
     static SpeedrunNode* create();
 };

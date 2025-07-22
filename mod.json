@@ -21,7 +21,8 @@
 			"version": ">=1.10.0",
 			"platforms": [
 				"win",
-				"mac"
+				"mac",
+				"android"
 			]
 		}
 	},
