@@ -165,8 +165,12 @@ void SpeedrunNode::update(float dt) {
     if (m_speedtimer) m_speedtimer->setCString(secStr.c_str()); // seconds
 
     if (m_speedtimerMs) { // ms
-        std::string msStr = "." + std::to_string(as<int>(m_speedTime * 100) % 100);
-        m_speedtimerMs->setCString(msStr.c_str());
+        int ms = as<int>(m_speedTime * 100) % 100;
+
+        std::ostringstream oss;
+        oss << "." << (ms > 9 ? "" : "0") << ms;
+
+        m_speedtimerMs->setCString(oss.str().c_str());
     };
 };
 
@@ -216,10 +220,24 @@ void SpeedrunNode::createSplit() {
     if (m_speedtimerOn) {
         if (auto splitNode = SplitNode::create(m_speedTime)) {
             auto limit = as<int>(m_srtMod->getSettingValue<int64_t>("split-limit"));
-            auto withinLimit = limit >= m_splitList->m_contentLayer->getChildrenCount();
+            auto withinLimit = (limit - 1) >= m_splitList->m_contentLayer->getChildrenCount();
 
             if (m_splitList) {
-                if (withinLimit) m_splitList->m_contentLayer->addChild(splitNode);
+                if (withinLimit) {
+                    log::info("Adding split node to split list");
+                } else {
+                    log::warn("Split limit reached, removing first split node");
+
+                    auto children = m_splitList->m_contentLayer->getChildren();
+                    if (children && children->count() > 0) {
+                        auto firstChild = as<CCNode*>(children->objectAtIndex(0));
+                        if (firstChild) firstChild->removeMeAndCleanup();
+                    } else {
+                        log::warn("No split nodes to remove");
+                    };
+                };
+
+                m_splitList->m_contentLayer->addChild(splitNode);
                 m_splitList->m_contentLayer->updateLayout(true);
             } else {
                 splitNode->removeMeAndCleanup();

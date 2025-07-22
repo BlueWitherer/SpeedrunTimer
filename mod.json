@@ -124,7 +124,7 @@
 		"split-limit": {
 			"type": "int",
 			"name": "Split Limit",
-			"description": "The maximum number of splits that can be created.",
+			"description": "The maximum number of splits that can be created. <co>If more splits are created, the earliest split will be removed.</c>",
 			"default": 20,
 			"min": 1,
 			"max": 100,
@@ -188,7 +188,7 @@
 		"reset-death": {
 			"type": "bool",
 			"name": "Reset on Death",
-			"description": "Reset the speedrun timer when the player dies.",
+			"description": "Reset the speedrun timer when the player dies. <cy>This feature is currently being worked on.</c>",
 			"default": false
 		},
 		"stop-complete": {
