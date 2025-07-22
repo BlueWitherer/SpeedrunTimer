@@ -37,7 +37,7 @@ class $modify(MyPlayLayer, PlayLayer) {
                 if (auto sr = SpeedrunNode::create()) {
                     sr->setZOrder(101);
                     sr->setAnchorPoint({ 1, 1 });
-                    sr->setPosition({ widthCS - 20.f, heightCS - 30.f });
+                    sr->setPosition({ widthCS - 25.f, heightCS - 37.5f });
 
                     sr->toggleTimer(true); // enable the timer
 
@@ -46,16 +46,75 @@ class $modify(MyPlayLayer, PlayLayer) {
                     addChild(m_fields->m_speedrunNode);
 
 #ifndef GEODE_IS_IOS
-                    // delete timer
+                    // remove timer
                     this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
-                        if (event->isDown()) m_fields->m_speedrunNode->removeMeAndCleanup();
-                        m_fields->m_speedrunNode = nullptr;
+                        if (event->isDown()) m_fields->m_speedrunNode->setVisible(!m_fields->m_speedrunNode->isVisible());
 
                         log::warn("Speedrun timer removed by keybind");
 
                         return ListenerResult::Propagate;
-                                                                      }, "remove-timer"_spr);
+                                                                      }, "hide-timer"_spr);
 #endif
+
+                    // create mobile controls
+                    if (srt->getSettingValue<bool>("mobile-controls")) {
+                        auto btnMenuLayout = AxisLayout::create(Axis::Row)
+                            ->setDefaultScaleLimits(0.5f, 0.875f)
+                            ->setAxisAlignment(AxisAlignment::End)
+                            ->setCrossAxisAlignment(AxisAlignment::Start)
+                            ->setCrossAxisLineAlignment(AxisAlignment::Start)
+                            ->setCrossAxisReverse(true)
+                            ->setGrowCrossAxis(false)
+                            ->setAutoGrowAxis(125.f)
+                            ->setAxisReverse(true)
+                            ->setAutoScale(false)
+                            ->setGap(0.f);
+
+                        auto btnMenu = CCMenu::create();
+                        btnMenu->setID("mobile-controls"_spr);
+                        btnMenu->setAnchorPoint({ 0, 1 });
+                        btnMenu->setPosition({ 25.f, getScaledContentHeight() - 25.f });
+                        btnMenu->setZOrder(102);
+                        btnMenu->setLayout(btnMenuLayout);
+
+                        auto pauseTimerBtnSprite = CCSprite::create("GJ_pauseBtn_001.png");
+
+                        // create the pause button
+                        auto pauseTimerBtn = CCMenuItemSpriteExtra::create(
+                            pauseTimerBtnSprite,
+                            this,
+                            menu_selector(MyPlayLayer::pauseTimer)
+                        );
+                        pauseTimerBtn->setID("mobile-pause");
+
+                        auto splitTimerBtnSprite = CCSprite::create("GJ_practiceBtn_001.png");
+
+                        // create the split button
+                        auto splitTimerBtn = CCMenuItemSpriteExtra::create(
+                            CCSprite::create("GJ_buttonSplit_001.png"),
+                            this,
+                            menu_selector(MyPlayLayer::createSplit)
+                        );
+                        splitTimerBtn->setID("mobile-split");
+
+                        auto resetTimerBtnSprite = CCSprite::create("GJ_replayBtn_001.png");
+
+                        // create the reset button
+                        auto resetTimerBtn = CCMenuItemSpriteExtra::create(
+                            resetTimerBtnSprite,
+                            this,
+                            menu_selector(MyPlayLayer::resetAll)
+                        );
+                        resetTimerBtn->setID("mobile-reset");
+
+                        btnMenu->addChild(pauseTimerBtn);
+                        btnMenu->addChild(splitTimerBtn);
+                        btnMenu->addChild(resetTimerBtn);
+
+                        btnMenu->updateLayout();
+                    } else {
+                        log::error("Failed to create speedrun timer!");
+                    };
                 } else {
                     log::error("Failed to create timer!");
                 };
@@ -66,6 +125,30 @@ class $modify(MyPlayLayer, PlayLayer) {
             return true;
         } else {
             return false;
+        };
+    };
+
+    void pauseTimer(CCObject*) {
+        if (m_fields->m_speedrunNode) {
+            m_fields->m_speedrunNode->pauseTimer();
+        } else {
+            log::error("Speedrun node is not initialized");
+        };
+    };
+
+    void createSplit(CCObject*) {
+        if (m_fields->m_speedrunNode) {
+            m_fields->m_speedrunNode->createSplit();
+        } else {
+            log::error("Speedrun node is not initialized");
+        };
+    };
+
+    void resetAll(CCObject*) {
+        if (m_fields->m_speedrunNode) {
+            m_fields->m_speedrunNode->resetAll();
+        } else {
+            log::error("Speedrun node is not initialized");
         };
     };
 

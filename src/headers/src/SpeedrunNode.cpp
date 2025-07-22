@@ -17,8 +17,11 @@ bool SpeedrunNode::init() {
     m_scheduler = CCDirector::get()->getScheduler();
 
     if (CCNode::init()) {
+        auto scale = as<float>(m_srtMod->getSettingValue<double>("scale"));
+
         setID("timer"_spr);
-        setContentSize({ 125.f, 10.f });
+        setContentSize({ 125.f, 0.f });
+        setScale(scale);
 
         auto layout = AxisLayout::create(Axis::Row)
             ->setDefaultScaleLimits(0.5f, 0.875f)
@@ -43,14 +46,14 @@ bool SpeedrunNode::init() {
 
         m_speedtimer = CCLabelBMFont::create("0", "gjFont16.fnt");
         m_speedtimer->setID("timer-seconds");
-        m_speedtimer->setColor(m_srtMod->getSettingValue<ccColor3B>("color"));
+        m_speedtimer->setColor(m_colStart);
         m_speedtimer->setAlignment(CCTextAlignment::kCCTextAlignmentRight);
         m_speedtimer->setAnchorPoint({ 1, 0 });
         m_speedtimer->setScale(0.875f);
 
         m_speedtimerMs = CCLabelBMFont::create(".0", "gjFont16.fnt");
         m_speedtimerMs->setID("timer-milliseconds");
-        m_speedtimerMs->setColor(m_srtMod->getSettingValue<ccColor3B>("color"));
+        m_speedtimerMs->setColor(m_colStart);
         m_speedtimerMs->setAlignment(CCTextAlignment::kCCTextAlignmentLeft);
         m_speedtimerMs->setAnchorPoint({ 0, 0 });
         m_speedtimerMs->setScale(0.5f);
@@ -75,9 +78,11 @@ bool SpeedrunNode::init() {
             scroll->ignoreAnchorPointForPosition(false);
             scroll->setAnchorPoint({ 0, 1 });
             scroll->setPosition({ 0.f, 0.f });
+            scroll->setTouchEnabled(false);
 
             scroll->m_contentLayer->setAnchorPoint({ 0, 1 });
             scroll->m_contentLayer->setLayout(scrollLayerLayout);
+            scroll->m_contentLayer->setTouchEnabled(false);
 
             m_splitList = scroll;
             addChild(m_splitList);
@@ -90,8 +95,11 @@ bool SpeedrunNode::init() {
 
         m_scheduler->scheduleUpdateForTarget(this, 0, false);
 
-        auto bg = CCLayerColor::create({ 0, 0,0,255 });
+        auto bgOpacity = as<int>(m_srtMod->getSettingValue<int64_t>("bg-opacity"));
+
+        auto bg = CCLayerColor::create({ 0, 0, 0, 255 });
         bg->setID("background");
+        bg->setOpacity(bgOpacity);
         bg->setAnchorPoint(m_timeMenu->getAnchorPoint());
         bg->setPosition(m_timeMenu->getPosition());
         bg->setScaledContentSize(m_timeMenu->getScaledContentSize());
@@ -172,8 +180,16 @@ void SpeedrunNode::toggleTimer(bool toggle) {
         m_speedtimerOn = toggle;
 
         if (m_speedtimerOn) {
+            auto color = m_speedTime < 0.f ? m_col : m_colStart;
+
+            if (m_speedtimer) m_speedtimer->setColor(color);
+            if (m_speedtimerMs) m_speedtimerMs->setColor(color);
+
             log::info("Speedrun timer started");
         } else {
+            if (m_speedtimer) m_speedtimer->setColor(m_colStart);
+            if (m_speedtimerMs) m_speedtimerMs->setColor(m_colStart);
+
             log::info("Speedrun timer stopped at {} seconds", m_speedTime);
         };
     };
@@ -186,8 +202,14 @@ void SpeedrunNode::pauseTimer(bool pause) {
         m_speedtimerPaused = pause;
 
         if (m_speedtimerPaused) {
+            if (m_speedtimer) m_speedtimer->setColor(m_colPause);
+            if (m_speedtimerMs) m_speedtimerMs->setColor(m_colPause);
+
             log::info("Speedrun timer paused at {} seconds", m_speedTime);
         } else {
+            if (m_speedtimer) m_speedtimer->setColor(m_col);
+            if (m_speedtimerMs) m_speedtimerMs->setColor(m_col);
+
             log::info("Speedrun timer unpaused");
         };
     };
@@ -213,8 +235,19 @@ void SpeedrunNode::resetAll() {
 
     m_speedtimerPaused = true;
 
-    if (m_speedtimer) m_speedtimer->setCString("0");
-    if (m_speedtimerMs) m_speedtimerMs->setCString(".0");
+    if (m_speedtimer) {
+        m_speedtimer->setCString("0");
+        m_speedtimer->setColor(m_colStart);
+    } else {
+        log::error("Speedrun timer label not found");
+    };
+
+    if (m_speedtimerMs) {
+        m_speedtimerMs->setCString(".0");
+        m_speedtimerMs->setColor(m_colStart);
+    } else {
+        log::error("Speedrun timer milliseconds label not found");
+    };
 
     if (m_splitList) {
         m_splitList->m_contentLayer->removeAllChildren();

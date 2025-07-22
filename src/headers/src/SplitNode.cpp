@@ -23,13 +23,25 @@ bool SplitNode::init(float time) {
             splitStr.c_str(),
             "gjFont17.fnt"
         );
-        splitLabel->setColor(m_srtMod->getSettingValue<ccColor3B>("color"));
+        splitLabel->setID("split-label");
+        splitLabel->setColor(m_colPause);
         splitLabel->setAlignment(CCTextAlignment::kCCTextAlignmentRight);
         splitLabel->setPosition({ getContentSize().width - 5, getContentSize().height / 2 });
         splitLabel->setAnchorPoint({ 1, 0.5 });
-        splitLabel->setScale(0.375f);
+        splitLabel->setScale(0.25f);
+        splitLabel->setZOrder(2);
 
         addChild(splitLabel);
+
+        auto bgOpacity = as<int>(m_srtMod->getSettingValue<int64_t>("bg-opacity"));
+
+        auto bg = CCLayerColor::create({ 0, 0, 0, 255 });
+        bg->setID("background");
+        bg->setOpacity(bgOpacity);
+        bg->setScaledContentSize(getScaledContentSize());
+        bg->setZOrder(1);
+
+        addChild(bg);
 
         return true;
     } else {

@@ -10,6 +10,10 @@ class SpeedrunNode : public CCNode {
 protected:
     Mod* m_srtMod = getMod(); // it's modding time :3
 
+    ccColor3B m_col = m_srtMod->getSettingValue<ccColor3B>("color"); // The color of the speedrun timer
+    ccColor3B m_colPause = m_srtMod->getSettingValue<ccColor3B>("color-pause"); // The color of the speedrun timer when paused
+    ccColor3B m_colStart = m_srtMod->getSettingValue<ccColor3B>("color-start"); // The color of the speedrun timer before starting
+
     CCScheduler* m_scheduler = nullptr; // The scheduler for the speedrun timer
 
     float m_speedTime = 0.f; // Current time

@@ -52,6 +52,46 @@
 			"name": "Interface",
 			"description": "Settings related to the interface."
 		},
+		"format-minutes": {
+			"type": "bool",
+			"name": "Format Minutes",
+			"description": "Format the timer label to include minutes alongside seconds.",
+			"default": true
+		},
+		"scale": {
+			"type": "float",
+			"name": "Scale",
+			"description": "Scale the timer label.",
+			"default": 1,
+			"min": 0.5,
+			"max": 2,
+			"control": {
+				"input": true,
+				"slider": true,
+				"slider-step": 0.125,
+				"arrows": true,
+				"arrow-step": 0.25,
+				"big-arrows": true,
+				"big-arrow-step": 0.5
+			}
+		},
+		"bg-opacity": {
+			"type": "int",
+			"name": "Background Opacity",
+			"description": "The opacity of the background behind the timer.",
+			"default": 250,
+			"min": 0,
+			"max": 255,
+			"control": {
+				"input": true,
+				"slider": true,
+				"slider-step": 5,
+				"arrows": true,
+				"arrow-step": 25,
+				"big-arrows": true,
+				"big-arrow-step": 50
+			}
+		},
 		"color": {
 			"type": "rgb",
 			"name": "Timer Color",
@@ -62,11 +102,36 @@
 				125
 			]
 		},
-		"format-minutes": {
+		"color-pause": {
+			"type": "rgb",
+			"name": "Paused Timer Color",
+			"description": "The color of the speedrun timer when paused.",
+			"default": [
+				25,
+				75,
+				250
+			]
+		},
+		"color-start": {
+			"type": "rgb",
+			"name": "Starting Timer Color",
+			"description": "The color of the speedrun timer before starting.",
+			"default": [
+				75,
+				75,
+				75
+			]
+		},
+		"mobile-btns": {
 			"type": "bool",
-			"name": "Format Minutes",
-			"description": "Format the timer label to include minutes alongside seconds.",
-			"default": true
+			"name": "Mobile Buttons",
+			"description": "Show mobile-friendly buttons in-game to control the timer.",
+			"default": {
+				"win": false,
+				"android": true,
+				"mac": false,
+				"ios": true
+			}
 		},
 		"conditions": {
 			"type": "title",
