@@ -140,7 +140,6 @@ bool RunTimer::init() {
 };
 
 void RunTimer::update(float dt) {
-    auto current = as<int>(m_speedTime);
     if (m_speedtimerOn) m_speedTime += m_speedtimerPaused ? 0.f : dt;
 
     auto newTime = as<int>(m_speedTime);
@@ -217,7 +216,11 @@ void RunTimer::pauseTimer(bool pause) {
 
 void RunTimer::createSplit() {
     if (m_speedtimerOn) {
-        if (auto splitNode = SplitSegment::create(m_speedTime)) {
+        auto splitDelta = m_speedTime - m_lastSplitTime;
+        m_lastSplitTime = m_speedTime;
+
+        if (auto splitNode = SplitSegment::create(m_speedTime, splitDelta)) {
+
             auto limit = as<int>(m_srtMod->getSettingValue<int64_t>("split-limit"));
             auto withinLimit = (limit - 1) >= m_splitList->m_contentLayer->getChildrenCount();
 
