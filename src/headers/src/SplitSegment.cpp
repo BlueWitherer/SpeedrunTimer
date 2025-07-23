@@ -18,7 +18,7 @@ bool SplitSegment::init(float time, float delta) {
         setAnchorPoint({ 0, 1 });
 
         auto ms = as<int>((m_splitTime - as<int>(m_splitTime)) * 100);
-        auto splitStr = fmt::format("{}.{:02d}s", as<int>(m_splitTime), ms);
+        auto splitStr = fmt::format("{}.{:02d}", as<int>(m_splitTime), ms);
 
         auto splitLabel = CCLabelBMFont::create(
             splitStr.c_str(),
@@ -34,21 +34,25 @@ bool SplitSegment::init(float time, float delta) {
 
         addChild(splitLabel);
 
-        auto deltaStr = fmt::format("+{:.2f}s", m_delta);
+        if (m_delta == m_splitTime) {
+            log::warn("Skipping first delta label");
+        } else {
+            auto deltaStr = fmt::format("+{:.2f}", m_delta);
 
-        auto deltaLabel = CCLabelBMFont::create(
-            deltaStr.c_str(),
-            "gjFont17.fnt"
-        );
-        deltaLabel->setID("delta-label");
-        deltaLabel->setColor(m_colStart);
-        deltaLabel->setAlignment(CCTextAlignment::kCCTextAlignmentRight);
-        deltaLabel->setPosition({ splitLabel->getPositionX() - splitLabel->getScaledContentWidth() - 2.5f, getContentSize().height / 2 });
-        deltaLabel->setAnchorPoint({ 1, 0.5 });
-        deltaLabel->setScale(0.2f);
-        deltaLabel->setZOrder(2);
+            auto deltaLabel = CCLabelBMFont::create(
+                deltaStr.c_str(),
+                "gjFont17.fnt"
+            );
+            deltaLabel->setID("delta-label");
+            deltaLabel->setColor(m_colStart);
+            deltaLabel->setAlignment(CCTextAlignment::kCCTextAlignmentRight);
+            deltaLabel->setPosition({ splitLabel->getPositionX() - splitLabel->getScaledContentWidth() - 5.f, getContentSize().height / 2 });
+            deltaLabel->setAnchorPoint({ 1, 0.5 });
+            deltaLabel->setScale(0.2f);
+            deltaLabel->setZOrder(2);
 
-        addChild(deltaLabel);
+            addChild(deltaLabel);
+        };
 
         auto bgOpacity = as<int>(m_srtMod->getSettingValue<int64_t>("bg-opacity"));
 
