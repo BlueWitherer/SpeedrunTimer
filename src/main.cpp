@@ -239,6 +239,7 @@ class $modify(MyPlayLayer, PlayLayer) {
     void levelComplete() {
         if (srt->getSettingValue<bool>("stop-complete")) { // check if stop on level complete is enabled
             if (m_fields->m_speedrunNode) m_fields->m_speedrunNode->toggleTimer(false);
+            m_fields->m_pauseTimerBtn->toggle(m_fields->m_speedrunNode->isTimerPaused()); // update the button state
         } else {
             log::info("Timer will not stop on level completion");
         };

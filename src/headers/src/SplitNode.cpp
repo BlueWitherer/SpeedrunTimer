@@ -8,8 +8,9 @@
 
 using namespace geode::prelude;
 
-bool SplitNode::init(float time) {
+bool SplitNode::init(float time, float delta) {
     m_splitTime = time;
+    m_delta = delta;
 
     if (CCNode::init()) {
         setID("split"_spr);
@@ -33,6 +34,22 @@ bool SplitNode::init(float time) {
 
         addChild(splitLabel);
 
+        auto deltaStr = fmt::format("+{:.2f}s", m_delta);
+
+        auto deltaLabel = CCLabelBMFont::create(
+            deltaStr.c_str(),
+            "gjFont17.fnt"
+        );
+        deltaLabel->setID("delta-label");
+        deltaLabel->setColor(m_colStart);
+        deltaLabel->setAlignment(CCTextAlignment::kCCTextAlignmentLeft);
+        deltaLabel->setPosition({ splitLabel->getPositionX() - 7.5f, getContentSize().height / 2 });
+        deltaLabel->setAnchorPoint({ 0, 0.5 });
+        deltaLabel->setScale(0.125f);
+        deltaLabel->setZOrder(2);
+
+        addChild(deltaLabel);
+
         auto bgOpacity = as<int>(m_srtMod->getSettingValue<int64_t>("bg-opacity"));
 
         auto bg = CCLayerColor::create({ 0, 0, 0, 255 });
@@ -49,10 +66,10 @@ bool SplitNode::init(float time) {
     };
 };
 
-SplitNode* SplitNode::create(float time) {
+SplitNode* SplitNode::create(float time, float delta) {
     SplitNode* ret = new SplitNode();
 
-    if (ret && ret->init(time)) {
+    if (ret && ret->init(time, delta)) {
         ret->autorelease();
         return ret;
     };

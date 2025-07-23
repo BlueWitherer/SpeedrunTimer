@@ -17,11 +17,8 @@ bool SpeedrunNode::init() {
     m_scheduler = CCDirector::get()->getScheduler();
 
     if (CCNode::init()) {
-        auto scale = as<float>(m_srtMod->getSettingValue<double>("scale"));
-
         setID("timer"_spr);
         setContentSize({ 125.f, 0.f });
-        setScale(scale);
 
         auto layout = AxisLayout::create(Axis::Row)
             ->setDefaultScaleLimits(0.5f, 0.875f)
@@ -133,6 +130,8 @@ bool SpeedrunNode::init() {
             return ListenerResult::Propagate;
                                                           }, "reset-timer"_spr);
 #endif
+
+        setScale(as<float>(m_srtMod->getSettingValue<double>("scale")));
 
         return true;
     } else {
