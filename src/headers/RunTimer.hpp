@@ -6,7 +6,7 @@
 
 using namespace geode::prelude;
 
-class SpeedrunNode : public CCNode {
+class RunTimer : public CCNode {
 protected:
     Mod* m_srtMod = getMod(); // it's modding time :3
 
@@ -49,5 +49,5 @@ public:
     // Check if timer is paused
     bool isTimerPaused();
 
-    static SpeedrunNode* create();
+    static RunTimer* create();
 };

@@ -1,6 +1,6 @@
-#include "../SpeedrunNode.hpp"
+#include "../RunTimer.hpp"
 
-#include "../SplitNode.hpp"
+#include "../SplitSegment.hpp"
 
 #include <sstream>
 
@@ -13,7 +13,7 @@ using namespace geode::prelude;
 using namespace keybinds;
 #endif
 
-bool SpeedrunNode::init() {
+bool RunTimer::init() {
     m_scheduler = CCDirector::get()->getScheduler();
 
     if (CCNode::init()) {
@@ -139,7 +139,7 @@ bool SpeedrunNode::init() {
     };
 };
 
-void SpeedrunNode::update(float dt) {
+void RunTimer::update(float dt) {
     auto current = as<int>(m_speedTime);
     if (m_speedtimerOn) m_speedTime += m_speedtimerPaused ? 0.f : dt;
 
@@ -173,7 +173,7 @@ void SpeedrunNode::update(float dt) {
     };
 };
 
-void SpeedrunNode::toggleTimer(bool toggle) {
+void RunTimer::toggleTimer(bool toggle) {
     if (m_speedtimerOn == toggle) {
         log::info("Speedrun timer is already {}", toggle ? "on" : "off");
     } else {
@@ -195,7 +195,7 @@ void SpeedrunNode::toggleTimer(bool toggle) {
     };
 };
 
-void SpeedrunNode::pauseTimer(bool pause) {
+void RunTimer::pauseTimer(bool pause) {
     if (m_speedtimerPaused == pause) {
         log::info("Speedrun timer is already {}", pause ? "paused" : "unpaused");
     } else {
@@ -215,9 +215,9 @@ void SpeedrunNode::pauseTimer(bool pause) {
     };
 };
 
-void SpeedrunNode::createSplit() {
+void RunTimer::createSplit() {
     if (m_speedtimerOn) {
-        if (auto splitNode = SplitNode::create(m_speedTime)) {
+        if (auto splitNode = SplitSegment::create(m_speedTime)) {
             auto limit = as<int>(m_srtMod->getSettingValue<int64_t>("split-limit"));
             auto withinLimit = (limit - 1) >= m_splitList->m_contentLayer->getChildrenCount();
 
@@ -252,7 +252,7 @@ void SpeedrunNode::createSplit() {
     };
 };
 
-void SpeedrunNode::resetAll() {
+void RunTimer::resetAll() {
     m_speedTime = 0.f;
 
     m_speedtimerPaused = true;
@@ -281,12 +281,12 @@ void SpeedrunNode::resetAll() {
     log::info("Speedrun timer reset");
 };
 
-bool SpeedrunNode::isTimerPaused() {
+bool RunTimer::isTimerPaused() {
     return m_speedtimerPaused;
 };
 
-SpeedrunNode* SpeedrunNode::create() {
-    SpeedrunNode* ret = new SpeedrunNode();
+RunTimer* RunTimer::create() {
+    RunTimer* ret = new RunTimer();
 
     if (ret && ret->init()) {
         ret->autorelease();

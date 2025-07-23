@@ -1,4 +1,4 @@
-#include "./headers/SpeedrunNode.hpp"
+#include "./headers/RunTimer.hpp"
 
 #include <Geode/Geode.hpp>
 
@@ -21,7 +21,7 @@ class $modify(MyPlayLayer, PlayLayer) {
         GameObject* m_destroyPlayerObject = nullptr; // Destroyed player object
         CheckpointGameObject* m_checkpointObject = nullptr; // Latest checkpoint
 
-        SpeedrunNode* m_speedrunNode = nullptr; // The speedrun node for the timer
+        RunTimer* m_speedrunNode = nullptr; // The speedrun node for the timer
 
         CCMenu* m_mobileMenu = nullptr; // Mobile controls menu
 
@@ -38,7 +38,7 @@ class $modify(MyPlayLayer, PlayLayer) {
                 auto [widthCS, heightCS] = getScaledContentSize();
 
                 // create speedrun timer label
-                if (auto sr = SpeedrunNode::create()) {
+                if (auto sr = RunTimer::create()) {
                     sr->setZOrder(101);
                     sr->setAnchorPoint({ 1, 1 });
                     sr->setPosition({ widthCS - 37.5f, heightCS - 25.f });

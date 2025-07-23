@@ -1,4 +1,4 @@
-#include "../SplitNode.hpp"
+#include "../SplitSegment.hpp"
 
 #include <fmt/core.h>
 
@@ -8,7 +8,7 @@
 
 using namespace geode::prelude;
 
-bool SplitNode::init(float time, float delta) {
+bool SplitSegment::init(float time, float delta) {
     m_splitTime = time;
     m_delta = delta;
 
@@ -66,8 +66,8 @@ bool SplitNode::init(float time, float delta) {
     };
 };
 
-SplitNode* SplitNode::create(float time, float delta) {
-    SplitNode* ret = new SplitNode();
+SplitSegment* SplitSegment::create(float time, float delta) {
+    SplitSegment* ret = new SplitSegment();
 
     if (ret && ret->init(time, delta)) {
         ret->autorelease();

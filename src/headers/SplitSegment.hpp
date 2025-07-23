@@ -6,7 +6,7 @@
 
 using namespace geode::prelude;
 
-class SplitNode : public CCNode {
+class SplitSegment : public CCNode {
 protected:
     Mod* m_srtMod = getMod(); // it's modding time :3
 
@@ -19,5 +19,5 @@ protected:
     bool init(float time, float delta = 0.f);
 
 public:
-    static SplitNode* create(float time, float delta = 0.f);
+    static SplitSegment* create(float time, float delta = 0.f);
 };
