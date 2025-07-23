@@ -43,7 +43,7 @@ bool SplitSegment::init(float time, float delta) {
         deltaLabel->setID("delta-label");
         deltaLabel->setColor(m_colStart);
         deltaLabel->setAlignment(CCTextAlignment::kCCTextAlignmentRight);
-        deltaLabel->setPosition({ splitLabel->getPositionX() - 25.f, getContentSize().height / 2 });
+        deltaLabel->setPosition({ splitLabel->getPositionX() - splitLabel->getScaledContentWidth() - 2.5f, getContentSize().height / 2 });
         deltaLabel->setAnchorPoint({ 1, 0.5 });
         deltaLabel->setScale(0.2f);
         deltaLabel->setZOrder(2);

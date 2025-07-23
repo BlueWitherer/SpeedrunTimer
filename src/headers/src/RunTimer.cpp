@@ -74,7 +74,7 @@ bool RunTimer::init() {
             scroll->setID("split-list");
             scroll->ignoreAnchorPointForPosition(false);
             scroll->setAnchorPoint({ 0, 1 });
-            scroll->setPosition({ 15.f, -0.25f - m_timeMenu->getScaledContentHeight() });
+            scroll->setPosition({ 17.5f, -0.25f - m_timeMenu->getScaledContentHeight() });
             scroll->setTouchEnabled(false);
 
             scroll->m_contentLayer->setAnchorPoint({ 0, 1 });
@@ -97,7 +97,7 @@ bool RunTimer::init() {
         auto bg = CCLayerColor::create({ 0, 0, 0, 255 });
         bg->setID("background");
         bg->setOpacity(bgOpacity);
-        bg->setPosition({ 15.f, 2.5f - m_timeMenu->getScaledContentHeight() });
+        bg->setPosition({ 17.5f, 2.5f - m_timeMenu->getScaledContentHeight() });
         bg->setScaledContentSize(m_timeMenu->getScaledContentSize());
         bg->setZOrder(1);
 
