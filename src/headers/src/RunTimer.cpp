@@ -48,7 +48,7 @@ bool RunTimer::init() {
         m_speedtimer->setAnchorPoint({ 1, 0 });
         m_speedtimer->setScale(0.875f);
 
-        m_speedtimerMs = CCLabelBMFont::create(".0", "gjFont16.fnt");
+        m_speedtimerMs = CCLabelBMFont::create(".00", "gjFont16.fnt");
         m_speedtimerMs->setID("timer-milliseconds");
         m_speedtimerMs->setColor(m_colStart);
         m_speedtimerMs->setAlignment(CCTextAlignment::kCCTextAlignmentLeft);
@@ -257,6 +257,7 @@ void RunTimer::createSplit() {
 
 void RunTimer::resetAll() {
     m_speedTime = 0.f;
+    m_lastSplitTime = 0.f;
 
     m_speedtimerPaused = true;
 
@@ -268,7 +269,7 @@ void RunTimer::resetAll() {
     };
 
     if (m_speedtimerMs) {
-        m_speedtimerMs->setCString(".0");
+        m_speedtimerMs->setCString(".00");
         m_speedtimerMs->setColor(m_colStart);
     } else {
         log::error("Speedrun timer milliseconds label not found");
