@@ -27,7 +27,7 @@ A timer will appear on the top-right corner of the screen. It can be started and
 By default, the timer will only appear when the player is playing on a platformer level. However, this can be changed in the settings.
 
 ### Splits
-You can split your ongoing run into multiple segments by pressing the checkpoint button on mobile or `NumPad 2` on your keyboard while the timer is running. If the timer gets fully reset, any and all splits will be removed.
+You can split your ongoing run into multiple segments by pressing the checkpoint button on mobile or `NumPad 2` by default on your keyboard while the timer is running. If the timer gets fully reset, any and all splits will be removed.
 
 When reaching checkpoints, splits may be generated automatically. This can be changed in settings.
 

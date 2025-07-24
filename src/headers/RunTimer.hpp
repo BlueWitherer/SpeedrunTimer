@@ -16,7 +16,7 @@ protected:
 
     CCScheduler* m_scheduler = nullptr; // The scheduler for the speedrun timer
 
-    float m_speedTime = 0.f; // Current time
+    float m_runTime = 0.f; // Current time
     float m_lastSplitTime = 0.f; // Last time a split was created
 
     bool m_speedtimerOn = false; // If the speedrun is active

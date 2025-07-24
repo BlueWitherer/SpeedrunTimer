@@ -1,3 +1,6 @@
+# v1.0.2
+- Fixed timer speed
+
 # v1.0.1
 - Added time delta label to splits
 - Fixed timer text positioning when rescaling

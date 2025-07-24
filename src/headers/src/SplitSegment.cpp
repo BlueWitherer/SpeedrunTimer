@@ -9,7 +9,7 @@
 using namespace geode::prelude;
 
 bool SplitSegment::init(float time, float delta) {
-    m_splitTime = time;
+    m_time = time;
     m_delta = delta;
 
     if (CCNode::init()) {
@@ -17,8 +17,8 @@ bool SplitSegment::init(float time, float delta) {
         setContentSize({ 125.f, 12.5f });
         setAnchorPoint({ 0, 1 });
 
-        auto ms = as<int>((m_splitTime - as<int>(m_splitTime)) * 100);
-        auto splitStr = fmt::format("{}.{:02d}", as<int>(m_splitTime), ms);
+        auto ms = as<int>((m_time - as<int>(m_time)) * 100);
+        auto splitStr = fmt::format("{}.{:02d}", as<int>(m_time), ms);
 
         auto splitLabel = CCLabelBMFont::create(
             splitStr.c_str(),
@@ -34,7 +34,7 @@ bool SplitSegment::init(float time, float delta) {
 
         addChild(splitLabel);
 
-        if (m_delta == m_splitTime) {
+        if (m_delta == m_time) {
             log::warn("Skipping first delta label");
         } else {
             auto deltaStr = fmt::format("+{:.2f}", m_delta);

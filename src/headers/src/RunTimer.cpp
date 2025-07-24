@@ -14,7 +14,7 @@ using namespace keybinds;
 #endif
 
 bool RunTimer::init() {
-    m_scheduler = CCDirector::get()->getScheduler();
+    m_scheduler = CCScheduler::get();
 
     if (CCNode::init()) {
         setID("timer"_spr);
@@ -60,6 +60,8 @@ bool RunTimer::init() {
 
         m_timeMenu->updateLayout(true);
 
+        auto scrollLayerHeight = -0.25f - m_timeMenu->getScaledContentHeight();
+
         // Create layout for scroll layer
         auto scrollLayerLayout = ColumnLayout::create()
             ->setAxisAlignment(AxisAlignment::End)
@@ -67,14 +69,14 @@ bool RunTimer::init() {
             ->setCrossAxisLineAlignment(AxisAlignment::End)
             ->setGrowCrossAxis(false)
             ->setAxisReverse(true)
-            ->setAutoGrowAxis(0.f)
+            ->setAutoGrowAxis(scrollLayerHeight)
             ->setGap(0.625f);
 
         if (auto scroll = ScrollLayer::create({ getContentSize().width, 275.f })) {
             scroll->setID("split-list");
             scroll->ignoreAnchorPointForPosition(false);
             scroll->setAnchorPoint({ 0, 1 });
-            scroll->setPosition({ 17.5f, -0.25f - m_timeMenu->getScaledContentHeight() });
+            scroll->setPosition({ 17.5f, scrollLayerHeight });
             scroll->setTouchEnabled(false);
 
             scroll->m_contentLayer->setAnchorPoint({ 0, 1 });
@@ -89,8 +91,6 @@ bool RunTimer::init() {
         } else {
             log::error("Failed to create scroll layer for speedrun splits");
         };
-
-        m_scheduler->scheduleUpdateForTarget(this, 0, false);
 
         auto bgOpacity = as<int>(m_srtMod->getSettingValue<int64_t>("bg-opacity"));
 
@@ -117,7 +117,7 @@ bool RunTimer::init() {
         // create a split
         this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
             if (event->isDown()) createSplit(); // create a split at the current time
-            log::info("Speedrun split created at {} seconds", m_speedTime);
+            log::info("Speedrun split created at {} seconds", m_runTime);
 
             return ListenerResult::Propagate;
                                                           }, "split-timer"_spr);
@@ -133,6 +133,8 @@ bool RunTimer::init() {
 
         setScale(as<float>(m_srtMod->getSettingValue<double>("scale")));
 
+        if (m_scheduler) m_scheduler->scheduleUpdateForTarget(this, 0, false);
+
         return true;
     } else {
         return false;
@@ -140,13 +142,17 @@ bool RunTimer::init() {
 };
 
 void RunTimer::update(float dt) {
-    if (m_speedtimerOn) m_speedTime += m_speedtimerPaused ? 0.f : dt;
+    // always go at 1x speed
+    auto dtScale = m_scheduler->getTimeScale();
+    if (dtScale != 0.f) dt = dt / dtScale;
 
-    auto newTime = as<int>(m_speedTime);
+    if (m_speedtimerOn) m_runTime += m_speedtimerPaused ? 0.f : dt;
+
+    auto newTime = as<int>(m_runTime);
     std::string secStr = std::to_string(newTime);
 
     if (m_srtMod->getSettingValue<bool>("format-minutes")) {
-        int minutes = as<int>(m_speedTime / 60.f);
+        int minutes = as<int>(m_runTime / 60.f);
         int seconds = newTime % 60;
 
         if (minutes > 0) {
@@ -163,7 +169,7 @@ void RunTimer::update(float dt) {
     if (m_speedtimer) m_speedtimer->setCString(secStr.c_str()); // seconds
 
     if (m_speedtimerMs) { // ms
-        int ms = as<int>(m_speedTime * 100) % 100;
+        int ms = as<int>(m_runTime * 100) % 100;
 
         std::ostringstream oss;
         oss << "." << (ms > 9 ? "" : "0") << ms;
@@ -179,7 +185,7 @@ void RunTimer::toggleTimer(bool toggle) {
         m_speedtimerOn = toggle;
 
         if (m_speedtimerOn) {
-            auto color = m_speedTime < 0.f ? m_col : m_colStart;
+            auto color = m_runTime < 0.f ? m_col : m_colStart;
 
             if (m_speedtimer) m_speedtimer->setColor(color);
             if (m_speedtimerMs) m_speedtimerMs->setColor(color);
@@ -189,7 +195,7 @@ void RunTimer::toggleTimer(bool toggle) {
             if (m_speedtimer) m_speedtimer->setColor(m_colStart);
             if (m_speedtimerMs) m_speedtimerMs->setColor(m_colStart);
 
-            log::info("Speedrun timer stopped at {} seconds", m_speedTime);
+            log::info("Speedrun timer stopped at {} seconds", m_runTime);
         };
     };
 };
@@ -204,7 +210,7 @@ void RunTimer::pauseTimer(bool pause) {
             if (m_speedtimer) m_speedtimer->setColor(m_colPause);
             if (m_speedtimerMs) m_speedtimerMs->setColor(m_colPause);
 
-            log::info("Speedrun timer paused at {} seconds", m_speedTime);
+            log::info("Speedrun timer paused at {} seconds", m_runTime);
         } else {
             if (m_speedtimer) m_speedtimer->setColor(m_col);
             if (m_speedtimerMs) m_speedtimerMs->setColor(m_col);
@@ -216,10 +222,10 @@ void RunTimer::pauseTimer(bool pause) {
 
 void RunTimer::createSplit() {
     if (m_speedtimerOn) {
-        auto splitDelta = m_speedTime - m_lastSplitTime;
-        m_lastSplitTime = m_speedTime;
+        auto splitDelta = m_runTime - m_lastSplitTime;
+        m_lastSplitTime = m_runTime;
 
-        if (auto splitNode = SplitSegment::create(m_speedTime, splitDelta)) {
+        if (auto splitNode = SplitSegment::create(m_runTime, splitDelta)) {
 
             auto limit = as<int>(m_srtMod->getSettingValue<int64_t>("split-limit"));
             auto withinLimit = (limit - 1) >= m_splitList->m_contentLayer->getChildrenCount();
@@ -246,7 +252,7 @@ void RunTimer::createSplit() {
                 log::error("Split list not found");
             };
 
-            log::info("Speedrun split created at {} seconds{}", m_speedTime, withinLimit ? "" : " (limit reached, node not added)");
+            log::info("Speedrun split created at {} seconds{}", m_runTime, withinLimit ? "" : " (limit reached, node not added)");
         } else {
             log::error("Failed to create speedrun split node");
         };
@@ -256,7 +262,7 @@ void RunTimer::createSplit() {
 };
 
 void RunTimer::resetAll() {
-    m_speedTime = 0.f;
+    m_runTime = 0.f;
     m_lastSplitTime = 0.f;
 
     m_speedtimerPaused = true;
