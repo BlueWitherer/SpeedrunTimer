@@ -41,7 +41,7 @@ class $modify(MyPlayLayer, PlayLayer) {
                 if (auto sr = RunTimer::create()) {
                     sr->setZOrder(101);
                     sr->setAnchorPoint({ 1, 1 });
-                    sr->setPosition({ widthCS - 37.5f, heightCS - 25.f });
+                    sr->setPosition({ widthCS - 40.f, heightCS - 25.f });
 
                     sr->toggleTimer(true); // enable the timer
 
@@ -239,7 +239,7 @@ class $modify(MyPlayLayer, PlayLayer) {
     void levelComplete() {
         if (srt->getSettingValue<bool>("stop-complete")) { // check if stop on level complete is enabled
             if (m_fields->m_speedrunNode) m_fields->m_speedrunNode->toggleTimer(false);
-            if (m_fields->m_pauseTimerBtn) m_fields->m_pauseTimerBtn->toggle(m_fields->m_speedrunNode->isTimerPaused()); // update the button state
+            if (m_fields->m_pauseTimerBtn) m_fields->m_pauseTimerBtn->toggle(!m_fields->m_speedrunNode->isTimerPaused()); // update the button state
         } else {
             log::info("Timer will not stop on level completion");
         };
