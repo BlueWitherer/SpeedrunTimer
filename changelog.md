@@ -1,3 +1,6 @@
+# v1.0.3
+- Bumped Geode loader support to `v4.7.0`
+
 # v1.0.2
 - Fixed timer speed
 - Properly fixed pause/resume button not updating when level is complete

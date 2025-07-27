@@ -1,5 +1,5 @@
 {
-	"geode": "4.6.3",
+	"geode": "4.7.0",
 	"gd": {
 		"win": "2.2074",
 		"android": "2.2074",
@@ -8,7 +8,7 @@
 	},
 	"id": "cheeseworks.speedruntimer",
 	"name": "Speedrun Timer",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"developer": "Cheeseworks",
 	"description": "Just a speedrun timer for platformer levels.",
 	"dependencies": {
@@ -28,7 +28,7 @@
 	},
 	"links": {
 		"source": "https://github.com/BlueWitherer/SpeedrunTimer",
-		"homepage": "https://avalanche.cubicstudios.xyz/",
+		"homepage": "https://www.cheeseworks.gay/",
 		"community": "https://www.dsc.gg/cubic"
 	},
 	"issues": {
