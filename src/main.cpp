@@ -18,7 +18,6 @@ auto srt = getMod();
 
 class $modify(MyPlayLayer, PlayLayer) {
     struct Fields {
-        GameObject* m_destroyPlayerObject = nullptr; // Destroyed player object
         CheckpointGameObject* m_checkpointObject = nullptr; // Latest checkpoint
 
         RunTimer* m_speedrunNode = nullptr; // The speedrun node for the timer
@@ -215,19 +214,19 @@ class $modify(MyPlayLayer, PlayLayer) {
     };
 
     void destroyPlayer(PlayerObject * p0, GameObject * p1) {
+        bool wasDead = p0 ? p0->m_isDead : true;
+
+        PlayLayer::destroyPlayer(p0, p1);
+
         if (srt->getSettingValue<bool>("reset-death")) { // check if reset after death is enabled
-            if (p1 == m_fields->m_destroyPlayerObject) {
-                log::warn("Player already destroyed");
-            } else {
+            if (!wasDead && p0->m_isDead) {
                 if (m_fields->m_speedrunNode) m_fields->m_speedrunNode->pauseTimer(true);
+            } else {
+                log::warn("Player already destroyed");
             };
         } else {
             log::warn("Death reset is disabled");
         };
-
-        m_fields->m_destroyPlayerObject = p1;
-
-        PlayLayer::destroyPlayer(p0, p1);
     };
 
     void resetLevel() {
