@@ -1,5 +1,8 @@
 # v1.0.3
 - Bumped Geode loader support to `v4.7.0`
+- Added optional mobile button to hide all timer UI in level
+- Hide timer keybind will also hide mobile buttons if visible
+- Updated mod metadata
 
 # v1.0.2
 - Fixed timer speed

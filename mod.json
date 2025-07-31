@@ -150,6 +150,18 @@
 				"ios": true
 			}
 		},
+		"mobile-visible-btn": {
+			"type": "bool",
+			"name": "Timer Visibility Button",
+			"description": "Show a button to toggle the visibility of the timer and mobile UI.",
+			"enable-if": "mobile-btns",
+			"default": {
+				"win": false,
+				"android": true,
+				"mac": false,
+				"ios": true
+			}
+		},
 		"mobile-opacity": {
 			"type": "int",
 			"name": "Mobile Button Opacity",

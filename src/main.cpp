@@ -49,17 +49,6 @@ class $modify(MyPlayLayer, PlayLayer) {
 
                     addChild(m_fields->m_speedrunNode);
 
-#ifndef GEODE_IS_IOS
-                    // remove timer
-                    this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
-                        if (event->isDown()) m_fields->m_speedrunNode->setVisible(!m_fields->m_speedrunNode->isVisible());
-
-                        log::warn("Speedrun timer removed by keybind");
-
-                        return ListenerResult::Propagate;
-                                                                      }, "hide-timer"_spr);
-#endif
-
                     // create mobile controls
                     if (srt->getSettingValue<bool>("mobile-btns")) {
                         auto btnMenuLayout = AxisLayout::create(Axis::Row)
@@ -133,10 +122,50 @@ class $modify(MyPlayLayer, PlayLayer) {
 
                         addChild(m_fields->m_mobileMenu);
 
-                        m_fields->m_mobileMenu->updateLayout();
+                        m_fields->m_mobileMenu->updateLayout(true);
+
+                        if (srt->getSettingValue<bool>("mobile-visible-btn")) {
+                            auto visibleMenu = CCMenu::create();
+                            visibleMenu->setID("mobile-visibility-menu"_spr);
+                            visibleMenu->setAnchorPoint(m_fields->m_mobileMenu->getAnchorPoint());
+                            visibleMenu->setPosition({ m_fields->m_mobileMenu->getPositionX(), m_fields->m_mobileMenu->getPositionY() - m_fields->m_mobileMenu->getScaledContentHeight() - 2.5f });
+                            visibleMenu->setZOrder(m_fields->m_mobileMenu->getZOrder());
+                            visibleMenu->setLayout(btnMenuLayout);
+
+                            auto visibleBtnSprite = CCSprite::createWithSpriteFrameName("hideBtn_001.png");
+                            visibleBtnSprite->setScale(0.875f);
+                            visibleBtnSprite->setOpacity(200);
+
+                            auto visibleBtn = CCMenuItemSpriteExtra::create(
+                                visibleBtnSprite,
+                                this,
+                                menu_selector(MyPlayLayer::onToggleViewTimer)
+                            );
+                            visibleBtn->setID("visible-button");
+
+                            visibleMenu->addChild(visibleBtn);
+                            visibleMenu->updateLayout(true);
+
+                            addChild(visibleMenu);
+                        } else {
+                            log::warn("Mobile UI visibility button is disabled");
+                        };
                     } else {
                         log::warn("Mobile controls are disabled");
                     };
+
+#ifndef GEODE_IS_IOS
+                    // remove timer
+                    this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
+                        if (event->isDown()) {
+                            toggleTimerVisibility();
+
+                            log::warn("Speedrun timer view toggled by keybind");
+                        };
+
+                        return ListenerResult::Propagate;
+                                                                      }, "hide-timer"_spr);
+#endif
                 } else {
                     log::error("Failed to create timer!");
                 };
@@ -150,10 +179,19 @@ class $modify(MyPlayLayer, PlayLayer) {
         };
     };
 
+    void toggleTimerVisibility() {
+        if (m_fields->m_speedrunNode) m_fields->m_speedrunNode->setVisible(!m_fields->m_speedrunNode->isVisible());
+        if (m_fields->m_mobileMenu) m_fields->m_mobileMenu->setVisible(!m_fields->m_mobileMenu->isVisible());
+    };
+
+    void onToggleViewTimer(CCObject*) {
+        toggleTimerVisibility();
+        log::warn("Speedrun timer view toggled by UI");
+    };
+
     void pauseTimer(CCObject*) {
         if (m_fields->m_speedrunNode) {
-            m_fields->m_speedrunNode->pauseTimer(!m_fields->m_speedrunNode->isTimerPaused());
-            m_fields->m_pauseTimerBtn->toggle(!m_fields->m_speedrunNode->isTimerPaused()); // update the button state
+            m_fields->m_speedrunNode->pauseTimer(!m_fields->m_pauseTimerBtn->isToggled());
         } else {
             log::error("Speedrun node is not initialized");
         };
