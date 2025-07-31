@@ -207,7 +207,7 @@ class $modify(MyPlayLayer, PlayLayer) {
     void resetAll(CCObject*) {
         if (m_fields->m_speedrunNode) {
             m_fields->m_speedrunNode->resetAll();
-            m_fields->m_pauseTimerBtn->toggle(m_fields->m_speedrunNode->isTimerPaused()); // update the button state
+            if (m_fields->m_pauseTimerBtn) m_fields->m_pauseTimerBtn->toggle(m_fields->m_speedrunNode->isTimerPaused()); // update the button state
         } else {
             log::error("Speedrun node is not initialized");
         };
@@ -221,17 +221,15 @@ class $modify(MyPlayLayer, PlayLayer) {
         if (srt->getSettingValue<bool>("reset-death")) { // check if reset after death is enabled
             if (!wasDead && p0->m_isDead) {
                 if (m_fields->m_speedrunNode) m_fields->m_speedrunNode->pauseTimer(true);
-            } else {
-                log::warn("Player already destroyed");
+                if (m_fields->m_pauseTimerBtn) m_fields->m_pauseTimerBtn->toggle(m_fields->m_speedrunNode->isTimerPaused()); // update the button state
             };
-        } else {
-            log::warn("Death reset is disabled");
         };
     };
 
     void resetLevel() {
         if (srt->getSettingValue<bool>("reset-death")) { // check if reset after death is enabled
             if (m_fields->m_speedrunNode) m_fields->m_speedrunNode->pauseTimer(false);
+            if (m_fields->m_pauseTimerBtn) m_fields->m_pauseTimerBtn->toggle(m_fields->m_speedrunNode->isTimerPaused()); // update the button state
         } else {
             log::info("Timer will not resume on restart");
         };
@@ -244,6 +242,7 @@ class $modify(MyPlayLayer, PlayLayer) {
 
         if (srt->getSettingValue<bool>("reset-death")) { // check if reset after death is enabled
             if (m_fields->m_speedrunNode) m_fields->m_speedrunNode->resetAll();
+            if (m_fields->m_pauseTimerBtn) m_fields->m_pauseTimerBtn->toggle(m_fields->m_speedrunNode->isTimerPaused()); // update the button state
         } else {
             log::info("Timer will not reset on level restart");
         };
@@ -266,6 +265,7 @@ class $modify(MyPlayLayer, PlayLayer) {
 
         if (srt->getSettingValue<bool>("reset-death")) { // check if reset after death is enabled
             if (m_fields->m_speedrunNode) m_fields->m_speedrunNode->pauseTimer(false); // force resume
+            if (m_fields->m_pauseTimerBtn) m_fields->m_pauseTimerBtn->toggle(m_fields->m_speedrunNode->isTimerPaused()); // update the button state
         } else {
             log::info("Timer will not resume on checkpoint activation");
         };
@@ -282,43 +282,5 @@ class $modify(MyPlayLayer, PlayLayer) {
         };
 
         PlayLayer::levelComplete();
-    };
-
-    // player starts touching the menu
-    bool ccTouchBegan(CCTouch * touch, CCEvent * event) {
-        if (srt->getSettingValue<bool>("mobile-btns") &&
-            m_fields->m_speedrunNode &&
-            m_fields->m_speedrunNode->isVisible() &&
-            m_fields->m_mobileMenu) {
-
-            auto touchLocation = touch->getLocation();
-            if (m_fields->m_mobileMenu->boundingBox().containsPoint(touchLocation)) m_fields->m_draggingMobile = true;
-        };
-
-        return PlayLayer::ccTouchBegan(touch, event);
-    };
-
-    // player is dragging the menu
-    void ccTouchMoved(CCTouch * touch, CCEvent * event) {
-        if (srt->getSettingValue<bool>("mobile-btns") &&
-            m_fields->m_draggingMobile &&
-            m_fields->m_mobileMenu) {
-
-            auto touchLocation = touch->getLocation();
-            m_fields->m_mobileMenu->setPosition(touchLocation);
-        };
-
-        PlayLayer::ccTouchMoved(touch, event);
-    };
-
-    // player stops touching the menu
-    void ccTouchEnded(CCTouch * touch, CCEvent * event) {
-        if (srt->getSettingValue<bool>("mobile-btns") &&
-            m_fields->m_draggingMobile) {
-
-            m_fields->m_draggingMobile = false;
-        };
-
-        PlayLayer::ccTouchEnded(touch, event);
     };
 };
