@@ -1,3 +1,5 @@
+# v1.0.4
+
 # v1.0.3
 - Bumped Geode loader support to `v4.7.0`
 - Fixed timer responding incorrectly after respawn while *`Reset on Death`* is enabled
