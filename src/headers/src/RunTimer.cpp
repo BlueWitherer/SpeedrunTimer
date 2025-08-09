@@ -53,7 +53,7 @@ bool RunTimer::init() {
             scroll->setID("split-list");
             scroll->ignoreAnchorPointForPosition(false);
             scroll->setAnchorPoint({ 1, 1 });
-            scroll->setPosition({ getScaledContentWidth(), getScaledContentHeight() - 0.5f });
+            scroll->setPosition({ getScaledContentWidth(), getScaledContentHeight() - 1.f });
             scroll->setTouchEnabled(false);
 
             scroll->m_contentLayer->setAnchorPoint({ 0, 1 });
@@ -70,7 +70,7 @@ bool RunTimer::init() {
             log::error("Failed to create scroll layer for speedrun splits");
         };
 
-        auto bgOpacity = as<int>(m_srtMod->getSettingValue<int64_t>("bg-opacity"));
+        auto bgOpacity = static_cast<int>(m_srtMod->getSettingValue<int64_t>("bg-opacity"));
 
         auto bg = CCLayerColor::create({ 0, 0, 0, 255 });
         bg->setID("background");
@@ -108,7 +108,7 @@ bool RunTimer::init() {
                                                           }, "reset-timer"_spr);
 #endif
 
-        setScale(as<float>(m_srtMod->getSettingValue<double>("scale")));
+        setScale(static_cast<float>(m_srtMod->getSettingValue<double>("scale")));
 
         if (m_scheduler) m_scheduler->scheduleUpdateForTarget(this, 0, false);
 
@@ -125,11 +125,11 @@ void RunTimer::update(float dt) {
 
     if (m_speedtimerOn) m_runTime += m_speedtimerPaused ? 0.f : dt;
 
-    auto newTime = as<int>(m_runTime);
+    auto newTime = static_cast<int>(m_runTime);
     std::string secStr = std::to_string(newTime);
 
     if (m_srtMod->getSettingValue<bool>("format-minutes")) {
-        int minutes = as<int>(m_runTime / 60.f);
+        int minutes = static_cast<int>(m_runTime / 60.f);
         int seconds = newTime % 60;
 
         if (minutes > 0) {
@@ -146,7 +146,7 @@ void RunTimer::update(float dt) {
     if (m_speedtimer) m_speedtimer->setCString(secStr.c_str()); // seconds
 
     if (m_speedtimerMs) { // ms
-        int ms = as<int>(m_runTime * 100) % 100;
+        int ms = static_cast<int>(m_runTime * 100) % 100;
 
         std::ostringstream oss;
         oss << "." << (ms > 9 ? "" : "0") << ms;
@@ -204,7 +204,7 @@ void RunTimer::createSplit() {
 
         if (auto splitNode = SplitSegment::create(m_runTime, splitDelta)) {
 
-            auto limit = as<int>(m_srtMod->getSettingValue<int64_t>("split-limit"));
+            auto limit = static_cast<int>(m_srtMod->getSettingValue<int64_t>("split-limit"));
             auto withinLimit = (limit - 1) >= m_splitList->m_contentLayer->getChildrenCount();
 
             if (m_splitList) {
@@ -215,7 +215,7 @@ void RunTimer::createSplit() {
 
                     auto children = m_splitList->m_contentLayer->getChildren();
                     if (children && children->count() > 0) {
-                        auto firstChild = as<CCNode*>(children->objectAtIndex(0));
+                        auto firstChild = static_cast<CCNode*>(children->objectAtIndex(0));
                         if (firstChild) firstChild->removeMeAndCleanup();
                     } else {
                         log::warn("No split nodes to remove");

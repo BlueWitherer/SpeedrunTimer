@@ -1,24 +1,24 @@
 # Speedrun Timer
 **Just a speedrun timer for platformer levels.**
 
-*by* ***[Cheeseworks](user:6408873)****!*
+*by [Cheeseworks](user:6408873)*
 
 > ![icon](frame:collaborationIcon_001.png) <cg>*This mod has settings you can utilize to customize your experience.*</c>
 
 ---
 
 ## About
-This mod adds a speedrun timer in the style of the *[LiveSplit](https://www.livesplit.org/)* interface to the player's UI when playing a platformer level.
+This mod adds a speedrun timer in the style of the *[LiveSplit](https://www.livesplit.org/)* user interface to the player's level UI when playing a platformer level.
 
 ---
 
 ### Timer
-A timer will appear on the top-right corner of the screen. It can be started and stopped via the buttons on the top-left corner if you're on mobile, or by pressing `NumPad 1` on your keyboard, and can be fully reset with `NumPad 3`.
+A <cg>timer</c> will appear on the top-right corner of the screen. It can be <cy>started and stopped</c> via the <cl>play button on the top-left corner</c> if you're on mobile, or by <cf>pressing `NumPad 1` on your keyboard</c>, and can be <cy>fully reset</c> by <cf>pressing `NumPad 3`</c> or the <cl>reset button</c> on mobile.
 
 By default, the timer will only appear when the player is playing on a platformer level. However, this can be changed in the settings.
 
 ### Splits
-You can split your ongoing run into multiple segments by pressing the checkpoint button on mobile or `NumPad 2` by default on your keyboard while the timer is running. If the timer gets fully reset, any and all splits will be removed.
+You can <cy>split your ongoing run</c> into multiple segments by <cl>pressing the checkpoint icon button</c> on mobile or <cf>`NumPad 2` on your keyboard</c> while the timer is running. If the timer gets fully reset, any and all splits will be removed.
 
 When reaching checkpoints, splits may be generated automatically. This can be changed in settings.
 

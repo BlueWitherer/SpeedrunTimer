@@ -17,8 +17,8 @@ bool SplitSegment::init(float time, float delta) {
         setContentSize({ 125.f, 12.5f });
         setAnchorPoint({ 0, 1 });
 
-        auto ms = as<int>((m_time - as<int>(m_time)) * 100);
-        auto splitStr = fmt::format("{}.{:02d}", as<int>(m_time), ms);
+        auto ms = static_cast<int>((m_time - static_cast<int>(m_time)) * 100);
+        auto splitStr = fmt::format("{}.{:02d}", static_cast<int>(m_time), ms);
 
         auto splitLabel = CCLabelBMFont::create(
             splitStr.c_str(),
@@ -54,7 +54,7 @@ bool SplitSegment::init(float time, float delta) {
             addChild(deltaLabel);
         };
 
-        auto bgOpacity = as<int>(m_srtMod->getSettingValue<int64_t>("bg-opacity"));
+        auto bgOpacity = static_cast<int>(m_srtMod->getSettingValue<int64_t>("bg-opacity"));
 
         auto bg = CCLayerColor::create({ 0, 0, 0, 255 });
         bg->setID("background");

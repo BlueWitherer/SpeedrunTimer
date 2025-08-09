@@ -139,6 +139,11 @@
 				"big-arrow-step": 25
 			}
 		},
+		"mobile": {
+			"type": "title",
+			"name": "Mobile",
+			"description": "Options for mobile users."
+		},
 		"mobile-btns": {
 			"type": "bool",
 			"name": "Mobile Buttons",
@@ -163,10 +168,31 @@
 				"ios": true
 			}
 		},
+		"mobile-btns-scale": {
+			"type": "float",
+			"name": "Mobile Button Scale",
+			"description": "The scale of the mobile buttons.",
+			"enable-if": "mobile-btns",
+			"enable-if-description": "Enable mobile buttons in order to change their scale.",
+			"default": 1,
+			"min": 0.5,
+			"max": 2,
+			"control": {
+				"input": true,
+				"slider": true,
+				"slider-step": 0.125,
+				"arrows": true,
+				"arrow-step": 0.25,
+				"big-arrows": true,
+				"big-arrow-step": 0.5
+			}
+		},
 		"mobile-opacity": {
 			"type": "int",
 			"name": "Mobile Button Opacity",
 			"description": "The opacity of the mobile buttons.",
+			"enable-if": "mobile-btns",
+			"enable-if-description": "Enable mobile buttons in order to change their opacity.",
 			"default": 200,
 			"min": 0,
 			"max": 255,
