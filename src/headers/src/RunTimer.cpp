@@ -18,65 +18,42 @@ bool RunTimer::init() {
 
     if (CCNode::init()) {
         setID("timer"_spr);
-        setContentSize({ 125.f, 0.f });
-
-        auto layout = AxisLayout::create(Axis::Row)
-            ->setDefaultScaleLimits(0.5f, 0.875f)
-            ->setAxisAlignment(AxisAlignment::End)
-            ->setCrossAxisAlignment(AxisAlignment::Start)
-            ->setCrossAxisLineAlignment(AxisAlignment::Start)
-            ->setCrossAxisReverse(true)
-            ->setGrowCrossAxis(false)
-            ->setAutoGrowAxis(125.f)
-            ->setAxisReverse(true)
-            ->setAutoScale(false)
-            ->setGap(0.f);
-
-        m_timeMenu = CCMenu::create();
-        m_timeMenu->setID("timer-menu");
-        m_timeMenu->setAnchorPoint({ 1, 1 });
-        m_timeMenu->setPosition({ getScaledContentWidth(), 0.f });
-        m_timeMenu->setZOrder(2);
-        m_timeMenu->setLayout(layout);
-
-        addChild(m_timeMenu);
-
-        m_speedtimer = CCLabelBMFont::create("0", "gjFont16.fnt");
-        m_speedtimer->setID("timer-seconds");
-        m_speedtimer->setColor(m_colStart);
-        m_speedtimer->setAlignment(CCTextAlignment::kCCTextAlignmentRight);
-        m_speedtimer->setAnchorPoint({ 1, 0 });
-        m_speedtimer->setScale(0.875f);
+        setContentSize({ 125.f, 37.5f });
 
         m_speedtimerMs = CCLabelBMFont::create(".00", "gjFont16.fnt");
         m_speedtimerMs->setID("timer-milliseconds");
+        m_speedtimerMs->setScale(0.5f);
         m_speedtimerMs->setColor(m_colStart);
         m_speedtimerMs->setAlignment(CCTextAlignment::kCCTextAlignmentLeft);
+        m_speedtimerMs->setPosition({ getScaledContentWidth() - (m_speedtimerMs->getScaledContentWidth() + 2.5f), 0.25f });
         m_speedtimerMs->setAnchorPoint({ 0, 0 });
-        m_speedtimerMs->setScale(0.5f);
 
-        m_timeMenu->addChild(m_speedtimerMs);
-        m_timeMenu->addChild(m_speedtimer);
+        m_speedtimer = CCLabelBMFont::create("0", "gjFont16.fnt");
+        m_speedtimer->setID("timer-seconds");
+        m_speedtimer->setScale(0.875f);
+        m_speedtimer->setColor(m_colStart);
+        m_speedtimer->setAlignment(CCTextAlignment::kCCTextAlignmentRight);
+        m_speedtimer->setPosition({ getScaledContentWidth() - (m_speedtimerMs->getScaledContentWidth() + 3.75f), 0.25f });
+        m_speedtimer->setAnchorPoint({ 1, 0 });
 
-        m_timeMenu->updateLayout(true);
-
-        auto scrollLayerHeight = -0.25f - m_timeMenu->getScaledContentHeight();
+        addChild(m_speedtimerMs);
+        addChild(m_speedtimer);
 
         // Create layout for scroll layer
         auto scrollLayerLayout = ColumnLayout::create()
             ->setAxisAlignment(AxisAlignment::End)
             ->setCrossAxisAlignment(AxisAlignment::End)
             ->setCrossAxisLineAlignment(AxisAlignment::End)
+            ->setAutoGrowAxis(getScaledContentHeight())
             ->setGrowCrossAxis(false)
             ->setAxisReverse(true)
-            ->setAutoGrowAxis(scrollLayerHeight)
             ->setGap(0.625f);
 
         if (auto scroll = ScrollLayer::create({ getContentSize().width, 275.f })) {
             scroll->setID("split-list");
             scroll->ignoreAnchorPointForPosition(false);
-            scroll->setAnchorPoint({ 0, 1 });
-            scroll->setPosition({ 17.5f, scrollLayerHeight });
+            scroll->setAnchorPoint({ 1, 1 });
+            scroll->setPosition({ getScaledContentWidth(), getScaledContentHeight() - 0.5f });
             scroll->setTouchEnabled(false);
 
             scroll->m_contentLayer->setAnchorPoint({ 0, 1 });
@@ -84,6 +61,7 @@ bool RunTimer::init() {
             scroll->m_contentLayer->setTouchEnabled(false);
 
             m_splitList = scroll;
+
             addChild(m_splitList);
 
             m_splitList->m_contentLayer->updateLayout(true);
@@ -97,13 +75,12 @@ bool RunTimer::init() {
         auto bg = CCLayerColor::create({ 0, 0, 0, 255 });
         bg->setID("background");
         bg->setOpacity(bgOpacity);
-        bg->setPosition({ 17.5f, 2.5f - m_timeMenu->getScaledContentHeight() });
-        bg->setScaledContentSize(m_timeMenu->getScaledContentSize());
-        bg->setZOrder(1);
+        bg->setAnchorPoint({ 0, 0 });
+        bg->setPosition({ 0.f, 0.f });
+        bg->setScaledContentSize(getScaledContentSize());
+        bg->setZOrder(-1);
 
         addChild(bg);
-
-        m_timeMenu->setScale(0.875f);
 
 #ifndef GEODE_IS_IOS
         // toggle timer

@@ -28,6 +28,8 @@ class $modify(MyPlayLayer, PlayLayer) {
         CCMenuItemSpriteExtra* m_splitTimerBtn = nullptr; // Split timer button for mobile controls
         CCMenuItemSpriteExtra* m_resetTimerBtn = nullptr; // Reset timer button for mobile controls
 
+        CCMenuItemSpriteExtra* m_visibleBtn = nullptr;
+
         bool m_draggingMobile = false; // If the player is dragging the mobile menu
     };
 
@@ -135,14 +137,14 @@ class $modify(MyPlayLayer, PlayLayer) {
                             visibleBtnSprite->setScale(0.875f);
                             visibleBtnSprite->setOpacity(200);
 
-                            auto visibleBtn = CCMenuItemSpriteExtra::create(
+                            m_fields->m_visibleBtn = CCMenuItemSpriteExtra::create(
                                 visibleBtnSprite,
                                 this,
                                 menu_selector(MyPlayLayer::onToggleViewTimer)
                             );
-                            visibleBtn->setID("visible-button");
+                            m_fields->m_visibleBtn->setID("visible-button");
 
-                            visibleMenu->addChild(visibleBtn);
+                            visibleMenu->addChild(m_fields->m_visibleBtn);
                             visibleMenu->updateLayout(true);
 
                             addChild(visibleMenu);
@@ -185,7 +187,15 @@ class $modify(MyPlayLayer, PlayLayer) {
 
     void onToggleViewTimer(CCObject*) {
         toggleTimerVisibility();
-        log::warn("Speedrun timer view toggled by UI");
+
+        if (m_fields->m_speedrunNode) {
+            auto visible = m_fields->m_speedrunNode->isVisible();
+
+            if (m_fields->m_visibleBtn) m_fields->m_visibleBtn->setOpacity(visible ? 255 : 125);
+            log::warn("Speedrun timer view toggled {} by UI", visible);
+        } else {
+            log::error("Couldn't find speedrun timer");
+        };
     };
 
     void pauseTimer(CCObject*) {

@@ -63,7 +63,7 @@
 			"name": "Scale",
 			"description": "Scale the timer label.",
 			"default": 1,
-			"min": 0.5,
+			"min": 0.25,
 			"max": 2,
 			"control": {
 				"input": true,
@@ -78,7 +78,7 @@
 		"bg-opacity": {
 			"type": "int",
 			"name": "Background Opacity",
-			"description": "The opacity of the background behind the timer.",
+			"description": "The opacity of the background behind the timer and time split labels.",
 			"default": 250,
 			"min": 0,
 			"max": 255,
@@ -155,6 +155,7 @@
 			"name": "Timer Visibility Button",
 			"description": "Show a button below the timer button menu to toggle the visibility of the timer and mobile UI.",
 			"enable-if": "mobile-btns",
+			"enable-if-description": "Enable mobile buttons in order to change their visibility.",
 			"default": {
 				"win": false,
 				"android": true,
@@ -184,6 +185,18 @@
 			"name": "Conditions",
 			"description": "The speedrun timer's functionality."
 		},
+		"reset-death": {
+			"type": "bool",
+			"name": "Reset on Death",
+			"description": "Reset the speedrun timer when restarting the level from the beginning. This will also pause the timer after the player dies, and if respawned at a checkpoint, the timer will resume from where it left off.",
+			"default": true
+		},
+		"stop-complete": {
+			"type": "bool",
+			"name": "Stop on Complete",
+			"description": "Stop the speedrun timer when the player completes the level.",
+			"default": true
+		},
 		"platformer-only": {
 			"type": "bool",
 			"name": "Platformer Only",
@@ -197,18 +210,6 @@
 			"default": true,
 			"enable-if": "platformer-only",
 			"enable-if-description": "This setting is only available for platformer levels."
-		},
-		"reset-death": {
-			"type": "bool",
-			"name": "Reset on Death",
-			"description": "Reset the speedrun timer when the player dies. <cy>This feature is currently being worked on.</c>",
-			"default": true
-		},
-		"stop-complete": {
-			"type": "bool",
-			"name": "Stop on Complete",
-			"description": "Stop the speedrun timer when the player completes the level.",
-			"default": true
 		}
 	},
 	"early-load": false
