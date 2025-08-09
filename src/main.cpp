@@ -30,6 +30,8 @@ class $modify(MyPlayLayer, PlayLayer) {
 
         CCMenuItemSpriteExtra* m_visibleBtn = nullptr;
 
+        bool m_manualPause = true;
+
         bool m_draggingMobile = false; // If the player is dragging the mobile menu
     };
 
@@ -206,7 +208,8 @@ class $modify(MyPlayLayer, PlayLayer) {
 
     void pauseTimer(CCObject*) {
         if (m_fields->m_speedrunNode) {
-            if (m_fields->m_pauseTimerBtn) m_fields->m_speedrunNode->pauseTimer(!m_fields->m_pauseTimerBtn->isToggled());
+            m_fields->m_manualPause = !m_fields->m_pauseTimerBtn->isToggled();
+            if (m_fields->m_pauseTimerBtn) m_fields->m_speedrunNode->pauseTimer(m_fields->m_manualPause);
         } else {
             log::error("Failed to get speedrun node");
         };
@@ -250,7 +253,7 @@ class $modify(MyPlayLayer, PlayLayer) {
         if (srt->getSettingValue<bool>("reset-death")) { // check if reset after death is enabled
             log::info("Resuming timer");
 
-            if (m_fields->m_speedrunNode) m_fields->m_speedrunNode->pauseTimer(m_fields->m_speedrunNode->isTimerPaused() ? false : true);
+            if (m_fields->m_speedrunNode) m_fields->m_speedrunNode->pauseTimer(m_fields->m_manualPause);
             if (m_fields->m_pauseTimerBtn) m_fields->m_pauseTimerBtn->toggle(m_fields->m_speedrunNode->isTimerPaused()); // update the button state
         } else {
             log::info("Timer will not resume on restart");
@@ -265,7 +268,7 @@ class $modify(MyPlayLayer, PlayLayer) {
         if (srt->getSettingValue<bool>("reset-death")) { // check if reset after death is enabled
             log::info("Resetting timer");
 
-            if (m_fields->m_speedrunNode) m_fields->m_speedrunNode->resetAll();
+            if (m_fields->m_speedrunNode) m_fields->m_manualPause ? m_fields->m_speedrunNode->pauseTimer(m_fields->m_manualPause) : m_fields->m_speedrunNode->resetAll();
             if (m_fields->m_pauseTimerBtn) m_fields->m_pauseTimerBtn->toggle(m_fields->m_speedrunNode->isTimerPaused()); // update the button state
         } else {
             log::info("Timer will not reset on level restart");

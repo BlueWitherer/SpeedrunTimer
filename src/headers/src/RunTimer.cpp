@@ -20,20 +20,22 @@ bool RunTimer::init() {
         setID("timer"_spr);
         setContentSize({ 125.f, 37.5f });
 
+        // assign the milliseconds timer
         m_speedtimerMs = CCLabelBMFont::create(".00", "gjFont16.fnt");
         m_speedtimerMs->setID("timer-milliseconds");
         m_speedtimerMs->setScale(0.5f);
         m_speedtimerMs->setColor(m_colStart);
         m_speedtimerMs->setAlignment(CCTextAlignment::kCCTextAlignmentLeft);
-        m_speedtimerMs->setPosition({ getScaledContentWidth() - (m_speedtimerMs->getScaledContentWidth() + 2.5f), 0.25f });
+        m_speedtimerMs->setPosition({ getScaledContentWidth() - (m_speedtimerMs->getScaledContentWidth() + 2.5f), 0.5f });
         m_speedtimerMs->setAnchorPoint({ 0, 0 });
 
+        // assign the seconds timer
         m_speedtimer = CCLabelBMFont::create("0", "gjFont16.fnt");
         m_speedtimer->setID("timer-seconds");
         m_speedtimer->setScale(0.875f);
         m_speedtimer->setColor(m_colStart);
         m_speedtimer->setAlignment(CCTextAlignment::kCCTextAlignmentRight);
-        m_speedtimer->setPosition({ getScaledContentWidth() - (m_speedtimerMs->getScaledContentWidth() + 3.75f), 0.25f });
+        m_speedtimer->setPosition({ getScaledContentWidth() - (m_speedtimerMs->getScaledContentWidth() + 3.75f), 0.5f });
         m_speedtimer->setAnchorPoint({ 1, 0 });
 
         addChild(m_speedtimerMs);
