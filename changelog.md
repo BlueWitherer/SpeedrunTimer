@@ -1,3 +1,5 @@
+# v1.0.5
+
 # v1.0.4
 - Added number setting `Mobile Button Scale`
 - Mobile timer visibility button now changes opacity on toggle
