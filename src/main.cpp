@@ -66,7 +66,7 @@ class $modify(MyPlayLayer, PlayLayer) {
                             ->setAutoScale(false)
                             ->setGap(3.75f);
 
-                        auto opacity = static_cast<int>(srt->getSettingValue<int64_t>("mobile-opacity"));
+                        auto opacity = static_cast<int>(srt->getSettingValue<int64_t>("mobile-btns-opacity"));
 
                         // menu for mobile controls
                         m_fields->m_mobileMenu = CCMenu::create();
@@ -175,6 +175,7 @@ class $modify(MyPlayLayer, PlayLayer) {
                         return ListenerResult::Propagate;
                                                                       }, "hide-timer"_spr);
 #endif
+
                 } else {
                     log::error("Failed to create timer!");
                 };

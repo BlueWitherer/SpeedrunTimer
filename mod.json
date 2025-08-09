@@ -44,13 +44,13 @@
 		"enabled": {
 			"type": "bool",
 			"name": "Enabled",
-			"description": "Whether the speedrun timer will appear in-game.",
+			"description": "Create the speedrun timer in-game.",
 			"default": true
 		},
 		"ui": {
 			"type": "title",
 			"name": "Interface",
-			"description": "Settings related to the interface."
+			"description": "Customize your interface."
 		},
 		"format-minutes": {
 			"type": "bool",
@@ -142,7 +142,7 @@
 		"mobile": {
 			"type": "title",
 			"name": "Mobile",
-			"description": "Options for mobile users."
+			"description": "Options for mobile players."
 		},
 		"mobile-btns": {
 			"type": "bool",
@@ -187,7 +187,7 @@
 				"big-arrow-step": 0.5
 			}
 		},
-		"mobile-opacity": {
+		"mobile-btns-opacity": {
 			"type": "int",
 			"name": "Mobile Button Opacity",
 			"description": "The opacity of the mobile buttons.",
@@ -209,7 +209,7 @@
 		"conditions": {
 			"type": "title",
 			"name": "Conditions",
-			"description": "The speedrun timer's functionality."
+			"description": "When the speedrun timer will function."
 		},
 		"reset-death": {
 			"type": "bool",
