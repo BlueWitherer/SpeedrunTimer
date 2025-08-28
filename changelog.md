@@ -1,4 +1,5 @@
 # v1.0.5
+- Bumped Geode loader support to `v4.8.0`
 
 # v1.0.4
 - Added number setting `Mobile Button Scale`
