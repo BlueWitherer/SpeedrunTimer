@@ -1,4 +1,4 @@
-# [<img src="logo.png" width="30" alt="The mod's logo." />](https://www.geode-sdk.org/mods/cheeseworks.speedruntimer) Speedrun Timer
+# [<img src="logo.png" width="25" alt="The mod's logo." />](https://www.geode-sdk.org/mods/cheeseworks.speedruntimer) Speedrun Timer
 Just a speedrun timer for platformer levels.
 
 ---
