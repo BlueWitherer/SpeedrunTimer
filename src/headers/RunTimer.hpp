@@ -2,32 +2,16 @@
 
 #include <Geode/Geode.hpp>
 
-#include <Geode/utils/terminate.hpp>
-
 using namespace geode::prelude;
 
 class RunTimer : public CCNode {
+private:
+    class Impl;
+    std::unique_ptr<Impl> m_impl;
+
 protected:
-    Mod* m_srtMod = getMod(); // it's modding time :3
-
-    ccColor3B m_col = m_srtMod->getSettingValue<ccColor3B>("color"); // The color of the speedrun timer
-    ccColor3B m_colPause = m_srtMod->getSettingValue<ccColor3B>("color-pause"); // The color of the speedrun timer when paused
-    ccColor3B m_colStart = m_srtMod->getSettingValue<ccColor3B>("color-start"); // The color of the speedrun timer before starting
-
-    CCScheduler* m_scheduler = nullptr; // The scheduler for the speedrun timer
-
-    float m_runTime = 0.f; // Current time
-    float m_lastSplitTime = 0.f; // Last time a split was created
-
-    bool m_speedtimerOn = false; // If the speedrun is active
-    bool m_speedtimerPaused = true; // If the speedrun is paused
-
-    CCMenu* m_timeMenu = nullptr; // The menu that contains the timers
-
-    CCLabelBMFont* m_speedtimer = nullptr; // The text label for the time
-    CCLabelBMFont* m_speedtimerMs = nullptr; // The text label for the time in milliseconds
-
-    ScrollLayer* m_splitList = nullptr; // The scrolling list of timer splits
+    RunTimer();
+    virtual ~RunTimer();
 
     void update(float dt);
 

@@ -1,244 +1,244 @@
 {
-	"geode": "4.9.0",
-	"gd": {
-		"win": "2.2074",
-		"android": "2.2074",
-		"mac": "2.2074",
-		"ios": "2.2074"
-	},
-	"id": "cheeseworks.speedruntimer",
-	"name": "Speedrun Timer",
-	"version": "1.0.5",
-	"developers": [
-		"Cheeseworks"
-	],
-	"description": "Just a speedrun timer for platformer levels.",
-	"dependencies": {
-		"geode.node-ids": {
-			"importance": "required",
-			"version": ">=1.21.0"
-		},
-		"geode.custom-keybinds": {
-			"importance": "required",
-			"version": ">=1.10.0",
-			"platforms": [
-				"win",
-				"mac",
-				"android"
-			]
-		}
-	},
-	"links": {
-		"source": "https://github.com/BlueWitherer/SpeedrunTimer",
-		"homepage": "https://www.cheeseworks.gay/",
-		"community": "https://www.dsc.gg/cubic"
-	},
-	"issues": {
-		"info": "Report any issues to my repository!",
-		"url": "https://www.github.com/BlueWitherer/SpeedrunTimer/issues/"
-	},
-	"tags": [
-		"offline",
-		"gameplay",
-		"enhancement"
-	],
-	"settings": {
-		"enabled": {
-			"type": "bool",
-			"name": "Enabled",
-			"description": "Create the speedrun timer in-game.",
-			"default": true
-		},
-		"ui": {
-			"type": "title",
-			"name": "Interface",
-			"description": "Customize your interface."
-		},
-		"format-minutes": {
-			"type": "bool",
-			"name": "Format Minutes",
-			"description": "Format the timer label to include minutes alongside seconds.",
-			"default": true
-		},
-		"scale": {
-			"type": "float",
-			"name": "Scale",
-			"description": "Scale the timer label.",
-			"default": 1,
-			"min": 0.25,
-			"max": 2,
-			"control": {
-				"input": true,
-				"slider": true,
-				"slider-step": 0.125,
-				"arrows": true,
-				"arrow-step": 0.25,
-				"big-arrows": true,
-				"big-arrow-step": 0.5
-			}
-		},
-		"bg-opacity": {
-			"type": "int",
-			"name": "Background Opacity",
-			"description": "The opacity of the background behind the timer and time split labels.",
-			"default": 250,
-			"min": 0,
-			"max": 255,
-			"control": {
-				"input": true,
-				"slider": true,
-				"slider-step": 5,
-				"arrows": true,
-				"arrow-step": 25,
-				"big-arrows": true,
-				"big-arrow-step": 50
-			}
-		},
-		"color": {
-			"type": "rgb",
-			"name": "Timer Color",
-			"description": "The color of the speedrun timer.",
-			"default": [
-				25,
-				255,
-				125
-			]
-		},
-		"color-pause": {
-			"type": "rgb",
-			"name": "Paused Timer Color",
-			"description": "The color of the speedrun timer when paused.",
-			"default": [
-				50,
-				125,
-				250
-			]
-		},
-		"color-start": {
-			"type": "rgb",
-			"name": "Disabled Timer Color",
-			"description": "The color of the speedrun timer before starting or after stopping.",
-			"default": [
-				125,
-				125,
-				125
-			]
-		},
-		"split-limit": {
-			"type": "int",
-			"name": "Split Limit",
-			"description": "The maximum number of splits that can be created. <co>If more splits are created, the earliest split will be removed.</c>",
-			"default": 20,
-			"min": 1,
-			"max": 100,
-			"control": {
-				"input": true,
-				"slider": true,
-				"slider-step": 1,
-				"arrows": true,
-				"arrow-step": 10,
-				"big-arrows": true,
-				"big-arrow-step": 25
-			}
-		},
-		"mobile": {
-			"type": "title",
-			"name": "Mobile",
-			"description": "Options for mobile players."
-		},
-		"mobile-btns": {
-			"type": "bool",
-			"name": "Mobile Buttons",
-			"description": "Show mobile-friendly buttons in-game to control the timer.",
-			"default": {
-				"win": false,
-				"android": true,
-				"mac": false,
-				"ios": true
-			}
-		},
-		"mobile-visible-btn": {
-			"type": "bool",
-			"name": "Timer Visibility Button",
-			"description": "Show a button below the timer button menu to toggle the visibility of the timer and mobile UI.",
-			"enable-if": "mobile-btns",
-			"enable-if-description": "Enable mobile buttons in order to change their visibility.",
-			"default": {
-				"win": false,
-				"android": true,
-				"mac": false,
-				"ios": true
-			}
-		},
-		"mobile-btns-scale": {
-			"type": "float",
-			"name": "Mobile Button Scale",
-			"description": "The scale of the mobile buttons.",
-			"enable-if": "mobile-btns",
-			"enable-if-description": "Enable mobile buttons in order to change their scale.",
-			"default": 1,
-			"min": 0.5,
-			"max": 2,
-			"control": {
-				"input": true,
-				"slider": true,
-				"slider-step": 0.125,
-				"arrows": true,
-				"arrow-step": 0.25,
-				"big-arrows": true,
-				"big-arrow-step": 0.5
-			}
-		},
-		"mobile-btns-opacity": {
-			"type": "int",
-			"name": "Mobile Button Opacity",
-			"description": "The opacity of the mobile buttons.",
-			"enable-if": "mobile-btns",
-			"enable-if-description": "Enable mobile buttons in order to change their opacity.",
-			"default": 200,
-			"min": 0,
-			"max": 255,
-			"control": {
-				"input": true,
-				"slider": true,
-				"slider-step": 5,
-				"arrows": true,
-				"arrow-step": 25,
-				"big-arrows": true,
-				"big-arrow-step": 50
-			}
-		},
-		"conditions": {
-			"type": "title",
-			"name": "Conditions",
-			"description": "When the speedrun timer will function."
-		},
-		"reset-death": {
-			"type": "bool",
-			"name": "Reset on Death",
-			"description": "Reset the speedrun timer when restarting the level from the beginning. This will also pause the timer after the player dies, and if respawned at a checkpoint, the timer will resume from where it left off.",
-			"default": true
-		},
-		"stop-complete": {
-			"type": "bool",
-			"name": "Stop on Complete",
-			"description": "Stop the speedrun timer when the player completes the level.",
-			"default": true
-		},
-		"platformer-only": {
-			"type": "bool",
-			"name": "Platformer Only",
-			"description": "Only allow use of the timer in platformer levels.",
-			"default": true
-		},
-		"checkpoint-split": {
-			"type": "bool",
-			"name": "Checkpoint Split",
-			"description": "Create a split when the player activates a checkpoint.",
-			"default": true,
-			"enable-if": "platformer-only",
-			"enable-if-description": "This setting is only available for platformer levels."
-		}
-	},
-	"early-load": false
+    "geode": "4.10.0",
+    "gd": {
+        "win": "2.2074",
+        "android": "2.2074",
+        "mac": "2.2074",
+        "ios": "2.2074"
+    },
+    "id": "cheeseworks.speedruntimer",
+    "name": "Speedrun Timer",
+    "version": "1.0.5",
+    "developers": [
+        "Cheeseworks"
+    ],
+    "description": "Just a speedrun timer for platformer levels.",
+    "dependencies": {
+        "geode.node-ids": {
+            "importance": "required",
+            "version": ">=1.21.0"
+        },
+        "geode.custom-keybinds": {
+            "importance": "required",
+            "version": ">=1.11.0",
+            "platforms": [
+                "win",
+                "mac",
+                "android"
+            ]
+        }
+    },
+    "links": {
+        "source": "https://github.com/BlueWitherer/SpeedrunTimer",
+        "homepage": "https://www.cheeseworks.gay/",
+        "community": "https://www.dsc.gg/cheeseworks"
+    },
+    "issues": {
+        "info": "Report any issues to my repository!",
+        "url": "https://www.github.com/BlueWitherer/SpeedrunTimer/issues/"
+    },
+    "tags": [
+        "offline",
+        "gameplay",
+        "enhancement"
+    ],
+    "settings": {
+        "enabled": {
+            "type": "bool",
+            "name": "Enabled",
+            "description": "Create the speedrun timer in-game.",
+            "default": true
+        },
+        "ui": {
+            "type": "title",
+            "name": "Interface",
+            "description": "Customize your interface."
+        },
+        "format-minutes": {
+            "type": "bool",
+            "name": "Format Minutes",
+            "description": "Format the timer label to include minutes alongside seconds.",
+            "default": true
+        },
+        "scale": {
+            "type": "float",
+            "name": "Scale",
+            "description": "Scale the timer label.",
+            "default": 1,
+            "min": 0.25,
+            "max": 2,
+            "control": {
+                "input": true,
+                "slider": true,
+                "slider-step": 0.125,
+                "arrows": true,
+                "arrow-step": 0.25,
+                "big-arrows": true,
+                "big-arrow-step": 0.5
+            }
+        },
+        "bg-opacity": {
+            "type": "int",
+            "name": "Background Opacity",
+            "description": "The opacity of the background behind the timer and time split labels.",
+            "default": 250,
+            "min": 0,
+            "max": 255,
+            "control": {
+                "input": true,
+                "slider": true,
+                "slider-step": 5,
+                "arrows": true,
+                "arrow-step": 25,
+                "big-arrows": true,
+                "big-arrow-step": 50
+            }
+        },
+        "color": {
+            "type": "rgb",
+            "name": "Timer Color",
+            "description": "The color of the speedrun timer.",
+            "default": [
+                25,
+                255,
+                125
+            ]
+        },
+        "color-pause": {
+            "type": "rgb",
+            "name": "Paused Timer Color",
+            "description": "The color of the speedrun timer when paused.",
+            "default": [
+                50,
+                125,
+                250
+            ]
+        },
+        "color-start": {
+            "type": "rgb",
+            "name": "Disabled Timer Color",
+            "description": "The color of the speedrun timer before starting or after stopping.",
+            "default": [
+                125,
+                125,
+                125
+            ]
+        },
+        "split-limit": {
+            "type": "int",
+            "name": "Split Limit",
+            "description": "The maximum number of splits that can be created. <co>If more splits are created, the earliest split will be removed.</c>",
+            "default": 20,
+            "min": 1,
+            "max": 100,
+            "control": {
+                "input": true,
+                "slider": true,
+                "slider-step": 1,
+                "arrows": true,
+                "arrow-step": 10,
+                "big-arrows": true,
+                "big-arrow-step": 25
+            }
+        },
+        "mobile": {
+            "type": "title",
+            "name": "Mobile",
+            "description": "Options for mobile players."
+        },
+        "mobile-btns": {
+            "type": "bool",
+            "name": "Mobile Buttons",
+            "description": "Show mobile-friendly buttons in-game to control the timer.",
+            "default": {
+                "win": false,
+                "android": true,
+                "mac": false,
+                "ios": true
+            }
+        },
+        "mobile-visible-btn": {
+            "type": "bool",
+            "name": "Timer Visibility Button",
+            "description": "Show a button below the timer button menu to toggle the visibility of the timer and mobile UI.",
+            "enable-if": "mobile-btns",
+            "enable-if-description": "Enable mobile buttons in order to change their visibility.",
+            "default": {
+                "win": false,
+                "android": true,
+                "mac": false,
+                "ios": true
+            }
+        },
+        "mobile-btns-scale": {
+            "type": "float",
+            "name": "Mobile Button Scale",
+            "description": "The scale of the mobile buttons.",
+            "enable-if": "mobile-btns",
+            "enable-if-description": "Enable mobile buttons in order to change their scale.",
+            "default": 1,
+            "min": 0.5,
+            "max": 2,
+            "control": {
+                "input": true,
+                "slider": true,
+                "slider-step": 0.125,
+                "arrows": true,
+                "arrow-step": 0.25,
+                "big-arrows": true,
+                "big-arrow-step": 0.5
+            }
+        },
+        "mobile-btns-opacity": {
+            "type": "int",
+            "name": "Mobile Button Opacity",
+            "description": "The opacity of the mobile buttons.",
+            "enable-if": "mobile-btns",
+            "enable-if-description": "Enable mobile buttons in order to change their opacity.",
+            "default": 200,
+            "min": 0,
+            "max": 255,
+            "control": {
+                "input": true,
+                "slider": true,
+                "slider-step": 5,
+                "arrows": true,
+                "arrow-step": 25,
+                "big-arrows": true,
+                "big-arrow-step": 50
+            }
+        },
+        "conditions": {
+            "type": "title",
+            "name": "Conditions",
+            "description": "When the speedrun timer will function."
+        },
+        "reset-death": {
+            "type": "bool",
+            "name": "Reset on Death",
+            "description": "Reset the speedrun timer when restarting the level from the beginning. This will also pause the timer after the player dies, and if respawned at a checkpoint, the timer will resume from where it left off.",
+            "default": true
+        },
+        "stop-complete": {
+            "type": "bool",
+            "name": "Stop on Complete",
+            "description": "Stop the speedrun timer when the player completes the level.",
+            "default": true
+        },
+        "platformer-only": {
+            "type": "bool",
+            "name": "Platformer Only",
+            "description": "Only allow use of the timer in platformer levels.",
+            "default": true
+        },
+        "checkpoint-split": {
+            "type": "bool",
+            "name": "Checkpoint Split",
+            "description": "Create a split when the player activates a checkpoint.",
+            "default": true,
+            "enable-if": "platformer-only",
+            "enable-if-description": "This setting is only available for platformer levels."
+        }
+    },
+    "early-load": false
 }

@@ -14,7 +14,7 @@ using namespace keybinds;
 #endif
 
 // it's modding time :3
-auto srt = getMod();
+static auto srt = getMod();
 
 class $modify(MyPlayLayer, PlayLayer) {
     struct Fields {
