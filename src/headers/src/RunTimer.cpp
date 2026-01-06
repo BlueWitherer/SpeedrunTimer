@@ -48,107 +48,105 @@ RunTimer::~RunTimer() {};
 bool RunTimer::init() {
     m_impl->m_scheduler = CCScheduler::get();
 
-    if (CCNode::init()) {
-        setID("timer"_spr);
-        setContentSize({ 125.f, 37.5f });
+    if (!CCNode::init()) return false;
 
-        // assign the milliseconds timer
-        m_impl->m_speedtimerMs = CCLabelBMFont::create(".00", "gjFont16.fnt");
-        m_impl->m_speedtimerMs->setID("timer-milliseconds");
-        m_impl->m_speedtimerMs->setScale(0.5f);
-        m_impl->m_speedtimerMs->setColor(m_impl->m_colStart);
-        m_impl->m_speedtimerMs->setAlignment(CCTextAlignment::kCCTextAlignmentLeft);
-        m_impl->m_speedtimerMs->setPosition({ getScaledContentWidth() - (m_impl->m_speedtimerMs->getScaledContentWidth() + 2.5f), 0.5f });
-        m_impl->m_speedtimerMs->setAnchorPoint({ 0, 0 });
+    setID("timer"_spr);
+    setContentSize({ 125.f, 37.5f });
 
-        // assign the seconds timer
-        m_impl->m_speedtimer = CCLabelBMFont::create("0", "gjFont16.fnt");
-        m_impl->m_speedtimer->setID("timer-seconds");
-        m_impl->m_speedtimer->setScale(0.875f);
-        m_impl->m_speedtimer->setColor(m_impl->m_colStart);
-        m_impl->m_speedtimer->setAlignment(CCTextAlignment::kCCTextAlignmentRight);
-        m_impl->m_speedtimer->setPosition({ getScaledContentWidth() - (m_impl->m_speedtimerMs->getScaledContentWidth() + 3.75f), 0.5f });
-        m_impl->m_speedtimer->setAnchorPoint({ 1, 0 });
+    // assign the milliseconds timer
+    m_impl->m_speedtimerMs = CCLabelBMFont::create(".00", "gjFont16.fnt");
+    m_impl->m_speedtimerMs->setID("timer-milliseconds");
+    m_impl->m_speedtimerMs->setScale(0.5f);
+    m_impl->m_speedtimerMs->setColor(m_impl->m_colStart);
+    m_impl->m_speedtimerMs->setAlignment(CCTextAlignment::kCCTextAlignmentLeft);
+    m_impl->m_speedtimerMs->setPosition({ getScaledContentWidth() - (m_impl->m_speedtimerMs->getScaledContentWidth() + 2.5f), 0.5f });
+    m_impl->m_speedtimerMs->setAnchorPoint({ 0, 0 });
 
-        addChild(m_impl->m_speedtimerMs);
-        addChild(m_impl->m_speedtimer);
+    // assign the seconds timer
+    m_impl->m_speedtimer = CCLabelBMFont::create("0", "gjFont16.fnt");
+    m_impl->m_speedtimer->setID("timer-seconds");
+    m_impl->m_speedtimer->setScale(0.875f);
+    m_impl->m_speedtimer->setColor(m_impl->m_colStart);
+    m_impl->m_speedtimer->setAlignment(CCTextAlignment::kCCTextAlignmentRight);
+    m_impl->m_speedtimer->setPosition({ getScaledContentWidth() - (m_impl->m_speedtimerMs->getScaledContentWidth() + 3.75f), 0.5f });
+    m_impl->m_speedtimer->setAnchorPoint({ 1, 0 });
 
-        // Create layout for scroll layer
-        auto scrollLayerLayout = ColumnLayout::create()
-            ->setAxisAlignment(AxisAlignment::End)
-            ->setCrossAxisAlignment(AxisAlignment::End)
-            ->setCrossAxisLineAlignment(AxisAlignment::End)
-            ->setAutoGrowAxis(getScaledContentHeight())
-            ->setGrowCrossAxis(false)
-            ->setAxisReverse(true)
-            ->setGap(0.625f);
+    addChild(m_impl->m_speedtimerMs);
+    addChild(m_impl->m_speedtimer);
 
-        if (auto scroll = ScrollLayer::create({ getContentSize().width, 275.f })) {
-            scroll->setID("split-list");
-            scroll->ignoreAnchorPointForPosition(false);
-            scroll->setAnchorPoint({ 1, 1 });
-            scroll->setPosition({ getScaledContentWidth(), getScaledContentHeight() - 1.f });
-            scroll->setTouchEnabled(false);
+    // Create layout for scroll layer
+    auto scrollLayerLayout = ColumnLayout::create()
+        ->setAxisAlignment(AxisAlignment::End)
+        ->setCrossAxisAlignment(AxisAlignment::End)
+        ->setCrossAxisLineAlignment(AxisAlignment::End)
+        ->setAutoGrowAxis(getScaledContentHeight())
+        ->setGrowCrossAxis(false)
+        ->setAxisReverse(true)
+        ->setGap(0.625f);
 
-            scroll->m_contentLayer->setAnchorPoint({ 0, 1 });
-            scroll->m_contentLayer->setLayout(scrollLayerLayout);
-            scroll->m_contentLayer->setTouchEnabled(false);
+    if (auto scroll = ScrollLayer::create({ getContentSize().width, 275.f })) {
+        scroll->setID("split-list");
+        scroll->ignoreAnchorPointForPosition(false);
+        scroll->setAnchorPoint({ 1, 1 });
+        scroll->setPosition({ getScaledContentWidth(), getScaledContentHeight() - 1.f });
+        scroll->setTouchEnabled(false);
 
-            m_impl->m_splitList = scroll;
-            addChild(m_impl->m_splitList);
+        scroll->m_contentLayer->setAnchorPoint({ 0, 1 });
+        scroll->m_contentLayer->setLayout(scrollLayerLayout);
+        scroll->m_contentLayer->setTouchEnabled(false);
 
-            m_impl->m_splitList->m_contentLayer->updateLayout(true);
-            m_impl->m_splitList->scrollToTop();
-        } else {
-            log::error("Failed to create scroll layer for speedrun splits");
-        };
+        m_impl->m_splitList = scroll;
+        addChild(m_impl->m_splitList);
 
-        auto bgOpacity = static_cast<int>(m_impl->m_srtMod->getSettingValue<int64_t>("bg-opacity"));
+        m_impl->m_splitList->m_contentLayer->updateLayout(true);
+        m_impl->m_splitList->scrollToTop();
+    } else {
+        log::error("Failed to create scroll layer for speedrun splits");
+    };
 
-        auto bg = CCLayerColor::create({ 0, 0, 0, 255 });
-        bg->setID("background");
-        bg->setOpacity(bgOpacity);
-        bg->setAnchorPoint({ 0, 0 });
-        bg->setPosition({ 0.f, 0.f });
-        bg->setScaledContentSize(getScaledContentSize());
-        bg->setZOrder(-1);
+    auto bgOpacity = static_cast<int>(m_impl->m_srtMod->getSettingValue<int64_t>("bg-opacity"));
 
-        addChild(bg);
+    auto bg = CCLayerColor::create({ 0, 0, 0, 255 });
+    bg->setID("background");
+    bg->setOpacity(bgOpacity);
+    bg->setAnchorPoint({ 0, 0 });
+    bg->setPosition({ 0.f, 0.f });
+    bg->setScaledContentSize(getScaledContentSize());
+    bg->setZOrder(-1);
+
+    addChild(bg);
 
 #ifndef GEODE_IS_IOS
-        // toggle timer
-        this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
-            if (event->isDown()) pauseTimer(!m_impl->m_speedtimerPaused); // toggle the timer on or off
-            log::info("Speedrun timer set to {}", m_impl->m_speedtimerPaused ? "paused" : "resumed");
+    // toggle timer
+    this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
+        if (event->isDown()) pauseTimer(!m_impl->m_speedtimerPaused); // toggle the timer on or off
+        log::info("Speedrun timer set to {}", m_impl->m_speedtimerPaused ? "paused" : "resumed");
 
-            return ListenerResult::Propagate;
-                                                          }, "pause-timer"_spr);
+        return ListenerResult::Propagate;
+                                                      }, "pause-timer"_spr);
 
-        // create a split
-        this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
-            if (event->isDown()) createSplit(); // create a split at the current time
-            log::info("Speedrun split created at {} seconds", m_impl->m_runTime);
+    // create a split
+    this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
+        if (event->isDown()) createSplit(); // create a split at the current time
+        log::info("Speedrun split created at {} seconds", m_impl->m_runTime);
 
-            return ListenerResult::Propagate;
-                                                          }, "split-timer"_spr);
+        return ListenerResult::Propagate;
+                                                      }, "split-timer"_spr);
 
-        // reset everything
-        this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
-            if (event->isDown()) resetAll(); // reset the entire speedrun
-            log::info("Speedrun fully reset");
+    // reset everything
+    this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
+        if (event->isDown()) resetAll(); // reset the entire speedrun
+        log::info("Speedrun fully reset");
 
-            return ListenerResult::Propagate;
-                                                          }, "reset-timer"_spr);
+        return ListenerResult::Propagate;
+                                                      }, "reset-timer"_spr);
 #endif
 
-        setScale(static_cast<float>(m_impl->m_srtMod->getSettingValue<double>("scale")));
+    setScale(static_cast<float>(m_impl->m_srtMod->getSettingValue<double>("scale")));
 
-        if (m_impl->m_scheduler) m_impl->m_scheduler->scheduleUpdateForTarget(this, 0, false);
+    if (m_impl->m_scheduler) m_impl->m_scheduler->scheduleUpdateForTarget(this, 0, false);
 
-        return true;
-    } else {
-        return false;
-    };
+    return true;
 };
 
 void RunTimer::update(float dt) {
@@ -301,14 +299,13 @@ void RunTimer::resetAll() {
     log::info("Speedrun timer reset");
 };
 
-bool RunTimer::isTimerPaused() {
+bool RunTimer::isTimerPaused() const {
     return m_impl->m_speedtimerPaused;
 };
 
 RunTimer* RunTimer::create() {
-    RunTimer* ret = new RunTimer();
-
-    if (ret && ret->init()) {
+    auto ret = new RunTimer();
+    if (ret->init()) {
         ret->autorelease();
         return ret;
     };

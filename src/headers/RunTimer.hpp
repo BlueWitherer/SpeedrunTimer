@@ -18,6 +18,8 @@ protected:
     bool init();
 
 public:
+    static RunTimer* create();
+    
     // Toggle the timer, must be done manually at first
     void toggleTimer(bool toggle = false);
 
@@ -31,7 +33,5 @@ public:
     void resetAll();
 
     // Check if timer is paused
-    bool isTimerPaused();
-
-    static RunTimer* create();
+    bool isTimerPaused() const;
 };

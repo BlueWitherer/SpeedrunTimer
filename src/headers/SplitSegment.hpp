@@ -13,7 +13,7 @@ protected:
     SplitSegment();
     virtual ~SplitSegment();
 
-    bool init(float time, float delta = 0.f);
+    bool init(float time, float delta);
 
 public:
     static SplitSegment* create(float time, float delta = 0.f);

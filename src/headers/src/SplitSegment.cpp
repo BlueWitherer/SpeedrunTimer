@@ -31,68 +31,64 @@ bool SplitSegment::init(float time, float delta) {
     m_impl->m_time = time;
     m_impl->m_delta = delta;
 
-    if (CCNode::init()) {
-        setID("split"_spr);
-        setContentSize({ 125.f, 12.5f });
-        setAnchorPoint({ 0, 1 });
+    if (!CCNode::init()) return false;
+    setID("split"_spr);
+    setContentSize({ 125.f, 12.5f });
+    setAnchorPoint({ 0, 1 });
 
-        auto ms = static_cast<int>((m_impl->m_time - static_cast<int>(m_impl->m_time)) * 100);
-        auto splitStr = fmt::format("{}.{:02d}", static_cast<int>(m_impl->m_time), ms);
+    auto ms = static_cast<int>((m_impl->m_time - static_cast<int>(m_impl->m_time)) * 100);
+    auto splitStr = fmt::format("{}.{:02d}", static_cast<int>(m_impl->m_time), ms);
 
-        auto splitLabel = CCLabelBMFont::create(
-            splitStr.c_str(),
+    auto splitLabel = CCLabelBMFont::create(
+        splitStr.c_str(),
+        "gjFont17.fnt"
+    );
+    splitLabel->setID("split-label");
+    splitLabel->setColor(m_impl->m_colPause);
+    splitLabel->setAlignment(CCTextAlignment::kCCTextAlignmentRight);
+    splitLabel->setPosition({ getContentSize().width - 5, getContentSize().height / 2 });
+    splitLabel->setAnchorPoint({ 1, 0.5 });
+    splitLabel->setScale(0.25f);
+    splitLabel->setZOrder(2);
+
+    addChild(splitLabel);
+
+    if (m_impl->m_delta == m_impl->m_time) {
+        log::warn("Skipping first delta label");
+    } else {
+        auto deltaStr = fmt::format("+{:.2f}", m_impl->m_delta);
+
+        auto deltaLabel = CCLabelBMFont::create(
+            deltaStr.c_str(),
             "gjFont17.fnt"
         );
-        splitLabel->setID("split-label");
-        splitLabel->setColor(m_impl->m_colPause);
-        splitLabel->setAlignment(CCTextAlignment::kCCTextAlignmentRight);
-        splitLabel->setPosition({ getContentSize().width - 5, getContentSize().height / 2 });
-        splitLabel->setAnchorPoint({ 1, 0.5 });
-        splitLabel->setScale(0.25f);
-        splitLabel->setZOrder(2);
+        deltaLabel->setID("delta-label");
+        deltaLabel->setColor(m_impl->m_colStart);
+        deltaLabel->setAlignment(CCTextAlignment::kCCTextAlignmentRight);
+        deltaLabel->setPosition({ splitLabel->getPositionX() - splitLabel->getScaledContentWidth() - 5.f, getContentSize().height / 2 });
+        deltaLabel->setAnchorPoint({ 1, 0.5 });
+        deltaLabel->setScale(0.2f);
+        deltaLabel->setZOrder(2);
 
-        addChild(splitLabel);
-
-        if (m_impl->m_delta == m_impl->m_time) {
-            log::warn("Skipping first delta label");
-        } else {
-            auto deltaStr = fmt::format("+{:.2f}", m_impl->m_delta);
-
-            auto deltaLabel = CCLabelBMFont::create(
-                deltaStr.c_str(),
-                "gjFont17.fnt"
-            );
-            deltaLabel->setID("delta-label");
-            deltaLabel->setColor(m_impl->m_colStart);
-            deltaLabel->setAlignment(CCTextAlignment::kCCTextAlignmentRight);
-            deltaLabel->setPosition({ splitLabel->getPositionX() - splitLabel->getScaledContentWidth() - 5.f, getContentSize().height / 2 });
-            deltaLabel->setAnchorPoint({ 1, 0.5 });
-            deltaLabel->setScale(0.2f);
-            deltaLabel->setZOrder(2);
-
-            addChild(deltaLabel);
-        };
-
-        auto bgOpacity = static_cast<int>(m_impl->m_srtMod->getSettingValue<int64_t>("bg-opacity"));
-
-        auto bg = CCLayerColor::create({ 0, 0, 0, 255 });
-        bg->setID("background");
-        bg->setOpacity(bgOpacity);
-        bg->setScaledContentSize(getScaledContentSize());
-        bg->setZOrder(1);
-
-        addChild(bg);
-
-        return true;
-    } else {
-        return false;
+        addChild(deltaLabel);
     };
+
+    auto bgOpacity = static_cast<int>(m_impl->m_srtMod->getSettingValue<int64_t>("bg-opacity"));
+
+    auto bg = CCLayerColor::create({ 0, 0, 0, 255 });
+    bg->setID("background");
+    bg->setOpacity(bgOpacity);
+    bg->setScaledContentSize(getScaledContentSize());
+    bg->setZOrder(1);
+
+    addChild(bg);
+
+    return true;
 };
 
 SplitSegment* SplitSegment::create(float time, float delta) {
-    SplitSegment* ret = new SplitSegment();
-
-    if (ret && ret->init(time, delta)) {
+    auto ret = new SplitSegment();
+    if (ret->init(time, delta)) {
         ret->autorelease();
         return ret;
     };
