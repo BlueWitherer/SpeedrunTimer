@@ -2,8 +2,6 @@
 
 #include <Geode/Geode.hpp>
 
-#include <Geode/utils/terminate.hpp>
-
 #include <Geode/modify/PlayLayer.hpp>
 
 using namespace geode::prelude;
@@ -14,13 +12,16 @@ using namespace keybinds;
 #endif
 
 // it's modding time :3
-static auto srt = getMod();
+static auto srt = Mod::get();
 
 class $modify(SpeedrunPlayLayer, PlayLayer) {
     struct Fields {
+        bool enabled = srt->getSettingValue<bool>("enabled");
+        bool platformerOnly = srt->getSettingValue<bool>("platformer-only");
+
         CheckpointGameObject* m_checkpointObject = nullptr; // Latest checkpoint
 
-        RunTimer* m_speedrunNode = nullptr; // The speedrun node for the timer
+        RunTimer* m_runTimer = nullptr; // The speedrun node for the timer
 
         CCMenu* m_mobileMenu = nullptr; // Mobile controls menu
 
@@ -35,22 +36,22 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
         bool m_draggingMobile = false; // If the player is dragging the mobile menu
     };
 
-    bool init(GJGameLevel * level, bool useReplay, bool dontCreateObjects) {
-        if (!PlayLayer::init(level, useReplay, dontCreateObjects)) return false;
+    void setupHasCompleted() {
+        PlayLayer::setupHasCompleted();
 
-        if (srt->getSettingValue<bool>("enabled")) if (srt->getSettingValue<bool>("platformer-only") ? level->isPlatformer() : true) {
-            auto [widthCS, heightCS] = getScaledContentSize();
+        if (m_fields->enabled) if (m_fields->platformerOnly ? m_level->isPlatformer() : true) {
+            auto const [widthCS, heightCS] = getScaledContentSize();
 
             // create speedrun timer label
-            if (auto sr = RunTimer::create()) {
-                sr->setAnchorPoint({ 1, 1 });
-                sr->setPosition({ widthCS - 25.f, heightCS - 25.f });
+            if (auto timer = RunTimer::create()) {
+                timer->setAnchorPoint({ 1, 1 });
+                timer->setPosition({ widthCS - 25.f, heightCS - 25.f });
 
-                sr->toggleTimer(true); // enable the timer
+                timer->toggleTimer(true); // enable the timer
 
-                m_fields->m_speedrunNode = sr;
+                m_fields->m_runTimer = timer;
 
-                m_uiLayer->addChild(m_fields->m_speedrunNode, 99);
+                m_uiLayer->addChild(m_fields->m_runTimer, 99);
 
                 // create mobile controls
                 if (srt->getSettingValue<bool>("mobile-btns")) {
@@ -116,7 +117,7 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
                     );
                     m_fields->m_resetTimerBtn->setID("mobile-reset");
 
-                    m_fields->m_pauseTimerBtn->toggle(m_fields->m_speedrunNode->isTimerPaused()); // set the initial state of the pause button
+                    m_fields->m_pauseTimerBtn->toggle(m_fields->m_runTimer->isTimerPaused()); // set the initial state of the pause button
 
                     m_fields->m_mobileMenu->addChild(m_fields->m_pauseTimerBtn);
                     m_fields->m_mobileMenu->addChild(m_fields->m_splitTimerBtn);
@@ -180,20 +181,18 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
         } else {
             log::error("Level is not a platformer");
         };
-
-        return true;
     };
 
     void toggleTimerVisibility() {
-        if (m_fields->m_speedrunNode) m_fields->m_speedrunNode->setVisible(!m_fields->m_speedrunNode->isVisible());
+        if (m_fields->m_runTimer) m_fields->m_runTimer->setVisible(!m_fields->m_runTimer->isVisible());
         if (m_fields->m_mobileMenu) m_fields->m_mobileMenu->setVisible(!m_fields->m_mobileMenu->isVisible());
     };
 
     void onToggleViewTimer(CCObject*) {
         toggleTimerVisibility();
 
-        if (m_fields->m_speedrunNode) {
-            auto visible = m_fields->m_speedrunNode->isVisible();
+        if (m_fields->m_runTimer) {
+            auto visible = m_fields->m_runTimer->isVisible();
 
             if (m_fields->m_visibleBtn) m_fields->m_visibleBtn->setOpacity(visible ? 255 : 125);
             log::warn("Speedrun timer view toggled {} by UI", visible ? "on" : "off");
@@ -203,22 +202,22 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
     };
 
     void pauseTimer(CCObject*) {
-        if (m_fields->m_speedrunNode) {
+        if (m_fields->m_runTimer) {
             m_fields->m_manualPause = !m_fields->m_pauseTimerBtn->isToggled();
-            if (m_fields->m_pauseTimerBtn) m_fields->m_speedrunNode->pauseTimer(m_fields->m_manualPause);
+            if (m_fields->m_pauseTimerBtn) m_fields->m_runTimer->pauseTimer(m_fields->m_manualPause);
         } else {
             log::error("Failed to get speedrun node");
         };
     };
 
     void createSplit(CCObject*) {
-        if (m_fields->m_speedrunNode) m_fields->m_speedrunNode->createSplit();
+        if (m_fields->m_runTimer) m_fields->m_runTimer->createSplit();
     };
 
     void resetAll(CCObject*) {
-        if (m_fields->m_speedrunNode) {
-            m_fields->m_speedrunNode->resetAll();
-            if (m_fields->m_pauseTimerBtn) m_fields->m_pauseTimerBtn->toggle(m_fields->m_speedrunNode->isTimerPaused()); // update the button state
+        if (m_fields->m_runTimer) {
+            m_fields->m_runTimer->resetAll();
+            if (m_fields->m_pauseTimerBtn) m_fields->m_pauseTimerBtn->toggle(m_fields->m_runTimer->isTimerPaused()); // update the button state
         } else {
             log::error("Failed to get speedrun node");
         };
@@ -231,11 +230,11 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
 
         if (srt->getSettingValue<bool>("reset-death")) { // check if reset after death is enabled
             if (!wasDead && p0->m_isDead) {
-                if (m_fields->m_speedrunNode) {
+                if (m_fields->m_runTimer) {
                     log::info("Pausing timer");
 
-                    m_fields->m_speedrunNode->pauseTimer(true);
-                    if (m_fields->m_pauseTimerBtn) m_fields->m_pauseTimerBtn->toggle(m_fields->m_speedrunNode->isTimerPaused()); // update the button state
+                    m_fields->m_runTimer->pauseTimer(true);
+                    if (m_fields->m_pauseTimerBtn) m_fields->m_pauseTimerBtn->toggle(m_fields->m_runTimer->isTimerPaused()); // update the button state
                 } else {
                     log::error("Failed to get speedrun node");
                 };
@@ -249,8 +248,8 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
         if (srt->getSettingValue<bool>("reset-death")) { // check if reset after death is enabled
             log::info("Resuming timer");
 
-            if (m_fields->m_speedrunNode) m_fields->m_speedrunNode->pauseTimer(m_fields->m_manualPause);
-            if (m_fields->m_pauseTimerBtn) m_fields->m_pauseTimerBtn->toggle(m_fields->m_speedrunNode->isTimerPaused()); // update the button state
+            if (m_fields->m_runTimer) m_fields->m_runTimer->pauseTimer(m_fields->m_manualPause);
+            if (m_fields->m_pauseTimerBtn) m_fields->m_pauseTimerBtn->toggle(m_fields->m_runTimer->isTimerPaused()); // update the button state
         } else {
             log::info("Timer will not resume on restart");
         };
@@ -264,8 +263,8 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
         if (srt->getSettingValue<bool>("reset-death")) { // check if reset after death is enabled
             log::info("Resetting timer");
 
-            if (m_fields->m_speedrunNode) m_fields->m_manualPause ? m_fields->m_speedrunNode->pauseTimer(m_fields->m_manualPause) : m_fields->m_speedrunNode->resetAll();
-            if (m_fields->m_pauseTimerBtn) m_fields->m_pauseTimerBtn->toggle(m_fields->m_speedrunNode->isTimerPaused()); // update the button state
+            if (m_fields->m_runTimer) m_fields->m_manualPause ? m_fields->m_runTimer->pauseTimer(m_fields->m_manualPause) : m_fields->m_runTimer->resetAll();
+            if (m_fields->m_pauseTimerBtn) m_fields->m_pauseTimerBtn->toggle(m_fields->m_runTimer->isTimerPaused()); // update the button state
         } else {
             log::info("Timer will not reset on level restart");
         };
@@ -278,7 +277,7 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
             if (p0 == m_fields->m_checkpointObject) {
                 log::warn("Checkpoint split is already active");
             } else {
-                if (m_fields->m_speedrunNode) m_fields->m_speedrunNode->createSplit();
+                if (m_fields->m_runTimer) m_fields->m_runTimer->createSplit();
             };
 
             m_fields->m_checkpointObject = p0;
@@ -287,8 +286,8 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
         };
 
         if (srt->getSettingValue<bool>("reset-death")) { // check if reset after death is enabled
-            if (m_fields->m_speedrunNode) m_fields->m_speedrunNode->pauseTimer(false); // force resume
-            if (m_fields->m_pauseTimerBtn) m_fields->m_pauseTimerBtn->toggle(m_fields->m_speedrunNode->isTimerPaused()); // update the button state
+            if (m_fields->m_runTimer) m_fields->m_runTimer->pauseTimer(false); // force resume
+            if (m_fields->m_pauseTimerBtn) m_fields->m_pauseTimerBtn->toggle(m_fields->m_runTimer->isTimerPaused()); // update the button state
         } else {
             log::info("Timer will not resume on checkpoint activation");
         };
@@ -298,8 +297,8 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
 
     void levelComplete() {
         if (srt->getSettingValue<bool>("stop-complete")) { // check if stop on level complete is enabled
-            if (m_fields->m_speedrunNode) m_fields->m_speedrunNode->toggleTimer(false);
-            if (m_fields->m_pauseTimerBtn) m_fields->m_pauseTimerBtn->toggle(!m_fields->m_speedrunNode->isTimerPaused()); // update the button state
+            if (m_fields->m_runTimer) m_fields->m_runTimer->toggleTimer(false);
+            if (m_fields->m_pauseTimerBtn) m_fields->m_pauseTimerBtn->toggle(!m_fields->m_runTimer->isTimerPaused()); // update the button state
         } else {
             log::info("Timer will not stop on level completion");
         };
