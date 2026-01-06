@@ -91,7 +91,7 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
                         this,
                         menu_selector(SpeedrunPlayLayer::pauseTimer)
                     );
-                    m_fields->m_pauseTimerBtn->setID("mobile-pause");
+                    m_fields->m_pauseTimerBtn->setID("pause-timer-btn");
 
                     auto splitTimerBtnSprite = CCSprite::createWithSpriteFrameName("GJ_practiceBtn_001.png");
                     splitTimerBtnSprite->setScale(0.5f);
@@ -103,7 +103,7 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
                         this,
                         menu_selector(SpeedrunPlayLayer::createSplit)
                     );
-                    m_fields->m_splitTimerBtn->setID("mobile-split");
+                    m_fields->m_splitTimerBtn->setID("split-run-btn");
 
                     auto resetTimerBtnSprite = CCSprite::createWithSpriteFrameName("GJ_replayBtn_001.png");
                     resetTimerBtnSprite->setScale(0.5f);
@@ -115,7 +115,7 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
                         this,
                         menu_selector(SpeedrunPlayLayer::resetAll)
                     );
-                    m_fields->m_resetTimerBtn->setID("mobile-reset");
+                    m_fields->m_resetTimerBtn->setID("reset-time-btn");
 
                     m_fields->m_pauseTimerBtn->toggle(m_fields->m_runTimer->isTimerPaused()); // set the initial state of the pause button
 
@@ -147,7 +147,7 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
                             this,
                             menu_selector(SpeedrunPlayLayer::onToggleViewTimer)
                         );
-                        m_fields->m_visibleBtn->setID("visible-button");
+                        m_fields->m_visibleBtn->setID("toggle-menu-btn");
 
                         visibleMenu->addChild(m_fields->m_visibleBtn);
                         visibleMenu->updateLayout(true);
