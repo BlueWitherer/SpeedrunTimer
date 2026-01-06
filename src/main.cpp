@@ -40,10 +40,12 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
         PlayLayer::setupHasCompleted();
 
         if (m_fields->enabled) if (m_fields->platformerOnly ? m_level->isPlatformer() : true) {
-            auto const [widthCS, heightCS] = getScaledContentSize();
+            log::debug("Creating speedrun timer...");
 
             // create speedrun timer label
             if (auto timer = RunTimer::create()) {
+                auto const [widthCS, heightCS] = getScaledContentSize();
+
                 timer->setAnchorPoint({ 1, 1 });
                 timer->setPosition({ widthCS - 25.f, heightCS - 25.f });
 
@@ -175,6 +177,8 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
                                                                   },
                                                                   "hide-timer"_spr);
 #endif
+
+                log::info("Speedrun timer created!");
 
             } else {
                 log::error("Failed to create timer!");
