@@ -147,7 +147,7 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
                             this,
                             menu_selector(SpeedrunPlayLayer::onToggleViewTimer)
                         );
-                        m_fields->m_visibleBtn->setID("toggle-menu-btn");
+                        m_fields->m_visibleBtn->setID("toggle-interface-btn");
 
                         visibleMenu->addChild(m_fields->m_visibleBtn);
                         visibleMenu->updateLayout(true);
@@ -172,7 +172,8 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
                     };
 
                     return ListenerResult::Propagate;
-                                                                  }, "hide-timer"_spr);
+                                                                  },
+                                                                  "hide-timer"_spr);
 #endif
 
             } else {

@@ -6,8 +6,6 @@
 
 #include <Geode/Geode.hpp>
 
-#include <Geode/utils/terminate.hpp>
-
 using namespace geode::prelude;
 
 #ifndef GEODE_IS_IOS
@@ -15,13 +13,14 @@ using namespace geode::prelude;
 using namespace keybinds;
 #endif
 
+// it's modding time :3
+static auto srt = Mod::get();
+
 class RunTimer::Impl final {
 public:
-    Mod* m_srtMod = getMod(); // it's modding time :3
-
-    ccColor3B m_col = m_srtMod->getSettingValue<ccColor3B>("color"); // The color of the speedrun timer
-    ccColor3B m_colPause = m_srtMod->getSettingValue<ccColor3B>("color-pause"); // The color of the speedrun timer when paused
-    ccColor3B m_colStart = m_srtMod->getSettingValue<ccColor3B>("color-start"); // The color of the speedrun timer before starting
+    ccColor3B m_col = srt->getSettingValue<ccColor3B>("color"); // The color of the speedrun timer
+    ccColor3B m_colPause = srt->getSettingValue<ccColor3B>("color-pause"); // The color of the speedrun timer when paused
+    ccColor3B m_colStart = srt->getSettingValue<ccColor3B>("color-start"); // The color of the speedrun timer before starting
 
     CCScheduler* m_scheduler = nullptr; // The scheduler for the speedrun timer
 
@@ -104,7 +103,7 @@ bool RunTimer::init() {
         log::error("Failed to create scroll layer for speedrun splits");
     };
 
-    auto bgOpacity = static_cast<int>(m_impl->m_srtMod->getSettingValue<int64_t>("bg-opacity"));
+    auto bgOpacity = static_cast<int>(srt->getSettingValue<int64_t>("bg-opacity"));
 
     auto bg = CCLayerColor::create({ 0, 0, 0, 255 });
     bg->setID("background");
@@ -112,9 +111,8 @@ bool RunTimer::init() {
     bg->setAnchorPoint({ 0, 0 });
     bg->setPosition({ 0.f, 0.f });
     bg->setScaledContentSize(getScaledContentSize());
-    bg->setZOrder(-1);
 
-    addChild(bg);
+    addChild(bg, -1);
 
 #ifndef GEODE_IS_IOS
     // toggle timer
@@ -123,7 +121,8 @@ bool RunTimer::init() {
         log::info("Speedrun timer set to {}", m_impl->m_speedtimerPaused ? "paused" : "resumed");
 
         return ListenerResult::Propagate;
-                                                      }, "pause-timer"_spr);
+                                                      },
+                                                      "pause-timer"_spr);
 
     // create a split
     this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
@@ -131,7 +130,8 @@ bool RunTimer::init() {
         log::info("Speedrun split created at {} seconds", m_impl->m_runTime);
 
         return ListenerResult::Propagate;
-                                                      }, "split-timer"_spr);
+                                                      },
+                                                      "split-timer"_spr);
 
     // reset everything
     this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
@@ -139,10 +139,11 @@ bool RunTimer::init() {
         log::info("Speedrun fully reset");
 
         return ListenerResult::Propagate;
-                                                      }, "reset-timer"_spr);
+                                                      },
+                                                      "reset-timer"_spr);
 #endif
 
-    setScale(static_cast<float>(m_impl->m_srtMod->getSettingValue<double>("scale")));
+    setScale(static_cast<float>(srt->getSettingValue<double>("scale")));
 
     if (m_impl->m_scheduler) m_impl->m_scheduler->scheduleUpdateForTarget(this, 0, false);
 
@@ -156,33 +157,27 @@ void RunTimer::update(float dt) {
 
     if (m_impl->m_speedtimerOn) m_impl->m_runTime += m_impl->m_speedtimerPaused ? 0.f : dt;
 
-    auto newTime = static_cast<int>(m_impl->m_runTime);
-    std::string secStr = std::to_string(newTime);
+    int newTime = static_cast<int>(m_impl->m_runTime);
+    std::string secStr = utils::numToString(newTime);
 
-    if (m_impl->m_srtMod->getSettingValue<bool>("format-minutes")) {
+    if (srt->getSettingValue<bool>("format-minutes")) {
         int minutes = static_cast<int>(m_impl->m_runTime / 60.f);
         int seconds = newTime % 60;
 
         if (minutes > 0) {
-            std::ostringstream oss;
-            oss << minutes << ":" << (seconds > 9 ? "" : "0") << seconds;
-            secStr = oss.str();
+            secStr = fmt::format("{}:{}{}", minutes, seconds > 9 ? "" : "0", seconds);
         } else {
-            secStr = std::to_string(seconds);
+            secStr = utils::numToString(seconds);
         };
     } else {
-        secStr = std::to_string(newTime);
+        secStr = utils::numToString(m_impl->m_runTime);
     };
 
-    if (m_impl->m_speedtimer) m_impl->m_speedtimer->setCString(secStr.c_str()); // seconds
+    if (m_impl->m_speedtimer) m_impl->m_speedtimer->setString(secStr.c_str()); // seconds
 
     if (m_impl->m_speedtimerMs) { // ms
         int ms = static_cast<int>(m_impl->m_runTime * 100) % 100;
-
-        std::ostringstream oss;
-        oss << "." << (ms > 9 ? "" : "0") << ms;
-
-        m_impl->m_speedtimerMs->setCString(oss.str().c_str());
+        m_impl->m_speedtimerMs->setString(fmt::format(".{}{}", ms > 9 ? "" : "0", ms).c_str());
     };
 };
 
@@ -235,7 +230,7 @@ void RunTimer::createSplit() {
 
         if (auto splitNode = SplitSegment::create(m_impl->m_runTime, splitDelta)) {
 
-            auto limit = static_cast<int>(m_impl->m_srtMod->getSettingValue<int64_t>("split-limit"));
+            auto limit = static_cast<int>(srt->getSettingValue<int64_t>("split-limit"));
             auto withinLimit = (limit - 1) >= m_impl->m_splitList->m_contentLayer->getChildrenCount();
 
             if (m_impl->m_splitList) {
@@ -276,14 +271,14 @@ void RunTimer::resetAll() {
     m_impl->m_speedtimerPaused = true;
 
     if (m_impl->m_speedtimer) {
-        m_impl->m_speedtimer->setCString("0");
+        m_impl->m_speedtimer->setString("0");
         m_impl->m_speedtimer->setColor(m_impl->m_colStart);
     } else {
         log::error("Speedrun timer label not found");
     };
 
     if (m_impl->m_speedtimerMs) {
-        m_impl->m_speedtimerMs->setCString(".00");
+        m_impl->m_speedtimerMs->setString(".00");
         m_impl->m_speedtimerMs->setColor(m_impl->m_colStart);
     } else {
         log::error("Speedrun timer milliseconds label not found");
