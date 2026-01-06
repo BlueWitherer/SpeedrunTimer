@@ -103,7 +103,7 @@ bool RunTimer::init() {
         log::error("Failed to create scroll layer for speedrun splits");
     };
 
-    auto bgOpacity = static_cast<int>(srt->getSettingValue<int64_t>("bg-opacity"));
+    auto bgOpacity = srt->getSettingValue<int64_t>("bg-opacity");
 
     auto bg = CCLayerColor::create({ 0, 0, 0, 255 });
     bg->setID("background");

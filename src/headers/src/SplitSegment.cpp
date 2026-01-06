@@ -56,7 +56,7 @@ bool SplitSegment::init(float time, float delta) {
     if (m_impl->m_delta == m_impl->m_time) {
         log::warn("Skipping first delta label");
     } else {
-        auto const deltaStr = utils::numToString(m_impl->m_delta, 2);
+        auto const deltaStr = fmt::format("+{}", utils::numToString(m_impl->m_delta, 2));
 
         auto deltaLabel = CCLabelBMFont::create(
             deltaStr.c_str(),
@@ -72,7 +72,7 @@ bool SplitSegment::init(float time, float delta) {
         addChild(deltaLabel, 2);
     };
 
-    auto bgOpacity = static_cast<int>(srt->getSettingValue<int64_t>("bg-opacity"));
+    auto bgOpacity = srt->getSettingValue<int64_t>("bg-opacity");
 
     auto bg = CCLayerColor::create({ 0, 0, 0, 255 });
     bg->setID("background");
