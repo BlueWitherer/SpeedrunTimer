@@ -1,1 +1,1 @@
-**![<3](frame:gj_heartOn_001.png?scale=0.375) [Sponsor me on GitHub](https://www.github.com/sponsors/BlueWitherer/) to further support my open-source work!**
+**![<3](frame:gj_heartOn_001.png?scale=0.375) [Support me on Patreon](https://www.patreon.com/cheeseworks/) to make my passion projects possible!**
