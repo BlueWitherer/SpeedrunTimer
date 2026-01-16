@@ -19,7 +19,7 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
         bool enabled = srt->getSettingValue<bool>("enabled");
         bool platformerOnly = srt->getSettingValue<bool>("platformer-only");
 
-        CheckpointGameObject* m_checkpointObject = nullptr; // Latest checkpoint
+        Ref<CheckpointGameObject> m_checkpointObject = nullptr; // Latest checkpoint
 
         RunTimer* m_runTimer = nullptr; // The speedrun node for the timer
 
@@ -179,7 +179,6 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
 #endif
 
                 log::info("Speedrun timer created!");
-
             } else {
                 log::error("Failed to create timer!");
             };

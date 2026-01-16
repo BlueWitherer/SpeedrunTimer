@@ -229,7 +229,6 @@ void RunTimer::createSplit() {
         m_impl->m_lastSplitTime = m_impl->m_runTime;
 
         if (auto splitNode = SplitSegment::create(m_impl->m_runTime, splitDelta)) {
-
             auto limit = static_cast<int>(srt->getSettingValue<int64_t>("split-limit"));
             auto withinLimit = (limit - 1) >= m_impl->m_splitList->m_contentLayer->getChildrenCount();
 
