@@ -1,0 +1,73 @@
+name: Release Geode Mod
+
+on:
+    push:
+        tags:
+            - "v*"
+
+jobs:
+    release:
+        name: Release
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Publish release
+              id: publish-release
+              uses: hiimjasmine00/release-geode-mod@main
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  workflow: multi-platform.yml
+
+            - name: Get latest release tag
+              id: getrelease
+              run: echo "tag=$(curl -s https://api.github.com/repos/${{ github.event.repository.full_name }}/releases/latest | jq -r '.tag_name // "v0.0.0"')" >> $GITHUB_OUTPUT
+
+            - name: Check for Discord webhook URL
+              id: check-discord
+              run: |
+                  if [ -n "${{ secrets.RELEASE_WEBHOOK }}" ]; then
+                  echo "webhook-url=${{ secrets.RELEASE_WEBHOOK }}" >> $GITHUB_OUTPUT
+                  echo "has-webhook=true" >> $GITHUB_OUTPUT
+                  echo "Using RELEASE_WEBHOOK"
+                  elif [ -n "${{ secrets.NIGHTLY_WEBHOOK }}" ]; then
+                  echo "webhook-url=${{ secrets.NIGHTLY_WEBHOOK }}" >> $GITHUB_OUTPUT
+                  echo "has-webhook=true" >> $GITHUB_OUTPUT
+                  echo "Using NIGHTLY_WEBHOOK"
+                  else
+                  echo "has-webhook=false" >> $GITHUB_OUTPUT
+                  echo "No webhook configured"
+                  fi
+
+            - name: Send Discord webhook
+              if: ${{ steps.check-discord.outputs.has-webhook == 'true' }}
+              uses: prevter/discord-webhook@main
+              with:
+                  webhook-url: ${{ steps.check-discord.outputs.webhook-url }}
+                  embed-title: "[${{ github.repository }}] Release `${{ github.ref_name }}`"
+                  embed-description: |
+                      ${{ steps.publish-release.outputs.changelog }}
+
+                      > [`View Changes`](${{ github.event.repository.html_url }}/compare/${{ steps.getrelease.outputs.tag }}...${{ github.ref_name }})
+                  embed-color: "#3fb950"
+                  embed-url: ${{ steps.publish-release.outputs.url }}
+                  embed-author: ${{ github.actor }}
+                  embed-author-icon: "https://avatars.githubusercontent.com/u/${{ github.actor_id }}?v=4"
+                  embed-thumbnail: "https://raw.githubusercontent.com/${{ github.repository }}/refs/heads/${{ github.event.repository.default_branch }}/logo.png"
+                  embed-timestamp: "now"
+
+    publish:
+        name: Publish to Geode
+        runs-on: ubuntu-latest
+        needs: ["release"]
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Publish to Geode
+              uses: hiimjasmine00/release-geode-mod/publish@main
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}

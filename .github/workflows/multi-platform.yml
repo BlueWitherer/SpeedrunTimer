@@ -6,9 +6,6 @@ on:
         branches:
             - "**"
 
-permissions:
-    contents: write
-
 jobs:
     build:
         strategy:
@@ -67,11 +64,17 @@ jobs:
         name: Nightly Release
         runs-on: ubuntu-latest
         needs: ["package"]
+        permissions:
+            contents: write
 
         steps:
             - uses: actions/download-artifact@v4
               with:
                   path: ./artifacts/
+
+            - name: Get latest release tag
+              id: getrelease
+              run: echo "tag=$(curl -s https://api.github.com/repos/${{ github.event.repository.full_name }}/releases/latest | jq -r '.tag_name // "v0.0.0"')" >> $GITHUB_OUTPUT
 
             - name: Publish Nightly release
               uses: andelf/nightly-release@main
@@ -81,24 +84,26 @@ jobs:
                   tag_name: nightly
                   name: "Development Release"
                   body: |
-                      Development release for commit ${{ github.sha }}.
+                      **Development build for commit ${{ github.sha }}**.
+                      > [`View Changes`](${{ github.event.repository.html_url }}/compare/${{ steps.getrelease.outputs.tag }}...nightly)
                   files: |
-                      ./artifacts/Build Output/*.geode
-                      ./artifacts/Build Output/*.pdb
+                      ./artifacts/Build Output/*.*
 
-            - name: Check for webhook URL
-              id: check
+            - name: Check for Discord webhook URL
+              id: check-discord
               if: ${{ github.ref_name == github.event.repository.default_branch }}
               run: echo "has-nightly-webhook=${{ secrets.NIGHTLY_WEBHOOK != '' }}" >> $GITHUB_OUTPUT
 
             - name: Send Discord webhook
-              if: ${{ steps.check.outputs.has-nightly-webhook == 'true' }}
+              if: ${{ steps.check-discord.outputs.has-nightly-webhook == 'true' }}
               uses: prevter/discord-webhook@main
               with:
                   webhook-url: ${{ secrets.NIGHTLY_WEBHOOK }}
                   files: ./artifacts/Build Output/*.geode
                   embed-title: "[${{ github.repository }}] Nightly Release"
-                  embed-description: "Development release for commit **[`${{ github.sha }}`](${{ github.event.repository.html_url}}/commit/${{ github.sha }})**."
+                  embed-description: |
+                      **Development build for commit [`${{ github.sha }}`](${{ github.event.repository.html_url}}/commit/${{ github.sha }})**.
+                      > [`View Changes`](${{ github.event.repository.html_url }}/compare/${{ steps.getrelease.outputs.tag }}...nightly)
                   embed-color: "#d29922"
                   embed-url: ${{ github.event.repository.html_url }}/releases/tag/nightly
                   embed-author: ${{ github.actor }}
