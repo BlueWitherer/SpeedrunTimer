@@ -29,3 +29,7 @@ When reaching checkpoints, splits may be generated automatically. This can be ch
 ### Credits
 - **[ArcticWoof](user:7689052)**: Playtesting & UI suggestions
 - **[LiveSplit](https://www.livesplit.org/)**: Original inspiration
+
+---
+
+![🗨️](frame:gj_discordIcon_001.png?scale=0.375) **If you need help, join my [support Discord server](https://www.dsc.gg/cheeseworks) and ask! :)**

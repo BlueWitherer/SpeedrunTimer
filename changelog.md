@@ -1,3 +1,6 @@
+# v1.0.6 
+- Several optimizations
+
 # v1.0.5
 - Bumped Geode loader support to `v4.10.0`
 - Fixed level UI hooking

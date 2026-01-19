@@ -97,7 +97,7 @@ bool RunTimer::init() {
         m_impl->m_splitList = scroll;
         addChild(m_impl->m_splitList);
 
-        m_impl->m_splitList->m_contentLayer->updateLayout(true);
+        m_impl->m_splitList->m_contentLayer->updateLayout();
         m_impl->m_splitList->scrollToTop();
     } else {
         log::error("Failed to create scroll layer for speedrun splits");
@@ -228,11 +228,11 @@ void RunTimer::createSplit() {
         auto splitDelta = m_impl->m_runTime - m_impl->m_lastSplitTime;
         m_impl->m_lastSplitTime = m_impl->m_runTime;
 
-        if (auto splitNode = SplitSegment::create(m_impl->m_runTime, splitDelta)) {
-            auto limit = static_cast<int>(srt->getSettingValue<int64_t>("split-limit"));
-            auto withinLimit = (limit - 1) >= m_impl->m_splitList->m_contentLayer->getChildrenCount();
+        if (m_impl->m_splitList) {
+            if (auto splitNode = SplitSegment::create(m_impl->m_runTime, splitDelta)) {
+                auto limit = static_cast<int>(srt->getSettingValue<int64_t>("split-limit"));
+                auto withinLimit = (limit - 1) >= m_impl->m_splitList->m_contentLayer->getChildrenCount();
 
-            if (m_impl->m_splitList) {
                 if (withinLimit) {
                     log::info("Adding split node to split list");
                 } else {
@@ -240,23 +240,21 @@ void RunTimer::createSplit() {
 
                     auto children = m_impl->m_splitList->m_contentLayer->getChildren();
                     if (children && children->count() > 0) {
-                        auto firstChild = static_cast<CCNode*>(children->objectAtIndex(0));
-                        if (firstChild) firstChild->removeMeAndCleanup();
+                        if (auto firstChild = typeinfo_cast<CCNode*>(children->objectAtIndex(0))) firstChild->removeMeAndCleanup();
                     } else {
                         log::warn("No split nodes to remove");
                     };
                 };
 
                 m_impl->m_splitList->m_contentLayer->addChild(splitNode);
-                m_impl->m_splitList->m_contentLayer->updateLayout(true);
-            } else {
-                splitNode->removeMeAndCleanup();
-                log::error("Split list not found");
-            };
+                m_impl->m_splitList->m_contentLayer->updateLayout();
 
-            log::info("Speedrun split created at {} seconds{}", m_impl->m_runTime, withinLimit ? "" : " (limit reached, node not added)");
+                log::info("Speedrun split created at {} seconds{}", m_impl->m_runTime, withinLimit ? "" : " (limit reached, node not added)");
+            } else {
+                log::error("Failed to create speedrun split node");
+            };
         } else {
-            log::error("Failed to create speedrun split node");
+            log::error("Split list not found");
         };
     } else {
         log::error("Speedrun timer is not active");
@@ -285,7 +283,7 @@ void RunTimer::resetAll() {
 
     if (m_impl->m_splitList) {
         m_impl->m_splitList->m_contentLayer->removeAllChildren();
-        m_impl->m_splitList->m_contentLayer->updateLayout(true);
+        m_impl->m_splitList->m_contentLayer->updateLayout();
     } else {
         log::error("Split list not found");
     };
@@ -293,7 +291,7 @@ void RunTimer::resetAll() {
     log::info("Speedrun timer reset");
 };
 
-bool RunTimer::isTimerPaused() const {
+bool RunTimer::isTimerPaused() const noexcept {
     return m_impl->m_speedtimerPaused;
 };
 
