@@ -46,7 +46,7 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
 
             // create speedrun timer label
             if (auto timer = RunTimer::create()) {
-                auto const [widthCS, heightCS] = getScaledContentSize();
+                auto const [widthCS, heightCS] = m_uiLayer->getScaledContentSize();
 
                 timer->setAnchorPoint({ 1, 1 });
                 timer->setPosition({ widthCS - 25.f, heightCS - 25.f });
@@ -224,7 +224,6 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
 
     void createSplit(CCObject*) {
         auto f = m_fields.self();
-
         if (f->m_runTimer) f->m_runTimer->createSplit();
     };
 
