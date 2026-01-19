@@ -15,17 +15,6 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
-            - name: Publish release
-              id: publish-release
-              uses: hiimjasmine00/release-geode-mod@main
-              with:
-                  token: ${{ secrets.GITHUB_TOKEN }}
-                  workflow: multi-platform.yml
-
-            - name: Get latest release tag
-              id: getrelease
-              run: echo "tag=$(curl -s https://api.github.com/repos/${{ github.event.repository.full_name }}/releases/latest | jq -r '.tag_name // "v0.0.0"')" >> $GITHUB_OUTPUT
-
             - name: Check for Discord webhook URL
               id: check-discord
               run: |
@@ -42,16 +31,38 @@ jobs:
                   echo "No webhook configured"
                   fi
 
+            - name: Get latest release tag
+              id: getrelease
+              if: ${{ steps.check-discord.outputs.has-webhook == 'true' }}
+              run: echo "tag=$(curl -s https://api.github.com/repos/${{ github.event.repository.full_name }}/releases/latest | jq -r '.tag_name // ""')" >> $GITHUB_OUTPUT
+
+            - name: Get compare link
+              id: compare
+              if: ${{ steps.check-discord.outputs.has-webhook == 'true' }}
+              run: |
+                  if [ -n "${{ steps.getrelease.outputs.tag }}" ]; then
+                  echo "link=${{ github.event.repository.html_url }}/compare/${{ steps.getrelease.outputs.tag }}...${{ github.ref_name }}" >> $GITHUB_OUTPUT
+                  else
+                  echo "link=${{ github.event.repository.html_url }}/releases/tag/${{ github.ref_name }}" >> $GITHUB_OUTPUT
+                  fi
+
+            - name: Publish release
+              id: publish-release
+              uses: hiimjasmine00/release-geode-mod@main
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  workflow: multi-platform.yml
+
             - name: Send Discord webhook
               if: ${{ steps.check-discord.outputs.has-webhook == 'true' }}
               uses: prevter/discord-webhook@main
               with:
                   webhook-url: ${{ steps.check-discord.outputs.webhook-url }}
-                  embed-title: "[${{ github.repository }}] Release `${{ github.ref_name }}`"
+                  embed-title: "[${{ github.event.repository.name }}] Release `${{ github.ref_name }}`"
                   embed-description: |
                       ${{ steps.publish-release.outputs.changelog }}
 
-                      > [`View Changes`](${{ github.event.repository.html_url }}/compare/${{ steps.getrelease.outputs.tag }}...${{ github.ref_name }})
+                      > [`View Changes`](${{ steps.compare.outputs.link }})
                   embed-color: "#3fb950"
                   embed-url: ${{ steps.publish-release.outputs.url }}
                   embed-author: ${{ github.actor }}
