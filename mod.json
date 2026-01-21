@@ -1,25 +1,25 @@
 {
-    "geode": "4.10.0",
+    "geode": "5.0.0-alpha.1",
     "gd": {
-        "win": "2.2074",
-        "android": "2.2074",
-        "mac": "2.2074",
-        "ios": "2.2074"
+        "win": "2.208",
+        "android": "2.208",
+        "mac": "2.208",
+        "ios": "2.208"
     },
     "id": "cheeseworks.speedruntimer",
     "name": "Speedrun Timer",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "developers": [
         "Cheeseworks"
     ],
     "description": "Just a speedrun timer for platformer levels.",
     "dependencies": {
         "geode.node-ids": {
-            "importance": "required",
+            "importance": "recommended",
             "version": ">=1.21.0"
         },
         "geode.custom-keybinds": {
-            "importance": "required",
+            "importance": "recommended",
             "version": ">=1.11.0",
             "platforms": [
                 "win",

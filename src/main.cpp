@@ -6,7 +6,7 @@
 
 using namespace geode::prelude;
 
-#ifndef GEODE_IS_IOS
+#ifndef GEODE_IS_WINDOWS // dont forget to revert this
 #include <geode.custom-keybinds/include/Keybinds.hpp>
 using namespace keybinds;
 #endif
@@ -166,9 +166,9 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
                     log::warn("Mobile controls are disabled");
                 };
 
-#ifndef GEODE_IS_IOS
+#ifndef GEODE_IS_WINDOWS // dont forget to revert this
                 // remove timer
-                this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
+                this->template addEventListener<InvokeBindFilter>([this](InvokeBindEvent* event) {
                     if (event->isDown()) {
                         toggleTimerVisibility();
 

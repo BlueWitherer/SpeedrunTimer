@@ -8,7 +8,7 @@
 
 using namespace geode::prelude;
 
-#ifndef GEODE_IS_IOS
+#ifndef GEODE_IS_WINDOWS // dont forget to revert this
 #include <geode.custom-keybinds/include/Keybinds.hpp>
 using namespace keybinds;
 #endif
@@ -114,9 +114,9 @@ bool RunTimer::init() {
 
     addChild(bg, -1);
 
-#ifndef GEODE_IS_IOS
+#ifndef GEODE_IS_WINDOWS // dont forget to revert this
     // toggle timer
-    this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
+    this->template addEventListener<InvokeBindFilter>([this](InvokeBindEvent* event) {
         if (event->isDown()) pauseTimer(!m_impl->m_speedtimerPaused); // toggle the timer on or off
         log::info("Speedrun timer set to {}", m_impl->m_speedtimerPaused ? "paused" : "resumed");
 
@@ -125,7 +125,7 @@ bool RunTimer::init() {
                                                       "pause-timer"_spr);
 
     // create a split
-    this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
+    this->template addEventListener<InvokeBindFilter>([this](InvokeBindEvent* event) {
         if (event->isDown()) createSplit(); // create a split at the current time
         log::info("Speedrun split created at {} seconds", m_impl->m_runTime);
 
@@ -134,7 +134,7 @@ bool RunTimer::init() {
                                                       "split-timer"_spr);
 
     // reset everything
-    this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
+    this->template addEventListener<InvokeBindFilter>([this](InvokeBindEvent* event) {
         if (event->isDown()) resetAll(); // reset the entire speedrun
         log::info("Speedrun fully reset");
 

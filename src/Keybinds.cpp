@@ -1,4 +1,4 @@
-#ifndef GEODE_IS_IOS
+#ifndef GEODE_IS_WINDOWS // dont forget to revert this
 #include <Geode/Geode.hpp>
 
 #include <Geode/utils/cocos.hpp>
