@@ -41,7 +41,7 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
 
         auto f = m_fields.self();
 
-        if (f->enabled) if (f->platformerOnly ? m_level->isPlatformer() : true) {
+        if (f->enabled && f->platformerOnly ? m_level->isPlatformer() : true) {
             log::debug("Creating speedrun timer...");
 
             // create speedrun timer label
