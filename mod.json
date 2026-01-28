@@ -15,7 +15,7 @@
     "description": "Just a speedrun timer for platformer levels.",
     "dependencies": {
         "geode.node-ids": {
-            "importance": "recommended",
+            "importance": "required",
             "version": ">=1.21.0"
         },
         "geode.custom-keybinds": {

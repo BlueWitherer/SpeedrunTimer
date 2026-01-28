@@ -20,7 +20,7 @@ This mod adds a speedrun timer in the style of the *[LiveSplit](https://www.live
 ---
 
 ### Timer
-A timer will appear on the top-right corner of the screen. It can be started and stopped via the play button on the top-left corner if you're on mobile, or by pressing `NumPad 1` on your keyboard, and can be fully reset by pressing `NumPad 3` or the reset button on mobile.
+A timer will appear on the top-right corner of the screen. It can be started and stopped with the play button on the top-left corner if you're on mobile, or by pressing `NumPad 1` on your keyboard, and can be fully reset by pressing `NumPad 3` or the reset button on mobile.
 
 By default, the timer will only appear when the player is playing on a platformer level. However, this can be changed in the settings.
 

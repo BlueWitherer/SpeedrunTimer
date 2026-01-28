@@ -1,4 +1,4 @@
-# Speedrun Timer
+# ![🕔](frame:d_time01_001.png?scale=0.8) Speedrun Timer
 **Just a speedrun timer for platformer levels.**
 
 *by [Cheeseworks](user:6408873)!*
@@ -13,7 +13,7 @@ This mod adds a speedrun timer in the style of the *[LiveSplit](https://www.live
 ---
 
 ### Timer
-A <cg>timer</c> will appear on the top-right corner of the screen. It can be <cy>started and stopped</c> via the <cl>play button on the top-left corner</c> if you're on mobile, or by <cf>pressing `NumPad 1` on your keyboard</c>, and can be <cy>fully reset</c> by <cf>pressing `NumPad 3`</c> or the <cl>reset button</c> on mobile.
+A <cg>timer</c> will appear on the top-right corner of the screen. It can be <cy>started and stopped</c> with the <cl>play button on the top-left corner</c> if you're on mobile, or by <cf>pressing `NumPad 1` on your keyboard</c>, and can be <cy>fully reset</c> by <cf>pressing `NumPad 3`</c> or the <cl>reset button</c> on mobile.
 
 By default, the timer will only appear when the player is playing on a platformer level. However, this can be changed in the settings.
 
