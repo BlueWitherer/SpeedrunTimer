@@ -13,21 +13,6 @@
         "Cheeseworks"
     ],
     "description": "Just a speedrun timer for platformer levels.",
-    "dependencies": {
-        "geode.node-ids": {
-            "importance": "required",
-            "version": ">=1.21.0"
-        },
-        "geode.custom-keybinds": {
-            "importance": "recommended",
-            "version": ">=1.11.0",
-            "platforms": [
-                "win",
-                "mac",
-                "android"
-            ]
-        }
-    },
     "links": {
         "source": "https://github.com/BlueWitherer/SpeedrunTimer",
         "homepage": "https://www.cheeseworks.gay/",

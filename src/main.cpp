@@ -6,10 +6,10 @@
 
 using namespace geode::prelude;
 
-#ifndef GEODE_IS_WINDOWS // dont forget to revert this
-#include <geode.custom-keybinds/include/Keybinds.hpp>
-using namespace keybinds;
-#endif
+// #ifndef GEODE_IS_WINDOWS // dont forget to revert this
+// #include <geode.custom-keybinds/include/Keybinds.hpp>
+// using namespace keybinds;
+// #endif
 
 // it's modding time :3
 static auto srt = Mod::get();
@@ -166,19 +166,19 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
                     log::warn("Mobile controls are disabled");
                 };
 
-#ifndef GEODE_IS_WINDOWS // dont forget to revert this
-                // remove timer
-                this->template addEventListener<InvokeBindFilter>([this](InvokeBindEvent* event) {
-                    if (event->isDown()) {
-                        toggleTimerVisibility();
+                // #ifndef GEODE_IS_WINDOWS // dont forget to revert this
+                //                 // remove timer
+                //                 this->template addEventListener<InvokeBindFilter>([this](InvokeBindEvent* event) {
+                //                     if (event->isDown()) {
+                //                         toggleTimerVisibility();
 
-                        log::warn("Speedrun timer view toggled by keybind");
-                    };
+                //                         log::warn("Speedrun timer view toggled by keybind");
+                //                     };
 
-                    return ListenerResult::Propagate;
-                                                                  },
-                                                                  "hide-timer"_spr);
-#endif
+                //                     return ListenerResult::Propagate;
+                //                                                                   },
+                //                                                                   "hide-timer"_spr);
+                // #endif
 
                 log::info("Speedrun timer created!");
             } else {

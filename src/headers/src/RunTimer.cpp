@@ -8,10 +8,10 @@
 
 using namespace geode::prelude;
 
-#ifndef GEODE_IS_WINDOWS // dont forget to revert this
-#include <geode.custom-keybinds/include/Keybinds.hpp>
-using namespace keybinds;
-#endif
+// #ifndef GEODE_IS_WINDOWS // dont forget to revert this
+// #include <geode.custom-keybinds/include/Keybinds.hpp>
+// using namespace keybinds;
+// #endif
 
 // it's modding time :3
 static auto srt = Mod::get();
@@ -114,34 +114,34 @@ bool RunTimer::init() {
 
     addChild(bg, -1);
 
-#ifndef GEODE_IS_WINDOWS // dont forget to revert this
-    // toggle timer
-    this->template addEventListener<InvokeBindFilter>([this](InvokeBindEvent* event) {
-        if (event->isDown()) pauseTimer(!m_impl->m_speedtimerPaused); // toggle the timer on or off
-        log::info("Speedrun timer set to {}", m_impl->m_speedtimerPaused ? "paused" : "resumed");
+    // #ifndef GEODE_IS_WINDOWS // dont forget to revert this
+    //     // toggle timer
+    //     this->template addEventListener<InvokeBindFilter>([this](InvokeBindEvent* event) {
+    //         if (event->isDown()) pauseTimer(!m_impl->m_speedtimerPaused); // toggle the timer on or off
+    //         log::info("Speedrun timer set to {}", m_impl->m_speedtimerPaused ? "paused" : "resumed");
 
-        return ListenerResult::Propagate;
-                                                      },
-                                                      "pause-timer"_spr);
+    //         return ListenerResult::Propagate;
+    //                                                       },
+    //                                                       "pause-timer"_spr);
 
-    // create a split
-    this->template addEventListener<InvokeBindFilter>([this](InvokeBindEvent* event) {
-        if (event->isDown()) createSplit(); // create a split at the current time
-        log::info("Speedrun split created at {} seconds", m_impl->m_runTime);
+    //     // create a split
+    //     this->template addEventListener<InvokeBindFilter>([this](InvokeBindEvent* event) {
+    //         if (event->isDown()) createSplit(); // create a split at the current time
+    //         log::info("Speedrun split created at {} seconds", m_impl->m_runTime);
 
-        return ListenerResult::Propagate;
-                                                      },
-                                                      "split-timer"_spr);
+    //         return ListenerResult::Propagate;
+    //                                                       },
+    //                                                       "split-timer"_spr);
 
-    // reset everything
-    this->template addEventListener<InvokeBindFilter>([this](InvokeBindEvent* event) {
-        if (event->isDown()) resetAll(); // reset the entire speedrun
-        log::info("Speedrun fully reset");
+    //     // reset everything
+    //     this->template addEventListener<InvokeBindFilter>([this](InvokeBindEvent* event) {
+    //         if (event->isDown()) resetAll(); // reset the entire speedrun
+    //         log::info("Speedrun fully reset");
 
-        return ListenerResult::Propagate;
-                                                      },
-                                                      "reset-timer"_spr);
-#endif
+    //         return ListenerResult::Propagate;
+    //                                                       },
+    //                                                       "reset-timer"_spr);
+    // #endif
 
     setScale(static_cast<float>(srt->getSettingValue<double>("scale")));
 
