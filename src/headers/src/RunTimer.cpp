@@ -2,16 +2,11 @@
 
 #include "../SplitSegment.hpp"
 
-#include <sstream>
-
 #include <Geode/Geode.hpp>
 
-using namespace geode::prelude;
+#include <Geode/utils/Keyboard.hpp>
 
-// #ifndef GEODE_IS_WINDOWS // dont forget to revert this
-// #include <geode.custom-keybinds/include/Keybinds.hpp>
-// using namespace keybinds;
-// #endif
+using namespace geode::prelude;
 
 // it's modding time :3
 static auto srt = Mod::get();
@@ -114,34 +109,38 @@ bool RunTimer::init() {
 
     addChild(bg, -1);
 
-    // #ifndef GEODE_IS_WINDOWS // dont forget to revert this
-    //     // toggle timer
-    //     this->template addEventListener<InvokeBindFilter>([this](InvokeBindEvent* event) {
-    //         if (event->isDown()) pauseTimer(!m_impl->m_speedtimerPaused); // toggle the timer on or off
-    //         log::info("Speedrun timer set to {}", m_impl->m_speedtimerPaused ? "paused" : "resumed");
+    // toggle timer
+    addEventListener(
+        KeyboardInputEvent(KEY_NumPad1),
+        [this](KeyboardInputData& data) {
+            if (data.action == KeyboardInputData::Action::Press) pauseTimer(!m_impl->m_speedtimerPaused); // toggle the timer on or off
+            log::info("Speedrun timer set to {}", isTimerPaused() ? "paused" : "resumed");
 
-    //         return ListenerResult::Propagate;
-    //                                                       },
-    //                                                       "pause-timer"_spr);
+            return ListenerResult::Propagate;
+        }
+    );
 
-    //     // create a split
-    //     this->template addEventListener<InvokeBindFilter>([this](InvokeBindEvent* event) {
-    //         if (event->isDown()) createSplit(); // create a split at the current time
-    //         log::info("Speedrun split created at {} seconds", m_impl->m_runTime);
+    // create a split
+    addEventListener(
+        KeyboardInputEvent(KEY_NumPad1),
+        [this](KeyboardInputData& data) {
+            if (data.action == KeyboardInputData::Action::Press) createSplit(); // create a split at the current time
+            log::info("Speedrun split created at {} seconds", m_impl->m_runTime);
 
-    //         return ListenerResult::Propagate;
-    //                                                       },
-    //                                                       "split-timer"_spr);
+            return ListenerResult::Propagate;
+        }
+    );
 
-    //     // reset everything
-    //     this->template addEventListener<InvokeBindFilter>([this](InvokeBindEvent* event) {
-    //         if (event->isDown()) resetAll(); // reset the entire speedrun
-    //         log::info("Speedrun fully reset");
+    // reset everything
+    addEventListener(
+        KeyboardInputEvent(KEY_NumPad1),
+        [this](KeyboardInputData& data) {
+            if (data.action == KeyboardInputData::Action::Press) resetAll(); // reset the entire speedrun
+            log::info("Speedrun fully reset");
 
-    //         return ListenerResult::Propagate;
-    //                                                       },
-    //                                                       "reset-timer"_spr);
-    // #endif
+            return ListenerResult::Propagate;
+        }
+    );
 
     setScale(static_cast<float>(srt->getSettingValue<double>("scale")));
 
@@ -173,7 +172,7 @@ void RunTimer::update(float dt) {
         secStr = utils::numToString(m_impl->m_runTime);
     };
 
-    if (m_impl->m_speedtimer) m_impl->m_speedtimer->setString(secStr.c_str()); // seconds
+    if (m_impl->m_speedtimer) m_impl->m_speedtimer->setString(std::move(secStr).c_str()); // seconds
 
     if (m_impl->m_speedtimerMs) { // ms
         int ms = static_cast<int>(m_impl->m_runTime * 100) % 100;
@@ -240,7 +239,7 @@ void RunTimer::createSplit() {
 
                     auto children = m_impl->m_splitList->m_contentLayer->getChildren();
                     if (children && children->count() > 0) {
-                        if (auto firstChild = typeinfo_cast<CCNode*>(children->objectAtIndex(0))) firstChild->removeMeAndCleanup();
+                        if (auto first = typeinfo_cast<CCNode*>(children->objectAtIndex(0))) first->removeMeAndCleanup();
                     } else {
                         log::warn("No split nodes to remove");
                     };
@@ -302,6 +301,6 @@ RunTimer* RunTimer::create() {
         return ret;
     };
 
-    CC_SAFE_DELETE(ret);
+    delete ret;
     return nullptr;
 };

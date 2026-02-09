@@ -2,14 +2,11 @@
 
 #include <Geode/Geode.hpp>
 
+#include <Geode/utils/Keyboard.hpp>
+
 #include <Geode/modify/PlayLayer.hpp>
 
 using namespace geode::prelude;
-
-// #ifndef GEODE_IS_WINDOWS // dont forget to revert this
-// #include <geode.custom-keybinds/include/Keybinds.hpp>
-// using namespace keybinds;
-// #endif
 
 // it's modding time :3
 static auto srt = Mod::get();
@@ -32,8 +29,6 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
         CCMenuItemSpriteExtra* m_visibleBtn = nullptr;
 
         bool m_manualPause = true;
-
-        bool m_draggingMobile = false; // If the player is dragging the mobile menu
     };
 
     void setupHasCompleted() {
@@ -166,19 +161,13 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
                     log::warn("Mobile controls are disabled");
                 };
 
-                // #ifndef GEODE_IS_WINDOWS // dont forget to revert this
-                //                 // remove timer
-                //                 this->template addEventListener<InvokeBindFilter>([this](InvokeBindEvent* event) {
-                //                     if (event->isDown()) {
-                //                         toggleTimerVisibility();
-
-                //                         log::warn("Speedrun timer view toggled by keybind");
-                //                     };
-
-                //                     return ListenerResult::Propagate;
-                //                                                                   },
-                //                                                                   "hide-timer"_spr);
-                // #endif
+                addEventListener(
+                    KeyboardInputEvent(KEY_Delete),
+                    [this](KeyboardInputData& data) {
+                        if (data.action == KeyboardInputData::Action::Press) toggleTimerVisibility();
+                        log::warn("Speedrun timer view toggled by keybind");
+                    }
+                );
 
                 log::info("Speedrun timer created!");
             } else {
@@ -239,12 +228,10 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
     };
 
     void destroyPlayer(PlayerObject * p0, GameObject * p1) {
-        bool wasDead = p0 ? p0->m_isDead : true;
-
         PlayLayer::destroyPlayer(p0, p1);
 
         if (srt->getSettingValue<bool>("reset-death")) { // check if reset after death is enabled
-            if (!wasDead && p0->m_isDead) {
+            if (p0->m_isDead) {
                 auto f = m_fields.self();
 
                 if (f->m_runTimer) {
@@ -252,8 +239,6 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
 
                     f->m_runTimer->pauseTimer(true);
                     if (f->m_pauseTimerBtn) f->m_pauseTimerBtn->toggle(f->m_runTimer->isTimerPaused()); // update the button state
-                } else {
-                    log::error("Failed to get speedrun node");
                 };
             } else {
                 log::warn("Player hit anti-cheat object");

@@ -91,6 +91,6 @@ SplitSegment* SplitSegment::create(float time, float delta) {
         return ret;
     };
 
-    CC_SAFE_DELETE(ret);
+    delete ret;
     return nullptr;
 };
