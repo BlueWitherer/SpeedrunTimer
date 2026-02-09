@@ -164,8 +164,12 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
                 addEventListener(
                     KeyboardInputEvent(KEY_Delete),
                     [this](KeyboardInputData& data) {
-                        if (data.action == KeyboardInputData::Action::Press) toggleTimerVisibility();
-                        log::warn("Speedrun timer view toggled by keybind");
+                        if (data.action == KeyboardInputData::Action::Press) {
+                            toggleTimerVisibility();
+                            log::warn("Speedrun timer view toggled by keybind");
+                        };
+
+                        return ListenerResult::Propagate;
                     }
                 );
 
@@ -240,8 +244,6 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
                     f->m_runTimer->pauseTimer(true);
                     if (f->m_pauseTimerBtn) f->m_pauseTimerBtn->toggle(f->m_runTimer->isTimerPaused()); // update the button state
                 };
-            } else {
-                log::warn("Player hit anti-cheat object");
             };
         };
     };

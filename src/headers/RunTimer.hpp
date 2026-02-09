@@ -11,7 +11,7 @@ private:
 
 protected:
     RunTimer();
-    virtual ~RunTimer();
+    ~RunTimer();
 
     void update(float dt);
 

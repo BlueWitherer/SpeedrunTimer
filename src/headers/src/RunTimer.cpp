@@ -113,8 +113,10 @@ bool RunTimer::init() {
     addEventListener(
         KeyboardInputEvent(KEY_NumPad1),
         [this](KeyboardInputData& data) {
-            if (data.action == KeyboardInputData::Action::Press) pauseTimer(!m_impl->m_speedtimerPaused); // toggle the timer on or off
-            log::info("Speedrun timer set to {}", isTimerPaused() ? "paused" : "resumed");
+            if (data.action == KeyboardInputData::Action::Press) {
+                pauseTimer(!m_impl->m_speedtimerPaused); // toggle the timer on or off
+                log::info("Speedrun timer {}", isTimerPaused() ? "paused" : "resumed");
+            };
 
             return ListenerResult::Propagate;
         }
@@ -122,10 +124,12 @@ bool RunTimer::init() {
 
     // create a split
     addEventListener(
-        KeyboardInputEvent(KEY_NumPad1),
+        KeyboardInputEvent(KEY_NumPad2),
         [this](KeyboardInputData& data) {
-            if (data.action == KeyboardInputData::Action::Press) createSplit(); // create a split at the current time
-            log::info("Speedrun split created at {} seconds", m_impl->m_runTime);
+            if (data.action == KeyboardInputData::Action::Press) {
+                createSplit(); // create a split at the current time
+                log::info("Speedrun split created at {} seconds", m_impl->m_runTime);
+            };
 
             return ListenerResult::Propagate;
         }
@@ -133,10 +137,12 @@ bool RunTimer::init() {
 
     // reset everything
     addEventListener(
-        KeyboardInputEvent(KEY_NumPad1),
+        KeyboardInputEvent(KEY_NumPad3),
         [this](KeyboardInputData& data) {
-            if (data.action == KeyboardInputData::Action::Press) resetAll(); // reset the entire speedrun
-            log::info("Speedrun fully reset");
+            if (data.action == KeyboardInputData::Action::Press) {
+                resetAll(); // reset the entire speedrun
+                log::info("Speedrun fully reset");
+            };
 
             return ListenerResult::Propagate;
         }

@@ -11,7 +11,7 @@ private:
 
 protected:
     SplitSegment();
-    virtual ~SplitSegment();
+    ~SplitSegment();
 
     bool init(float time, float delta);
 
