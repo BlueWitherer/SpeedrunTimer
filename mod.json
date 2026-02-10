@@ -1,5 +1,5 @@
 {
-    "geode": "5.0.0-alpha.1",
+    "geode": "5.0.0-alpha.2",
     "gd": {
         "win": "2.2081",
         "android": "2.2081",
@@ -8,7 +8,7 @@
     },
     "id": "cheeseworks.speedruntimer",
     "name": "Speedrun Timer",
-    "version": "1.0.7",
+    "version": "1.0.7-beta.1",
     "developers": [
         "Cheeseworks"
     ],
