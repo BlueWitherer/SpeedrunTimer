@@ -109,56 +109,35 @@ bool RunTimer::init() {
 
     addChild(bg, -1);
 
-    auto keysPause = Mod::get()->getSettingValue<std::vector<geode::Keybind>>("key-pause");
+    addEventListener(
+        KeybindSettingPressedEventV3(Mod::get(), "key-pause"),
+        [this](Keybind const& keybind, bool down, bool repeat) {
+            if (down && !repeat) {
+                pauseTimer(!m_impl->m_speedtimerPaused); // toggle the timer on or off
+                log::info("Speedrun timer {}", isTimerPaused() ? "paused" : "resumed");
+            };
+        }
+    );
 
-    for (auto const& k : keysPause) {
-        // toggle timer
-        addEventListener(
-            KeyboardInputEvent(k.key),
-            [this](KeyboardInputData& data) {
-                if (data.action == KeyboardInputData::Action::Press) {
-                    pauseTimer(!m_impl->m_speedtimerPaused); // toggle the timer on or off
-                    log::info("Speedrun timer {}", isTimerPaused() ? "paused" : "resumed");
-                };
+    addEventListener(
+        KeybindSettingPressedEventV3(Mod::get(), "key-split"),
+        [this](Keybind const& keybind, bool down, bool repeat) {
+            if (down && !repeat) {
+                createSplit(); // create a split at the current time
+                log::info("Speedrun split created at {} seconds", m_impl->m_runTime);
+            };
+        }
+    );
 
-                return ListenerResult::Propagate;
-            }
-        );
-    };
-
-    auto keysSplit = Mod::get()->getSettingValue<std::vector<geode::Keybind>>("key-split");
-
-    for (auto const& k : keysSplit) {
-        // create a split
-        addEventListener(
-            KeyboardInputEvent(k.key),
-            [this](KeyboardInputData& data) {
-                if (data.action == KeyboardInputData::Action::Press) {
-                    createSplit(); // create a split at the current time
-                    log::info("Speedrun split created at {} seconds", m_impl->m_runTime);
-                };
-
-                return ListenerResult::Propagate;
-            }
-        );
-    };
-
-    auto keysReset = Mod::get()->getSettingValue<std::vector<geode::Keybind>>("key-reset");
-
-    for (auto const& k : keysReset) {
-        // reset everything
-        addEventListener(
-            KeyboardInputEvent(k.key),
-            [this](KeyboardInputData& data) {
-                if (data.action == KeyboardInputData::Action::Press) {
-                    resetAll(); // reset the entire speedrun
-                    log::info("Speedrun fully reset");
-                };
-
-                return ListenerResult::Propagate;
-            }
-        );
-    };
+    addEventListener(
+        KeybindSettingPressedEventV3(Mod::get(), "key-reset"),
+        [this](Keybind const& keybind, bool down, bool repeat) {
+            if (down && !repeat) {
+                resetAll(); // reset the entire speedrun
+                log::info("Speedrun fully reset");
+            };
+        }
+    );
 
     setScale(static_cast<float>(srt->getSettingValue<double>("scale")));
 
@@ -199,9 +178,7 @@ void RunTimer::update(float dt) {
 };
 
 void RunTimer::toggleTimer(bool toggle) {
-    if (m_impl->m_speedtimerOn == toggle) {
-        log::info("Speedrun timer is already {}", toggle ? "on" : "off");
-    } else {
+    if (m_impl->m_speedtimerOn != toggle) {
         m_impl->m_speedtimerOn = toggle;
 
         if (m_impl->m_speedtimerOn) {
@@ -221,9 +198,7 @@ void RunTimer::toggleTimer(bool toggle) {
 };
 
 void RunTimer::pauseTimer(bool pause) {
-    if (m_impl->m_speedtimerPaused == pause) {
-        log::info("Speedrun timer is already {}", pause ? "paused" : "unpaused");
-    } else {
+    if (m_impl->m_speedtimerPaused != pause) {
         m_impl->m_speedtimerPaused = pause;
 
         if (m_impl->m_speedtimerPaused) {
@@ -287,22 +262,16 @@ void RunTimer::resetAll() {
     if (m_impl->m_speedtimer) {
         m_impl->m_speedtimer->setString("0");
         m_impl->m_speedtimer->setColor(m_impl->m_colStart);
-    } else {
-        log::error("Speedrun timer label not found");
     };
 
     if (m_impl->m_speedtimerMs) {
         m_impl->m_speedtimerMs->setString(".00");
         m_impl->m_speedtimerMs->setColor(m_impl->m_colStart);
-    } else {
-        log::error("Speedrun timer milliseconds label not found");
     };
 
     if (m_impl->m_splitList) {
         m_impl->m_splitList->m_contentLayer->removeAllChildren();
         m_impl->m_splitList->m_contentLayer->updateLayout();
-    } else {
-        log::error("Split list not found");
     };
 
     log::info("Speedrun timer reset");
