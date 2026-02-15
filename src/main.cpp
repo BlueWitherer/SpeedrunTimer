@@ -161,17 +161,21 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
                     log::warn("Mobile controls are disabled");
                 };
 
-                addEventListener(
-                    KeyboardInputEvent(KEY_Delete),
-                    [this](KeyboardInputData& data) {
-                        if (data.action == KeyboardInputData::Action::Press) {
-                            toggleTimerVisibility();
-                            log::warn("Speedrun timer view toggled by keybind");
-                        };
+                auto keysHide = Mod::get()->getSettingValue<std::vector<geode::Keybind>>("key-hide");
 
-                        return ListenerResult::Propagate;
-                    }
-                );
+                for (auto const& k : keysHide) {
+                    addEventListener(
+                        KeyboardInputEvent(k.key),
+                        [this](KeyboardInputData& data) {
+                            if (data.action == KeyboardInputData::Action::Press) {
+                                toggleTimerVisibility();
+                                log::warn("Speedrun timer view toggled by keybind");
+                            };
+
+                            return ListenerResult::Propagate;
+                        }
+                    );
+                };
 
                 log::info("Speedrun timer created!");
             } else {

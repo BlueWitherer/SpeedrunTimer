@@ -109,44 +109,56 @@ bool RunTimer::init() {
 
     addChild(bg, -1);
 
-    // toggle timer
-    addEventListener(
-        KeyboardInputEvent(KEY_NumPad1),
-        [this](KeyboardInputData& data) {
-            if (data.action == KeyboardInputData::Action::Press) {
-                pauseTimer(!m_impl->m_speedtimerPaused); // toggle the timer on or off
-                log::info("Speedrun timer {}", isTimerPaused() ? "paused" : "resumed");
-            };
+    auto keysPause = Mod::get()->getSettingValue<std::vector<geode::Keybind>>("key-pause");
 
-            return ListenerResult::Propagate;
-        }
-    );
+    for (auto const& k : keysPause) {
+        // toggle timer
+        addEventListener(
+            KeyboardInputEvent(k.key),
+            [this](KeyboardInputData& data) {
+                if (data.action == KeyboardInputData::Action::Press) {
+                    pauseTimer(!m_impl->m_speedtimerPaused); // toggle the timer on or off
+                    log::info("Speedrun timer {}", isTimerPaused() ? "paused" : "resumed");
+                };
 
-    // create a split
-    addEventListener(
-        KeyboardInputEvent(KEY_NumPad2),
-        [this](KeyboardInputData& data) {
-            if (data.action == KeyboardInputData::Action::Press) {
-                createSplit(); // create a split at the current time
-                log::info("Speedrun split created at {} seconds", m_impl->m_runTime);
-            };
+                return ListenerResult::Propagate;
+            }
+        );
+    };
 
-            return ListenerResult::Propagate;
-        }
-    );
+    auto keysSplit = Mod::get()->getSettingValue<std::vector<geode::Keybind>>("key-split");
 
-    // reset everything
-    addEventListener(
-        KeyboardInputEvent(KEY_NumPad3),
-        [this](KeyboardInputData& data) {
-            if (data.action == KeyboardInputData::Action::Press) {
-                resetAll(); // reset the entire speedrun
-                log::info("Speedrun fully reset");
-            };
+    for (auto const& k : keysSplit) {
+        // create a split
+        addEventListener(
+            KeyboardInputEvent(k.key),
+            [this](KeyboardInputData& data) {
+                if (data.action == KeyboardInputData::Action::Press) {
+                    createSplit(); // create a split at the current time
+                    log::info("Speedrun split created at {} seconds", m_impl->m_runTime);
+                };
 
-            return ListenerResult::Propagate;
-        }
-    );
+                return ListenerResult::Propagate;
+            }
+        );
+    };
+
+    auto keysReset = Mod::get()->getSettingValue<std::vector<geode::Keybind>>("key-reset");
+
+    for (auto const& k : keysReset) {
+        // reset everything
+        addEventListener(
+            KeyboardInputEvent(k.key),
+            [this](KeyboardInputData& data) {
+                if (data.action == KeyboardInputData::Action::Press) {
+                    resetAll(); // reset the entire speedrun
+                    log::info("Speedrun fully reset");
+                };
+
+                return ListenerResult::Propagate;
+            }
+        );
+    };
 
     setScale(static_cast<float>(srt->getSettingValue<double>("scale")));
 

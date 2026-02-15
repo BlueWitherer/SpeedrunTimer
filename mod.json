@@ -1,5 +1,5 @@
 {
-    "geode": "5.0.0-alpha.2",
+    "geode": "5.0.0-beta.1",
     "gd": {
         "win": "2.2081",
         "android": "2.2081",
@@ -29,6 +29,43 @@
             "name": "Enabled",
             "description": "Create the speedrun timer in-game.",
             "default": true
+        },
+        "keys": {
+            "type": "title",
+            "name": "Keybinds",
+            "description": "Configure this mod's keybinds!"
+        },
+        "key-pause": {
+            "type": "keybind",
+            "name": "Pause Timer",
+            "description": "Pause or resume the speedrun timer.",
+            "default": [
+                "NumPad1"
+            ]
+        },
+        "key-split": {
+            "type": "keybind",
+            "name": "Split Timer",
+            "description": "Create a timer split.",
+            "default": [
+                "NumPad2"
+            ]
+        },
+        "key-reset": {
+            "type": "keybind",
+            "name": "Reset Timer",
+            "description": "Reset the speedrun timer and all splits.",
+            "default": [
+                "NumPad3"
+            ]
+        },
+        "key-hide": {
+            "type": "keybind",
+            "name": "Hide Timer",
+            "description": "Turn the speedrun timer invisible. <co>It will continue to run in the background unless paused or reset manually.</c>",
+            "default": [
+                "Delete"
+            ]
         },
         "ui": {
             "type": "title",
