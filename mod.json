@@ -42,7 +42,8 @@
             "default": [
                 "NumPad1"
             ],
-            "category": "gameplay"
+            "category": "gameplay",
+            "migrate-from": "cheeseworks.speedruntimer/pause-timer"
         },
         "key-split": {
             "type": "keybind",
@@ -51,7 +52,8 @@
             "default": [
                 "NumPad2"
             ],
-            "category": "gameplay"
+            "category": "gameplay",
+            "migrate-from": "cheeseworks.speedruntimer/split-timer"
         },
         "key-reset": {
             "type": "keybind",
@@ -60,7 +62,8 @@
             "default": [
                 "NumPad3"
             ],
-            "category": "gameplay"
+            "category": "gameplay",
+            "migrate-from": "cheeseworks.speedruntimer/reset-timer"
         },
         "key-hide": {
             "type": "keybind",
@@ -69,7 +72,8 @@
             "default": [
                 "Delete"
             ],
-            "category": "gameplay"
+            "category": "gameplay",
+            "migrate-from": "cheeseworks.speedruntimer/hide-timer"
         },
         "ui": {
             "type": "title",
