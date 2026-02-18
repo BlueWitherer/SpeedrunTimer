@@ -22,9 +22,7 @@ public:
     float m_delta = 0.f; // The delta time for the speedrun timer
 };
 
-SplitSegment::SplitSegment() {
-    m_impl = std::make_unique<Impl>();
-};
+SplitSegment::SplitSegment() : m_impl(std::make_unique<Impl>()) {};
 
 SplitSegment::~SplitSegment() {};
 

@@ -33,9 +33,7 @@ public:
     ScrollLayer* m_splitList = nullptr; // The scrolling list of timer splits
 };
 
-RunTimer::RunTimer() {
-    m_impl = std::make_unique<Impl>();
-};
+RunTimer::RunTimer() : m_impl(std::make_unique<Impl>()) {};
 
 RunTimer::~RunTimer() {};
 
