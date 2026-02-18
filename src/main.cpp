@@ -163,7 +163,7 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
 
                 addEventListener(
                     KeybindSettingPressedEventV3(Mod::get(), "key-hide"),
-                    [this](Keybind const& keybind, bool down, bool repeat) {
+                    [this](Keybind const& keybind, bool down, bool repeat, double) {
                         if (down && !repeat) {
                             toggleTimerVisibility();
                             log::warn("Speedrun timer view toggled by keybind");

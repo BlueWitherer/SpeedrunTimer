@@ -1,5 +1,5 @@
 {
-    "geode": "5.0.0-beta.2",
+    "geode": "5.0.0-beta.3",
     "gd": {
         "win": "2.2081",
         "android": "2.2081",
@@ -41,7 +41,8 @@
             "description": "Pause or resume the speedrun timer.",
             "default": [
                 "NumPad1"
-            ]
+            ],
+            "category": "gameplay"
         },
         "key-split": {
             "type": "keybind",
@@ -49,7 +50,8 @@
             "description": "Create a timer split.",
             "default": [
                 "NumPad2"
-            ]
+            ],
+            "category": "gameplay"
         },
         "key-reset": {
             "type": "keybind",
@@ -57,7 +59,8 @@
             "description": "Reset the speedrun timer and all splits.",
             "default": [
                 "NumPad3"
-            ]
+            ],
+            "category": "gameplay"
         },
         "key-hide": {
             "type": "keybind",
@@ -65,7 +68,8 @@
             "description": "Turn the speedrun timer invisible. <co>It will continue to run in the background unless paused or reset manually.</c>",
             "default": [
                 "Delete"
-            ]
+            ],
+            "category": "gameplay"
         },
         "ui": {
             "type": "title",

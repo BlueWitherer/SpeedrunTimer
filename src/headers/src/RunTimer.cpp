@@ -111,7 +111,7 @@ bool RunTimer::init() {
 
     addEventListener(
         KeybindSettingPressedEventV3(Mod::get(), "key-pause"),
-        [this](Keybind const& keybind, bool down, bool repeat) {
+        [this](Keybind const& keybind, bool down, bool repeat, double) {
             if (down && !repeat) {
                 pauseTimer(!m_impl->m_speedtimerPaused); // toggle the timer on or off
                 log::info("Speedrun timer {}", isTimerPaused() ? "paused" : "resumed");
@@ -121,7 +121,7 @@ bool RunTimer::init() {
 
     addEventListener(
         KeybindSettingPressedEventV3(Mod::get(), "key-split"),
-        [this](Keybind const& keybind, bool down, bool repeat) {
+        [this](Keybind const& keybind, bool down, bool repeat, double) {
             if (down && !repeat) {
                 createSplit(); // create a split at the current time
                 log::info("Speedrun split created at {} seconds", m_impl->m_runTime);
@@ -131,7 +131,7 @@ bool RunTimer::init() {
 
     addEventListener(
         KeybindSettingPressedEventV3(Mod::get(), "key-reset"),
-        [this](Keybind const& keybind, bool down, bool repeat) {
+        [this](Keybind const& keybind, bool down, bool repeat, double) {
             if (down && !repeat) {
                 resetAll(); // reset the entire speedrun
                 log::info("Speedrun fully reset");
