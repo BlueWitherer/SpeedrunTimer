@@ -30,7 +30,7 @@ You can split your ongoing run into multiple segments by pressing the checkpoint
 When reaching checkpoints, splits may be generated automatically. This can be changed in settings.
 
 > [!NOTE]
-> *You can customize any keybinds in this mod via the *[Custom Keybinds](https://www.geode-sdk.org/mods/geode.custom-keybinds)* mod.*
+> *You can customize any keybinds in this mod through its settings.*
 
 ---
 

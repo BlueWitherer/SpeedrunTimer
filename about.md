@@ -22,7 +22,7 @@ You can <cy>split your ongoing run</c> into multiple segments by <cl>pressing th
 
 When reaching checkpoints, splits may be generated automatically. This can be changed in settings.
 
-> ![ℹ️](frame:GJ_infoIcon_001.png?scale=0.5) <cj>*You can customize any keybinds in this mod via the *[Custom Keybinds](mod:geode.custom-keybinds)* mod.*</c>
+> ![ℹ️](frame:GJ_infoIcon_001.png?scale=0.5) <cj>*You can customize any keybinds in this mod through its settings.*</c>
 
 ---
 
