@@ -27,7 +27,7 @@
         "enabled": {
             "type": "bool",
             "name": "Enabled",
-            "description": "Create the speedrun timer in-game.",
+            "description": "Create the speedrun timer in the level.",
             "default": true
         },
         "keys": {
