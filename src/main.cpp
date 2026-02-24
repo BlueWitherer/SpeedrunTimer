@@ -41,10 +41,10 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
 
             // create speedrun timer label
             if (auto timer = RunTimer::create()) {
-                auto const [widthCS, heightCS] = m_uiLayer->getScaledContentSize();
+                auto const size = m_uiLayer->getScaledContentSize();
 
                 timer->setAnchorPoint({ 1, 1 });
-                timer->setPosition({ widthCS - 25.f, heightCS - 25.f });
+                timer->setPosition({ size.width - 25.f, size.height - 25.f });
 
                 timer->toggleTimer(true); // enable the timer
 
@@ -72,7 +72,7 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
                     f->m_mobileMenu = CCMenu::create();
                     f->m_mobileMenu->setID("mobile-controls"_spr);
                     f->m_mobileMenu->setAnchorPoint({ 0, 1 });
-                    f->m_mobileMenu->setPosition({ 25.f, heightCS - 25.f });
+                    f->m_mobileMenu->setPosition({ 25.f, size.height - 25.f });
                     f->m_mobileMenu->setLayout(btnMenuLayout);
 
                     auto pauseTimerBtnSpriteOn = CCSprite::createWithSpriteFrameName("GJ_stopEditorBtn_001.png");
@@ -163,7 +163,7 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
 
                 addEventListener(
                     KeybindSettingPressedEventV3(Mod::get(), "key-hide"),
-                    [this](Keybind const& keybind, bool down, bool repeat, double) {
+                    [this](Keybind const&, bool down, bool repeat, double) {
                         if (down && !repeat) {
                             toggleTimerVisibility();
                             log::warn("Speedrun timer view toggled by keybind");
@@ -239,7 +239,7 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
                 if (f->m_runTimer) {
                     log::info("Pausing timer");
 
-                    f->m_runTimer->pauseTimer(true);
+                    f->m_runTimer->pauseTimer();
                     if (f->m_pauseTimerBtn) f->m_pauseTimerBtn->toggle(f->m_runTimer->isTimerPaused()); // update the button state
                 };
             };
@@ -307,7 +307,7 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
         if (srt->getSettingValue<bool>("stop-complete")) { // check if stop on level complete is enabled
             auto f = m_fields.self();
 
-            if (f->m_runTimer) f->m_runTimer->toggleTimer(false);
+            if (f->m_runTimer) f->m_runTimer->toggleTimer();
             if (f->m_pauseTimerBtn) f->m_pauseTimerBtn->toggle(!f->m_runTimer->isTimerPaused()); // update the button state
         } else {
             log::info("Timer will not stop on level completion");

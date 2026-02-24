@@ -4,7 +4,7 @@
 
 using namespace geode::prelude;
 
-class RunTimer : public CCNode {
+class RunTimer final : public CCNode {
 private:
     class Impl;
     std::unique_ptr<Impl> m_impl;

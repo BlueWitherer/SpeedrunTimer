@@ -23,7 +23,6 @@ public:
 };
 
 SplitSegment::SplitSegment() : m_impl(std::make_unique<Impl>()) {};
-
 SplitSegment::~SplitSegment() {};
 
 bool SplitSegment::init(float time, float delta) {
