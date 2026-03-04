@@ -37,7 +37,7 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
         auto f = m_fields.self();
 
         if (f->enabled && f->platformerOnly ? m_level->isPlatformer() : true) {
-            log::debug("Creating speedrun timer...");
+            log::trace("Creating speedrun timer...");
 
             // create speedrun timer label
             if (auto timer = RunTimer::create()) {
@@ -171,7 +171,7 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
                     }
                 );
 
-                log::info("Speedrun timer created!");
+                log::info("Speedrun timer is ready!");
             } else {
                 log::error("Failed to create timer!");
             };

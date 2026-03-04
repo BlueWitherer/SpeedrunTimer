@@ -43,6 +43,7 @@ jobs:
               uses: BlueWitherer/geode-mod-webhook@main
               with:
                   webhook-url: ${{ steps.check-discord.outputs.webhook-url }}
+                  content: "-# <@&1478754024240054292>" # release alert role
                   changelog: ${{ steps.publish-release.outputs.changelog }}
 
     publish:
@@ -54,6 +55,6 @@ jobs:
             - uses: actions/checkout@v4
 
             - name: Publish to Geode
-              uses: BlueWitherer/release-geode-mod/publish@main
+              uses: hiimjasmine00/release-geode-mod/publish@main
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
