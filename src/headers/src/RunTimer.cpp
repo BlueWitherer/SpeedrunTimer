@@ -13,24 +13,24 @@ static auto srt = Mod::get();
 
 class RunTimer::Impl final {
 public:
-    ccColor3B m_col = srt->getSettingValue<ccColor3B>("color"); // The color of the speedrun timer
-    ccColor3B m_colPause = srt->getSettingValue<ccColor3B>("color-pause"); // The color of the speedrun timer when paused
-    ccColor3B m_colStart = srt->getSettingValue<ccColor3B>("color-start"); // The color of the speedrun timer before starting
+    ccColor3B m_col = srt->getSettingValue<ccColor3B>("color");             // The color of the speedrun timer
+    ccColor3B m_colPause = srt->getSettingValue<ccColor3B>("color-pause");  // The color of the speedrun timer when paused
+    ccColor3B m_colStart = srt->getSettingValue<ccColor3B>("color-start");  // The color of the speedrun timer before starting
 
-    CCScheduler* m_scheduler = nullptr; // The scheduler for the speedrun timer
+    CCScheduler* m_scheduler = nullptr;  // The scheduler for the speedrun timer
 
-    float m_runTime = 0.f; // Current time
-    float m_lastSplitTime = 0.f; // Last time a split was created
+    float m_runTime = 0.f;        // Current time
+    float m_lastSplitTime = 0.f;  // Last time a split was created
 
-    bool m_speedtimerOn = false; // If the speedrun is active
-    bool m_speedtimerPaused = true; // If the speedrun is paused
+    bool m_speedtimerOn = false;     // If the speedrun is active
+    bool m_speedtimerPaused = true;  // If the speedrun is paused
 
-    CCMenu* m_timeMenu = nullptr; // The menu that contains the timers
+    CCMenu* m_timeMenu = nullptr;  // The menu that contains the timers
 
-    CCLabelBMFont* m_speedtimer = nullptr; // The text label for the time
-    CCLabelBMFont* m_speedtimerMs = nullptr; // The text label for the time in milliseconds
+    CCLabelBMFont* m_speedtimer = nullptr;    // The text label for the time
+    CCLabelBMFont* m_speedtimerMs = nullptr;  // The text label for the time in milliseconds
 
-    ScrollLayer* m_splitList = nullptr; // The scrolling list of timer splits
+    ScrollLayer* m_splitList = nullptr;  // The scrolling list of timer splits
 };
 
 RunTimer::RunTimer() : m_impl(std::make_unique<Impl>()) {};
@@ -42,7 +42,7 @@ bool RunTimer::init() {
     if (!CCNode::init()) return false;
 
     setID("timer"_spr);
-    setContentSize({ 125.f, 37.5f });
+    setContentSize({125.f, 37.5f});
 
     // assign the milliseconds timer
     m_impl->m_speedtimerMs = CCLabelBMFont::create(".00", "gjFont16.fnt");
@@ -50,8 +50,8 @@ bool RunTimer::init() {
     m_impl->m_speedtimerMs->setScale(0.5f);
     m_impl->m_speedtimerMs->setColor(m_impl->m_colStart);
     m_impl->m_speedtimerMs->setAlignment(CCTextAlignment::kCCTextAlignmentLeft);
-    m_impl->m_speedtimerMs->setPosition({ getScaledContentWidth() - (m_impl->m_speedtimerMs->getScaledContentWidth() + 2.5f), 0.5f });
-    m_impl->m_speedtimerMs->setAnchorPoint({ 0, 0 });
+    m_impl->m_speedtimerMs->setPosition({getScaledContentWidth() - (m_impl->m_speedtimerMs->getScaledContentWidth() + 2.5f), 0.5f});
+    m_impl->m_speedtimerMs->setAnchorPoint({0, 0});
 
     // assign the seconds timer
     m_impl->m_speedtimer = CCLabelBMFont::create("0", "gjFont16.fnt");
@@ -59,30 +59,30 @@ bool RunTimer::init() {
     m_impl->m_speedtimer->setScale(0.875f);
     m_impl->m_speedtimer->setColor(m_impl->m_colStart);
     m_impl->m_speedtimer->setAlignment(CCTextAlignment::kCCTextAlignmentRight);
-    m_impl->m_speedtimer->setPosition({ getScaledContentWidth() - (m_impl->m_speedtimerMs->getScaledContentWidth() + 3.75f), 0.5f });
-    m_impl->m_speedtimer->setAnchorPoint({ 1, 0 });
+    m_impl->m_speedtimer->setPosition({getScaledContentWidth() - (m_impl->m_speedtimerMs->getScaledContentWidth() + 3.75f), 0.5f});
+    m_impl->m_speedtimer->setAnchorPoint({1, 0});
 
     addChild(m_impl->m_speedtimerMs);
     addChild(m_impl->m_speedtimer);
 
     // Create layout for scroll layer
     auto scrollLayerLayout = ColumnLayout::create()
-        ->setAxisAlignment(AxisAlignment::End)
-        ->setCrossAxisAlignment(AxisAlignment::End)
-        ->setCrossAxisLineAlignment(AxisAlignment::End)
-        ->setAutoGrowAxis(getScaledContentHeight())
-        ->setGrowCrossAxis(false)
-        ->setAxisReverse(true)
-        ->setGap(0.625f);
+                                 ->setAxisAlignment(AxisAlignment::End)
+                                 ->setCrossAxisAlignment(AxisAlignment::End)
+                                 ->setCrossAxisLineAlignment(AxisAlignment::End)
+                                 ->setAutoGrowAxis(getScaledContentHeight())
+                                 ->setGrowCrossAxis(false)
+                                 ->setAxisReverse(true)
+                                 ->setGap(0.625f);
 
-    if (auto scroll = ScrollLayer::create({ getContentSize().width, 275.f })) {
+    if (auto scroll = ScrollLayer::create({getContentSize().width, 275.f})) {
         scroll->setID("split-list");
         scroll->ignoreAnchorPointForPosition(false);
-        scroll->setAnchorPoint({ 1, 1 });
-        scroll->setPosition({ getScaledContentWidth(), getScaledContentHeight() - 1.f });
+        scroll->setAnchorPoint({1, 1});
+        scroll->setPosition({getScaledContentWidth(), getScaledContentHeight() - 1.f});
         scroll->setTouchEnabled(false);
 
-        scroll->m_contentLayer->setAnchorPoint({ 0, 1 });
+        scroll->m_contentLayer->setAnchorPoint({0, 1});
         scroll->m_contentLayer->setLayout(scrollLayerLayout);
         scroll->m_contentLayer->setTouchEnabled(false);
 
@@ -97,11 +97,11 @@ bool RunTimer::init() {
 
     auto bgOpacity = srt->getSettingValue<int64_t>("bg-opacity");
 
-    auto bg = CCLayerColor::create({ 0, 0, 0, 255 });
+    auto bg = CCLayerColor::create({0, 0, 0, 255});
     bg->setID("background");
     bg->setOpacity(bgOpacity);
-    bg->setAnchorPoint({ 0, 0 });
-    bg->setPosition({ 0.f, 0.f });
+    bg->setAnchorPoint({0, 0});
+    bg->setPosition({0.f, 0.f});
     bg->setScaledContentSize(getScaledContentSize());
 
     addChild(bg, -1);
@@ -110,31 +110,28 @@ bool RunTimer::init() {
         KeybindSettingPressedEventV3(Mod::get(), "key-pause"),
         [this](Keybind const&, bool down, bool repeat, double) {
             if (down && !repeat) {
-                pauseTimer(!m_impl->m_speedtimerPaused); // toggle the timer on or off
+                pauseTimer(!m_impl->m_speedtimerPaused);  // toggle the timer on or off
                 log::info("Speedrun timer {}", isTimerPaused() ? "paused" : "resumed");
             };
-        }
-    );
+        });
 
     addEventListener(
         KeybindSettingPressedEventV3(Mod::get(), "key-split"),
         [this](Keybind const&, bool down, bool repeat, double) {
             if (down && !repeat) {
-                createSplit(); // create a split at the current time
+                createSplit();  // create a split at the current time
                 log::info("Speedrun split created at {} seconds", m_impl->m_runTime);
             };
-        }
-    );
+        });
 
     addEventListener(
         KeybindSettingPressedEventV3(Mod::get(), "key-reset"),
         [this](Keybind const&, bool down, bool repeat, double) {
             if (down && !repeat) {
-                resetAll(); // reset the entire speedrun
+                resetAll();  // reset the entire speedrun
                 log::info("Speedrun fully reset");
             };
-        }
-    );
+        });
 
     setScale(static_cast<float>(srt->getSettingValue<double>("scale")));
 
@@ -166,9 +163,9 @@ void RunTimer::update(float dt) {
         secStr = utils::numToString(m_impl->m_runTime);
     };
 
-    if (m_impl->m_speedtimer) m_impl->m_speedtimer->setString(std::move(secStr).c_str()); // seconds
+    if (m_impl->m_speedtimer) m_impl->m_speedtimer->setString(std::move(secStr).c_str());  // seconds
 
-    if (m_impl->m_speedtimerMs) { // ms
+    if (m_impl->m_speedtimerMs) {  // ms
         int ms = static_cast<int>(m_impl->m_runTime * 100) % 100;
         m_impl->m_speedtimerMs->setString(fmt::format(".{}{}", ms > 9 ? "" : "0", ms).c_str());
     };

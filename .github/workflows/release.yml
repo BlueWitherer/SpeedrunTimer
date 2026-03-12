@@ -40,7 +40,7 @@ jobs:
 
             - name: Send Discord webhook
               if: ${{ steps.check-discord.outputs.has-webhook == 'true' }}
-              uses: BlueWitherer/mod-discord-webhooks/fabric@main
+              uses: BlueWitherer/mod-discord-webhooks/geode@main
               with:
                   webhook-url: ${{ steps.check-discord.outputs.webhook-url }}
                   content: "-# <@&1478754024240054292>" # release alert role
