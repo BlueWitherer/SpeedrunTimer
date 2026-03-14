@@ -16,19 +16,19 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
         bool enabled = srt->getSettingValue<bool>("enabled");
         bool platformerOnly = srt->getSettingValue<bool>("platformer-only");
 
-        Ref<CheckpointGameObject> m_checkpointObject = nullptr;  // Latest checkpoint
+        WeakRef<CheckpointGameObject> checkpointObject = nullptr;  // Latest checkpoint
 
-        RunTimer* m_runTimer = nullptr;  // The speedrun node for the timer
+        RunTimer* runTimer = nullptr;  // The speedrun node for the timer
 
-        CCMenu* m_mobileMenu = nullptr;  // Mobile controls menu
+        CCMenu* mobileMenu = nullptr;  // Mobile controls menu
 
-        CCMenuItemToggler* m_pauseTimerBtn = nullptr;      // Pause timer button for mobile controls
-        CCMenuItemSpriteExtra* m_splitTimerBtn = nullptr;  // Split timer button for mobile controls
-        CCMenuItemSpriteExtra* m_resetTimerBtn = nullptr;  // Reset timer button for mobile controls
+        CCMenuItemToggler* pauseTimerBtn = nullptr;      // Pause timer button for mobile controls
+        CCMenuItemSpriteExtra* splitTimerBtn = nullptr;  // Split timer button for mobile controls
+        CCMenuItemSpriteExtra* resetTimerBtn = nullptr;  // Reset timer button for mobile controls
 
-        CCMenuItemSpriteExtra* m_visibleBtn = nullptr;
+        CCMenuItemSpriteExtra* visibleBtn = nullptr;
 
-        bool m_manualPause = true;
+        bool manualPause = true;
     };
 
     void setupHasCompleted() {
@@ -48,9 +48,9 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
 
                 timer->toggleTimer(true);  // enable the timer
 
-                f->m_runTimer = timer;
+                f->runTimer = timer;
 
-                m_uiLayer->addChild(f->m_runTimer, 99);
+                m_uiLayer->addChild(f->runTimer, 99);
 
                 // create mobile controls
                 if (srt->getSettingValue<bool>("mobile-btns")) {
@@ -69,11 +69,11 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
                     auto opacity = srt->getSettingValue<int64_t>("mobile-btns-opacity");
 
                     // menu for mobile controls
-                    f->m_mobileMenu = CCMenu::create();
-                    f->m_mobileMenu->setID("mobile-controls"_spr);
-                    f->m_mobileMenu->setAnchorPoint({0, 1});
-                    f->m_mobileMenu->setPosition({25.f, size.height - 25.f});
-                    f->m_mobileMenu->setLayout(btnMenuLayout);
+                    f->mobileMenu = CCMenu::create();
+                    f->mobileMenu->setID("mobile-controls"_spr);
+                    f->mobileMenu->setAnchorPoint({0, 1});
+                    f->mobileMenu->setPosition({25.f, size.height - 25.f});
+                    f->mobileMenu->setLayout(btnMenuLayout);
 
                     auto pauseTimerBtnSpriteOn = CCSprite::createWithSpriteFrameName("GJ_stopEditorBtn_001.png");
                     pauseTimerBtnSpriteOn->setScale(0.8f);
@@ -84,67 +84,67 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
                     pauseTimerBtnSpriteOff->setOpacity(opacity);
 
                     // create the pause button
-                    f->m_pauseTimerBtn = CCMenuItemToggler::create(
+                    f->pauseTimerBtn = CCMenuItemToggler::create(
                         pauseTimerBtnSpriteOn,
                         pauseTimerBtnSpriteOff,
                         this,
                         menu_selector(SpeedrunPlayLayer::pauseTimer));
-                    f->m_pauseTimerBtn->setID("pause-timer-btn");
+                    f->pauseTimerBtn->setID("pause-timer-btn");
 
                     auto splitTimerBtnSprite = CCSprite::createWithSpriteFrameName("GJ_practiceBtn_001.png");
                     splitTimerBtnSprite->setScale(0.5f);
                     splitTimerBtnSprite->setOpacity(opacity);
 
                     // create the split button
-                    f->m_splitTimerBtn = CCMenuItemSpriteExtra::create(
+                    f->splitTimerBtn = CCMenuItemSpriteExtra::create(
                         splitTimerBtnSprite,
                         this,
                         menu_selector(SpeedrunPlayLayer::createSplit));
-                    f->m_splitTimerBtn->setID("split-run-btn");
+                    f->splitTimerBtn->setID("split-run-btn");
 
                     auto resetTimerBtnSprite = CCSprite::createWithSpriteFrameName("GJ_replayBtn_001.png");
                     resetTimerBtnSprite->setScale(0.5f);
                     resetTimerBtnSprite->setOpacity(opacity);
 
                     // create the reset button
-                    f->m_resetTimerBtn = CCMenuItemSpriteExtra::create(
+                    f->resetTimerBtn = CCMenuItemSpriteExtra::create(
                         resetTimerBtnSprite,
                         this,
                         menu_selector(SpeedrunPlayLayer::resetAll));
-                    f->m_resetTimerBtn->setID("reset-time-btn");
+                    f->resetTimerBtn->setID("reset-time-btn");
 
-                    f->m_pauseTimerBtn->toggle(f->m_runTimer->isTimerPaused());  // set the initial state of the pause button
+                    f->pauseTimerBtn->toggle(f->runTimer->isTimerPaused());  // set the initial state of the pause button
 
-                    f->m_mobileMenu->addChild(f->m_pauseTimerBtn);
-                    f->m_mobileMenu->addChild(f->m_splitTimerBtn);
-                    f->m_mobileMenu->addChild(f->m_resetTimerBtn);
+                    f->mobileMenu->addChild(f->pauseTimerBtn);
+                    f->mobileMenu->addChild(f->splitTimerBtn);
+                    f->mobileMenu->addChild(f->resetTimerBtn);
 
                     auto mobileScale = static_cast<float>(srt->getSettingValue<double>("mobile-btns-scale"));
 
-                    f->m_mobileMenu->setScale(mobileScale);
+                    f->mobileMenu->setScale(mobileScale);
 
-                    m_uiLayer->addChild(f->m_mobileMenu, 99);
+                    m_uiLayer->addChild(f->mobileMenu, 99);
 
-                    f->m_mobileMenu->updateLayout();
+                    f->mobileMenu->updateLayout();
 
                     if (srt->getSettingValue<bool>("mobile-visible-btn")) {
                         auto visibleMenu = CCMenu::create();
                         visibleMenu->setID("mobile-visibility-menu"_spr);
-                        visibleMenu->setAnchorPoint(f->m_mobileMenu->getAnchorPoint());
-                        visibleMenu->setPosition({f->m_mobileMenu->getPositionX(), f->m_mobileMenu->getPositionY() - f->m_mobileMenu->getScaledContentHeight() - 2.5f});
+                        visibleMenu->setAnchorPoint(f->mobileMenu->getAnchorPoint());
+                        visibleMenu->setPosition({f->mobileMenu->getPositionX(), f->mobileMenu->getPositionY() - f->mobileMenu->getScaledContentHeight() - 2.5f});
                         visibleMenu->setLayout(btnMenuLayout);
 
                         auto visibleBtnSprite = CCSprite::createWithSpriteFrameName("hideBtn_001.png");
                         visibleBtnSprite->setScale(0.875f);
                         visibleBtnSprite->setOpacity(200);
 
-                        f->m_visibleBtn = CCMenuItemSpriteExtra::create(
+                        f->visibleBtn = CCMenuItemSpriteExtra::create(
                             visibleBtnSprite,
                             this,
                             menu_selector(SpeedrunPlayLayer::onToggleViewTimer));
-                        f->m_visibleBtn->setID("toggle-interface-btn");
+                        f->visibleBtn->setID("toggle-interface-btn");
 
-                        visibleMenu->addChild(f->m_visibleBtn);
+                        visibleMenu->addChild(f->visibleBtn);
                         visibleMenu->updateLayout();
 
                         visibleMenu->setScale(mobileScale);
@@ -178,8 +178,8 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
     void toggleTimerVisibility() {
         auto f = m_fields.self();
 
-        if (f->m_runTimer) f->m_runTimer->setVisible(!f->m_runTimer->isVisible());
-        if (f->m_mobileMenu) f->m_mobileMenu->setVisible(!f->m_mobileMenu->isVisible());
+        if (f->runTimer) f->runTimer->setVisible(!f->runTimer->isVisible());
+        if (f->mobileMenu) f->mobileMenu->setVisible(!f->mobileMenu->isVisible());
     };
 
     void onToggleViewTimer(CCObject*) {
@@ -187,10 +187,10 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
 
         auto f = m_fields.self();
 
-        if (f->m_runTimer) {
-            auto visible = f->m_runTimer->isVisible();
+        if (f->runTimer) {
+            auto visible = f->runTimer->isVisible();
 
-            if (f->m_visibleBtn) f->m_visibleBtn->setOpacity(visible ? 255 : 125);
+            if (f->visibleBtn) f->visibleBtn->setOpacity(visible ? 255 : 125);
             log::warn("Speedrun timer view toggled {} by UI", visible ? "on" : "off");
         } else {
             log::error("Couldn't find speedrun timer");
@@ -200,9 +200,9 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
     void pauseTimer(CCObject*) {
         auto f = m_fields.self();
 
-        if (f->m_runTimer) {
-            f->m_manualPause = !f->m_pauseTimerBtn->isToggled();
-            if (f->m_pauseTimerBtn) f->m_runTimer->pauseTimer(f->m_manualPause);
+        if (f->runTimer) {
+            f->manualPause = !f->pauseTimerBtn->isToggled();
+            if (f->pauseTimerBtn) f->runTimer->pauseTimer(f->manualPause);
         } else {
             log::error("Failed to get speedrun node");
         };
@@ -210,15 +210,15 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
 
     void createSplit(CCObject*) {
         auto f = m_fields.self();
-        if (f->m_runTimer) f->m_runTimer->createSplit();
+        if (f->runTimer) f->runTimer->createSplit();
     };
 
     void resetAll(CCObject*) {
         auto f = m_fields.self();
 
-        if (f->m_runTimer) {
-            f->m_runTimer->resetAll();
-            if (f->m_pauseTimerBtn) f->m_pauseTimerBtn->toggle(f->m_runTimer->isTimerPaused());  // update the button state
+        if (f->runTimer) {
+            f->runTimer->resetAll();
+            if (f->pauseTimerBtn) f->pauseTimerBtn->toggle(f->runTimer->isTimerPaused());  // update the button state
         } else {
             log::error("Failed to get speedrun node");
         };
@@ -231,11 +231,11 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
             if (p0->m_isDead) {
                 auto f = m_fields.self();
 
-                if (f->m_runTimer) {
+                if (f->runTimer) {
                     log::info("Pausing timer");
 
-                    f->m_runTimer->pauseTimer();
-                    if (f->m_pauseTimerBtn) f->m_pauseTimerBtn->toggle(f->m_runTimer->isTimerPaused());  // update the button state
+                    f->runTimer->pauseTimer();
+                    if (f->pauseTimerBtn) f->pauseTimerBtn->toggle(f->runTimer->isTimerPaused());  // update the button state
                 };
             };
         };
@@ -247,8 +247,8 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
 
             auto f = m_fields.self();
 
-            if (f->m_runTimer) f->m_runTimer->pauseTimer(f->m_manualPause);
-            if (f->m_pauseTimerBtn) f->m_pauseTimerBtn->toggle(f->m_runTimer->isTimerPaused());  // update the button state
+            if (f->runTimer) f->runTimer->pauseTimer(f->manualPause);
+            if (f->pauseTimerBtn) f->pauseTimerBtn->toggle(f->runTimer->isTimerPaused());  // update the button state
         } else {
             log::info("Timer will not resume on restart");
         };
@@ -259,13 +259,13 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
     void resetLevelFromStart() {
         auto f = m_fields.self();
 
-        f->m_checkpointObject = nullptr;  // reset the checkpoint object
+        f->checkpointObject = nullptr;  // reset the checkpoint object
 
         if (srt->getSettingValue<bool>("reset-death")) {  // check if reset after death is enabled
             log::info("Resetting timer");
 
-            if (f->m_runTimer) f->m_manualPause ? f->m_runTimer->pauseTimer(f->m_manualPause) : f->m_runTimer->resetAll();
-            if (f->m_pauseTimerBtn) f->m_pauseTimerBtn->toggle(f->m_runTimer->isTimerPaused());  // update the button state
+            if (f->runTimer) f->manualPause ? f->runTimer->pauseTimer(f->manualPause) : f->runTimer->resetAll();
+            if (f->pauseTimerBtn) f->pauseTimerBtn->toggle(f->runTimer->isTimerPaused());  // update the button state
         } else {
             log::info("Timer will not reset on level restart");
         };
@@ -277,20 +277,22 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
         auto f = m_fields.self();
 
         if (srt->getSettingValue<bool>("checkpoint-split")) {  // check if split on checkpoint is enabled
-            if (p0 == f->m_checkpointObject) {
-                log::warn("Checkpoint split is already active");
-            } else {
-                if (f->m_runTimer) f->m_runTimer->createSplit();
-            };
+            if (auto checkpoint = f->checkpointObject.lock()) {
+                if (p0 == checkpoint) {
+                    log::warn("Checkpoint split is already active");
+                } else {
+                    if (f->runTimer) f->runTimer->createSplit();
+                };
 
-            f->m_checkpointObject = p0;
+                f->checkpointObject = p0;
+            };
         } else {
             log::warn("Checkpoint split is disabled");
         };
 
-        if (srt->getSettingValue<bool>("reset-death")) {                                         // check if reset after death is enabled
-            if (f->m_runTimer) f->m_runTimer->pauseTimer(false);                                 // force resume
-            if (f->m_pauseTimerBtn) f->m_pauseTimerBtn->toggle(f->m_runTimer->isTimerPaused());  // update the button state
+        if (srt->getSettingValue<bool>("reset-death")) {                                   // check if reset after death is enabled
+            if (f->runTimer) f->runTimer->pauseTimer(false);                               // force resume
+            if (f->pauseTimerBtn) f->pauseTimerBtn->toggle(f->runTimer->isTimerPaused());  // update the button state
         } else {
             log::info("Timer will not resume on checkpoint activation");
         };
@@ -302,8 +304,8 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
         if (srt->getSettingValue<bool>("stop-complete")) {  // check if stop on level complete is enabled
             auto f = m_fields.self();
 
-            if (f->m_runTimer) f->m_runTimer->toggleTimer();
-            if (f->m_pauseTimerBtn) f->m_pauseTimerBtn->toggle(!f->m_runTimer->isTimerPaused());  // update the button state
+            if (f->runTimer) f->runTimer->toggleTimer();
+            if (f->pauseTimerBtn) f->pauseTimerBtn->toggle(!f->runTimer->isTimerPaused());  // update the button state
         } else {
             log::info("Timer will not stop on level completion");
         };
