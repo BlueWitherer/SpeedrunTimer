@@ -1,4 +1,4 @@
-#include "../SplitSegment.hpp"
+#include "../SplitSegment.h"
 
 #include <fmt/core.h>
 
@@ -15,19 +15,19 @@ static auto srt = Mod::get();
 
 class SplitSegment::Impl final {
 public:
-    ccColor3B m_colPause = srt->getSettingValue<ccColor3B>("color-pause");  // The color of the speedrun timer when paused
-    ccColor3B m_colStart = srt->getSettingValue<ccColor3B>("color-start");  // The color of the speedrun timer before starting
+    ccColor3B colPause = srt->getSettingValue<ccColor3B>("color-pause");  // The color of the speedrun timer when paused
+    ccColor3B colStart = srt->getSettingValue<ccColor3B>("color-start");  // The color of the speedrun timer before starting
 
-    float m_time = 0.f;   // This split time
-    float m_delta = 0.f;  // The delta time for the speedrun timer
+    float time = 0.f;   // This split time
+    float delta = 0.f;  // The delta time for the speedrun timer
 };
 
 SplitSegment::SplitSegment() : m_impl(std::make_unique<Impl>()) {};
 SplitSegment::~SplitSegment() {};
 
 bool SplitSegment::init(float time, float delta) {
-    m_impl->m_time = time;
-    m_impl->m_delta = delta;
+    m_impl->time = time;
+    m_impl->delta = delta;
 
     if (!CCNode::init()) return false;
 
@@ -35,13 +35,13 @@ bool SplitSegment::init(float time, float delta) {
     setContentSize({125.f, 12.5f});
     setAnchorPoint({0, 1});
 
-    auto const splitStr = utils::numToString(m_impl->m_time, 2);
+    auto const splitStr = utils::numToString(m_impl->time, 2);
 
     auto splitLabel = CCLabelBMFont::create(
         splitStr.c_str(),
         "gjFont17.fnt");
     splitLabel->setID("split-label");
-    splitLabel->setColor(m_impl->m_colPause);
+    splitLabel->setColor(m_impl->colPause);
     splitLabel->setAlignment(CCTextAlignment::kCCTextAlignmentRight);
     splitLabel->setPosition({getContentSize().width - 5, getContentSize().height / 2});
     splitLabel->setAnchorPoint({1, 0.5});
@@ -49,14 +49,14 @@ bool SplitSegment::init(float time, float delta) {
 
     addChild(splitLabel, 2);
 
-    if (m_impl->m_delta != m_impl->m_time) {
-        auto const deltaStr = fmt::format("+{}", utils::numToString(m_impl->m_delta, 2));
+    if (m_impl->delta != m_impl->time) {
+        auto const deltaStr = fmt::format("+{}", utils::numToString(m_impl->delta, 2));
 
         auto deltaLabel = CCLabelBMFont::create(
             deltaStr.c_str(),
             "gjFont17.fnt");
         deltaLabel->setID("delta-label");
-        deltaLabel->setColor(m_impl->m_colStart);
+        deltaLabel->setColor(m_impl->colStart);
         deltaLabel->setAlignment(CCTextAlignment::kCCTextAlignmentRight);
         deltaLabel->setPosition({splitLabel->getPositionX() - splitLabel->getScaledContentWidth() - 5.f, getContentSize().height / 2});
         deltaLabel->setAnchorPoint({1, 0.5});
@@ -65,7 +65,7 @@ bool SplitSegment::init(float time, float delta) {
         addChild(deltaLabel, 2);
     };
 
-    auto bgOpacity = srt->getSettingValue<int64_t>("bg-opacity");
+    auto bgOpacity = srt->getSettingValue<int>("bg-opacity");
 
     auto bg = CCLayerColor::create({0, 0, 0, 255});
     bg->setID("background");

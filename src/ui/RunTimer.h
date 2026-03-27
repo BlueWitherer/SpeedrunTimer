@@ -2,9 +2,7 @@
 
 #include <Geode/Geode.hpp>
 
-using namespace geode::prelude;
-
-class RunTimer final : public CCNode {
+class RunTimer final : public cocos2d::CCNode {
 private:
     class Impl;
     std::unique_ptr<Impl> m_impl;

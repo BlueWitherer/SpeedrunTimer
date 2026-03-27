@@ -1,4 +1,5 @@
 # v1.0.8 
+- Minor optimizations
 
 # v1.0.7 
 - Ported to Geometry Dash version `2.2081`

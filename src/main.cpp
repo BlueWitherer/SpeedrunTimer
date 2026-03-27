@@ -1,6 +1,8 @@
-#include "./headers/RunTimer.hpp"
+#include "./ui/RunTimer.h"
 
 #include <Geode/Geode.hpp>
+
+#include <Geode/ui/Button.hpp>
 
 #include <Geode/utils/Keyboard.hpp>
 
@@ -8,7 +10,7 @@
 
 using namespace geode::prelude;
 
-// it's modding time :3
+// it's modding time >:3
 static auto srt = Mod::get();
 
 class $modify(SpeedrunPlayLayer, PlayLayer) {
@@ -22,11 +24,11 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
 
         CCMenu* mobileMenu = nullptr;  // Mobile controls menu
 
-        CCMenuItemToggler* pauseTimerBtn = nullptr;      // Pause timer button for mobile controls
-        CCMenuItemSpriteExtra* splitTimerBtn = nullptr;  // Split timer button for mobile controls
-        CCMenuItemSpriteExtra* resetTimerBtn = nullptr;  // Reset timer button for mobile controls
+        CCMenuItemToggler* pauseTimerBtn = nullptr;  // Pause timer button for mobile controls
+        Button* splitTimerBtn = nullptr;             // Split timer button for mobile controls
+        Button* resetTimerBtn = nullptr;             // Reset timer button for mobile controls
 
-        CCMenuItemSpriteExtra* visibleBtn = nullptr;
+        Button* visibleBtn = nullptr;
 
         bool manualPause = true;
     };
@@ -54,19 +56,14 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
 
                 // create mobile controls
                 if (srt->getSettingValue<bool>("mobile-btns")) {
-                    auto btnMenuLayout = AxisLayout::create(Axis::Row)
+                    auto btnMenuLayout = RowLayout::create()
                                              ->setDefaultScaleLimits(0.5f, 0.875f)
-                                             ->setAxisAlignment(AxisAlignment::Start)
-                                             ->setCrossAxisAlignment(AxisAlignment::Start)
-                                             ->setCrossAxisLineAlignment(AxisAlignment::Start)
                                              ->setCrossAxisReverse(true)
-                                             ->setGrowCrossAxis(false)
                                              ->setAutoGrowAxis(125.f)
-                                             ->setAxisReverse(false)
                                              ->setAutoScale(false)
                                              ->setGap(3.75f);
 
-                    auto opacity = srt->getSettingValue<int64_t>("mobile-btns-opacity");
+                    auto opacity = srt->getSettingValue<int>("mobile-btns-opacity");
 
                     // menu for mobile controls
                     f->mobileMenu = CCMenu::create();
@@ -91,27 +88,33 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
                         menu_selector(SpeedrunPlayLayer::pauseTimer));
                     f->pauseTimerBtn->setID("pause-timer-btn");
 
-                    auto splitTimerBtnSprite = CCSprite::createWithSpriteFrameName("GJ_practiceBtn_001.png");
-                    splitTimerBtnSprite->setScale(0.5f);
-                    splitTimerBtnSprite->setOpacity(opacity);
-
                     // create the split button
-                    f->splitTimerBtn = CCMenuItemSpriteExtra::create(
-                        splitTimerBtnSprite,
-                        this,
-                        menu_selector(SpeedrunPlayLayer::createSplit));
+                    f->splitTimerBtn = Button::createWithSpriteFrameName(
+                        "GJ_practiceBtn_001.png",
+                        [this](auto) {
+                            auto f = m_fields.self();
+                            if (f->runTimer) f->runTimer->createSplit();
+                        });
                     f->splitTimerBtn->setID("split-run-btn");
-
-                    auto resetTimerBtnSprite = CCSprite::createWithSpriteFrameName("GJ_replayBtn_001.png");
-                    resetTimerBtnSprite->setScale(0.5f);
-                    resetTimerBtnSprite->setOpacity(opacity);
+                    f->splitTimerBtn->setScale(0.5f);
+                    f->splitTimerBtn->setOpacity(opacity);
 
                     // create the reset button
-                    f->resetTimerBtn = CCMenuItemSpriteExtra::create(
-                        resetTimerBtnSprite,
-                        this,
-                        menu_selector(SpeedrunPlayLayer::resetAll));
+                    f->resetTimerBtn = Button::createWithSpriteFrameName(
+                        "GJ_replayBtn_001.png",
+                        [this](auto) {
+                            auto f = m_fields.self();
+
+                            if (f->runTimer) {
+                                f->runTimer->resetAll();
+                                if (f->pauseTimerBtn) f->pauseTimerBtn->toggle(f->runTimer->isTimerPaused());  // update the button state
+                            } else {
+                                log::error("Failed to get speedrun node");
+                            };
+                        });
                     f->resetTimerBtn->setID("reset-time-btn");
+                    f->resetTimerBtn->setScale(0.5f);
+                    f->resetTimerBtn->setOpacity(opacity);
 
                     f->pauseTimerBtn->toggle(f->runTimer->isTimerPaused());  // set the initial state of the pause button
 
@@ -134,15 +137,25 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
                         visibleMenu->setPosition({f->mobileMenu->getPositionX(), f->mobileMenu->getPositionY() - f->mobileMenu->getScaledContentHeight() - 2.5f});
                         visibleMenu->setLayout(btnMenuLayout);
 
-                        auto visibleBtnSprite = CCSprite::createWithSpriteFrameName("hideBtn_001.png");
-                        visibleBtnSprite->setScale(0.875f);
-                        visibleBtnSprite->setOpacity(200);
+                        f->visibleBtn = Button::createWithSpriteFrameName(
+                            "hideBtn_001.png",
+                            [this](Button* btn) {
+                                toggleTimerVisibility();
 
-                        f->visibleBtn = CCMenuItemSpriteExtra::create(
-                            visibleBtnSprite,
-                            this,
-                            menu_selector(SpeedrunPlayLayer::onToggleViewTimer));
+                                auto f = m_fields.self();
+
+                                if (f->runTimer) {
+                                    auto visible = f->runTimer->isVisible();
+
+                                    if (btn) btn->setOpacity(visible ? 255 : 125);
+                                    log::warn("Speedrun timer view toggled {} by UI", visible ? "on" : "off");
+                                } else {
+                                    log::error("Couldn't find speedrun timer");
+                                };
+                            });
                         f->visibleBtn->setID("toggle-interface-btn");
+                        f->visibleBtn->setScale(0.875f);
+                        f->visibleBtn->setOpacity(200);
 
                         visibleMenu->addChild(f->visibleBtn);
                         visibleMenu->updateLayout();
@@ -182,43 +195,12 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
         if (f->mobileMenu) f->mobileMenu->setVisible(!f->mobileMenu->isVisible());
     };
 
-    void onToggleViewTimer(CCObject*) {
-        toggleTimerVisibility();
-
-        auto f = m_fields.self();
-
-        if (f->runTimer) {
-            auto visible = f->runTimer->isVisible();
-
-            if (f->visibleBtn) f->visibleBtn->setOpacity(visible ? 255 : 125);
-            log::warn("Speedrun timer view toggled {} by UI", visible ? "on" : "off");
-        } else {
-            log::error("Couldn't find speedrun timer");
-        };
-    };
-
     void pauseTimer(CCObject*) {
         auto f = m_fields.self();
 
         if (f->runTimer) {
             f->manualPause = !f->pauseTimerBtn->isToggled();
             if (f->pauseTimerBtn) f->runTimer->pauseTimer(f->manualPause);
-        } else {
-            log::error("Failed to get speedrun node");
-        };
-    };
-
-    void createSplit(CCObject*) {
-        auto f = m_fields.self();
-        if (f->runTimer) f->runTimer->createSplit();
-    };
-
-    void resetAll(CCObject*) {
-        auto f = m_fields.self();
-
-        if (f->runTimer) {
-            f->runTimer->resetAll();
-            if (f->pauseTimerBtn) f->pauseTimerBtn->toggle(f->runTimer->isTimerPaused());  // update the button state
         } else {
             log::error("Failed to get speedrun node");
         };

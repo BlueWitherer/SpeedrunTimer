@@ -2,9 +2,7 @@
 
 #include <Geode/Geode.hpp>
 
-using namespace geode::prelude;
-
-class SplitSegment final : public CCNode {
+class SplitSegment final : public cocos2d::CCNode {
 private:
     class Impl;
     std::unique_ptr<Impl> m_impl;

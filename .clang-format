@@ -4,11 +4,10 @@ BasedOnStyle: Google
 NamespaceIndentation: All
 CommentPragmas: "^"
 FixNamespaceComments: false
+ReflowComments: true
 
 SortIncludes: false
 IncludeBlocks: Preserve
-
-IndentAccessModifiers: false
 
 BinPackArguments: false
 BinPackParameters: false
@@ -22,6 +21,7 @@ AllowShortCaseLabelsOnASingleLine: true
 
 IndentWidth: 4
 ColumnLimit: 0
+IndentAccessModifiers: false
 AccessModifierOffset: -4
 
 BreakBeforeBraces: Attach
