@@ -209,7 +209,7 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
     void destroyPlayer(PlayerObject* p0, GameObject* p1) {
         PlayLayer::destroyPlayer(p0, p1);
 
-        if (srt->getSettingValue<bool>("reset-death")) {  // check if reset after death is enabled
+        if (srt->getSettingValue<bool>("reset-death")) {
             if (p0->m_isDead) {
                 auto f = m_fields.self();
 
@@ -224,7 +224,7 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
     };
 
     void resetLevel() {
-        if (srt->getSettingValue<bool>("reset-death")) {  // check if reset after death is enabled
+        if (srt->getSettingValue<bool>("reset-death")) {
             log::info("Resuming timer");
 
             auto f = m_fields.self();
@@ -243,7 +243,7 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
 
         f->checkpointObject = nullptr;  // reset the checkpoint object
 
-        if (srt->getSettingValue<bool>("reset-death")) {  // check if reset after death is enabled
+        if (srt->getSettingValue<bool>("reset-death")) {
             log::info("Resetting timer");
 
             if (f->runTimer) f->manualPause ? f->runTimer->pauseTimer(f->manualPause) : f->runTimer->resetAll();
@@ -272,15 +272,6 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
             };
         } else {
             log::warn("Checkpoint split is disabled");
-        };
-
-        if (srt->getSettingValue<bool>("reset-death")) {
-            if (f->runTimer) {
-                if (!f->runTimer->isTimerPaused()) f->runTimer->pauseTimer(false);
-                if (f->pauseTimerBtn) f->pauseTimerBtn->toggle(f->runTimer->isTimerPaused());
-            };
-        } else {
-            log::info("Timer will not resume on checkpoint activation");
         };
 
         PlayLayer::checkpointActivated(p0);
