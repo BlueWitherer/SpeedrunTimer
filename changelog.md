@@ -1,4 +1,6 @@
 # v1.0.8 
+- Fixed issue with timer resuming on checkpoint activation while timer is paused
+- Timer no longer automatically creates splits while timer is paused
 - Minor optimizations
 
 # v1.0.7 

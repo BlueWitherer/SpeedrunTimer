@@ -263,7 +263,9 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
                 if (p0 == checkpoint) {
                     log::warn("Checkpoint split is already active");
                 } else {
-                    if (f->runTimer) f->runTimer->createSplit();
+                    if (f->runTimer) {
+                        if (!f->runTimer->isTimerPaused()) f->runTimer->createSplit();
+                    };
                 };
 
                 f->checkpointObject = p0;
@@ -272,9 +274,11 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
             log::warn("Checkpoint split is disabled");
         };
 
-        if (srt->getSettingValue<bool>("reset-death")) {                                   // check if reset after death is enabled
-            if (f->runTimer) f->runTimer->pauseTimer(false);                               // force resume
-            if (f->pauseTimerBtn) f->pauseTimerBtn->toggle(f->runTimer->isTimerPaused());  // update the button state
+        if (srt->getSettingValue<bool>("reset-death")) {
+            if (f->runTimer) {
+                if (!f->runTimer->isTimerPaused()) f->runTimer->pauseTimer(false);
+                if (f->pauseTimerBtn) f->pauseTimerBtn->toggle(f->runTimer->isTimerPaused());
+            };
         } else {
             log::info("Timer will not resume on checkpoint activation");
         };
