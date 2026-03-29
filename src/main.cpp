@@ -58,8 +58,8 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
                 if (srt->getSettingValue<bool>("mobile-btns")) {
                     auto btnMenuLayout = RowLayout::create()
                                              ->setDefaultScaleLimits(0.5f, 0.875f)
-                                             ->setCrossAxisReverse(true)
-                                             ->setAutoGrowAxis(125.f)
+                                             ->setAxisAlignment(AxisAlignment::Start)
+                                             ->setAutoGrowAxis(0.f)
                                              ->setAutoScale(false)
                                              ->setGap(3.75f);
 

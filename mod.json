@@ -178,8 +178,8 @@
             "description": "Show mobile-friendly buttons in-game to control the timer.",
             "default": {
                 "win": false,
-                "android": true,
                 "mac": false,
+                "android": true,
                 "ios": true
             }
         },
@@ -191,8 +191,8 @@
             "enable-if-description": "Enable mobile buttons in order to change their visibility.",
             "default": {
                 "win": false,
-                "android": true,
                 "mac": false,
+                "android": true,
                 "ios": true
             }
         },
