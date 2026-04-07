@@ -16,7 +16,9 @@ static auto srt = Mod::get();
 class $modify(SpeedrunPlayLayer, PlayLayer) {
     struct Fields {
         bool enabled = srt->getSettingValue<bool>("enabled");
+        bool autoStart = srt->getSettingValue<bool>("auto-start");
         bool platformerOnly = srt->getSettingValue<bool>("platformer-only");
+        bool checkpointSplit = srt->getSettingValue<bool>("checkpoint-split");
 
         WeakRef<CheckpointGameObject> checkpointObject = nullptr;  // Latest checkpoint
 
@@ -87,6 +89,8 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
                         this,
                         menu_selector(SpeedrunPlayLayer::pauseTimer));
                     f->pauseTimerBtn->setID("pause-timer-btn");
+
+                    if (f->autoStart) f->pauseTimerBtn->toggle(true);
 
                     // create the split button
                     f->splitTimerBtn = Button::createWithSpriteFrameName(
@@ -180,29 +184,12 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
                     });
 
                 log::info("Speedrun timer is ready!");
+                if (f->autoStart) timer->pauseTimer(false);
             } else {
                 log::error("Failed to create timer!");
             };
         } else {
             log::error("Level is not a platformer");
-        };
-    };
-
-    void toggleTimerVisibility() {
-        auto f = m_fields.self();
-
-        if (f->runTimer) f->runTimer->setVisible(!f->runTimer->isVisible());
-        if (f->mobileMenu) f->mobileMenu->setVisible(!f->mobileMenu->isVisible());
-    };
-
-    void pauseTimer(CCObject*) {
-        auto f = m_fields.self();
-
-        if (f->runTimer) {
-            f->manualPause = !f->pauseTimerBtn->isToggled();
-            if (f->pauseTimerBtn) f->runTimer->pauseTimer(f->manualPause);
-        } else {
-            log::error("Failed to get speedrun node");
         };
     };
 
@@ -224,6 +211,8 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
     };
 
     void resetLevel() {
+        PlayLayer::resetLevel();
+
         if (srt->getSettingValue<bool>("reset-death")) {
             log::info("Resuming timer");
 
@@ -234,11 +223,11 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
         } else {
             log::info("Timer will not resume on restart");
         };
-
-        PlayLayer::resetLevel();
     };
 
     void resetLevelFromStart() {
+        PlayLayer::resetLevelFromStart();
+
         auto f = m_fields.self();
 
         f->checkpointObject = nullptr;  // reset the checkpoint object
@@ -249,35 +238,44 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
             if (f->runTimer) f->manualPause ? f->runTimer->pauseTimer(f->manualPause) : f->runTimer->resetAll();
             if (f->pauseTimerBtn) f->pauseTimerBtn->toggle(f->runTimer->isTimerPaused());  // update the button state
         } else {
-            log::info("Timer will not reset on level restart");
+            log::debug("Timer will not reset on level restart");
         };
-
-        PlayLayer::resetLevelFromStart();
     };
 
     void checkpointActivated(CheckpointGameObject* p0) {
+        PlayLayer::checkpointActivated(p0);
+
         auto f = m_fields.self();
 
-        if (srt->getSettingValue<bool>("checkpoint-split")) {  // check if split on checkpoint is enabled
+        if (f->checkpointSplit) {
             if (auto checkpoint = f->checkpointObject.lock()) {
-                if (p0 == checkpoint) {
+                log::trace("Previous checkpoint object found");
+
+                if (p0 == checkpoint.take()) {
                     log::warn("Checkpoint split is already active");
                 } else {
+                    log::debug("Automatically creating timer split");
+
                     if (f->runTimer) {
                         if (!f->runTimer->isTimerPaused()) f->runTimer->createSplit();
                     };
                 };
-
-                f->checkpointObject = p0;
+            } else {
+                log::debug("No previous checkpoint found, automatically creating timer split");
+                if (f->runTimer) {
+                    if (!f->runTimer->isTimerPaused()) f->runTimer->createSplit();
+                };
             };
+
+            f->checkpointObject = p0;
         } else {
             log::warn("Checkpoint split is disabled");
         };
-
-        PlayLayer::checkpointActivated(p0);
     };
 
     void levelComplete() {
+        PlayLayer::levelComplete();
+
         if (srt->getSettingValue<bool>("stop-complete")) {  // check if stop on level complete is enabled
             auto f = m_fields.self();
 
@@ -286,7 +284,23 @@ class $modify(SpeedrunPlayLayer, PlayLayer) {
         } else {
             log::info("Timer will not stop on level completion");
         };
+    };
 
-        PlayLayer::levelComplete();
+    void toggleTimerVisibility() {
+        auto f = m_fields.self();
+
+        if (f->runTimer) f->runTimer->setVisible(!f->runTimer->isVisible());
+        if (f->mobileMenu) f->mobileMenu->setVisible(!f->mobileMenu->isVisible());
+    };
+
+    void pauseTimer(CCObject*) {
+        auto f = m_fields.self();
+
+        if (f->runTimer) {
+            f->manualPause = !f->pauseTimerBtn->isToggled();
+            if (f->pauseTimerBtn) f->runTimer->pauseTimer(f->manualPause);
+        } else {
+            log::error("Failed to get speedrun node");
+        };
     };
 };

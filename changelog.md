@@ -1,3 +1,7 @@
+# v1.0.9 
+- Added toggle setting `Auto Start-up`
+- Fixed automatic splitting on checkpoints
+
 # v1.0.8 
 - Fixed issue with timer resuming on checkpoint activation while timer is paused
 - Timer no longer automatically creates splits while timer is paused
